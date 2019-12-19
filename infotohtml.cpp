@@ -1165,7 +1165,7 @@ void GenerateTitle
     bool         fIsFirst)
 
 {
-  const char *pULType;
+  const char *pULTypeAttr;
   char NumberStr [64], buffer [128];
   regmatch_t match [2];
 
@@ -1196,16 +1196,16 @@ void GenerateTitle
 
   switch (cUnderline)
   {
-    case '-':  pULType = "dash";    break;
-    case '.':  pULType = "dot";     break;
-    case '*':  pULType = "star";    break;
-    case '=':  pULType = "equals";  break;
-    default:   pULType = "";
+    case '-':  pULTypeAttr = " ULType=\"dash\"";    break;
+    case '.':  pULTypeAttr = " ULType=\"dot\"";     break;
+    case '*':  pULTypeAttr = " ULType=\"star\"";    break;
+    case '=':  pULTypeAttr = " ULType=\"equals\"";  break;
+    default:   pULTypeAttr = "";
   }
 
   fprintf (stream,
-           "<div class=\"InfoTitle\" ULType=\"%s\"%s%s>\n%s%s\n</div>\n\n",
-           pULType,
+           "<div class=\"InfoTitle\"%s%s%s>\n%s%s\n</div>\n\n",
+           pULTypeAttr,
            (NumberStr [0] == '\0') ? "" : " HasNumber=\"\"",
            fIsFirst ? " First=\"\"" : "",
            NumberStr,
