@@ -1179,7 +1179,7 @@ void GenerateTitle
   if (!tre_regnexec (&TitleRegex, pText, length, 2, match, 0))
   {
     snprintf (NumberStr, sizeof (NumberStr), 
-              "<span Number=\"1\">%.*s</span> ",
+              "<span Number=\"1\">%.*s</span>",
               match [1].rm_eo - match [1].rm_so, 
               pText + match [1].rm_so);
 
