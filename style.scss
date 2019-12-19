@@ -1,0 +1,671 @@
+//~--~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-
+//  manhttp 
+//
+//  An HTTP server that provides a web-based, hypertext-driven
+//  frontend for man(1), info(1), and apropos(1).  MANHTTP lets you
+//  browse and search your system's online documentation using a web
+//  browser.
+//
+//~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~
+//
+//  To compile:  
+//  sassc -t compact style.scss style.css
+//
+//~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~
+//
+//  Copyright 2019 Jonathan Stewart
+//  
+//  Licensed under the Apache License, Version 2.0 (the "License");
+//  you may not use this file except in compliance with the License.
+//  You may obtain a copy of the License at
+//  
+//      http://www.apache.org/licenses/LICENSE-2.0
+//  
+//  Unless required by applicable law or agreed to in writing, software
+//  distributed under the License is distributed on an "AS IS" BASIS,
+//  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+//  See the License for the specific language governing permissions and
+//  limitations under the License.
+//
+//~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~
+
+
+
+$MonoFont:            "DejaVu Sans Mono", Hack, Cousine, Monaco, 
+                      "Lucida Console", monospace;
+$ProportionalFont:    "BBC Reith Sans", "Amazon Ember", "Clear Sans", 
+                      Roboto, Lato, "Source Sans Pro", Verdana, sans-serif;
+$ControlFont:         $ProportionalFont;
+$TitleFont:           $ProportionalFont;
+
+
+$NavBarHeight:        40px;
+$NavBarFontSize:      14px;
+
+
+
+//   -----  General formatting  -----
+
+
+body
+{
+  background:          #fff2df;
+  color:               #505050;
+  margin-left:         30px;
+  margin-right:        30px;
+}
+
+pre
+{
+  font-family:         $MonoFont;
+  font-size:           15px;
+  margin-left:         10px;
+}
+
+span[Bold]
+{
+  font-weight:        bold;
+}
+
+span[Ital]
+{
+  font-style:         italic;
+}
+
+a[RefType="uri"], a[RefType="uri"]:visited
+{
+  color:             #006500;
+  text-decoration:   none;
+}
+
+a[RefType="uri"]:hover
+{
+  text-decoration:   1px underline solid;
+}
+
+
+
+//   -----  Controls  -----
+
+button
+{
+  background:          #006500;
+  border:              1px solid #006500;
+  border-radius:       5px;
+  color:               #ffffff;
+  font-family:         $ControlFont;
+  font-size:           15px;
+  padding-top:         2px;
+  padding-bottom:      2px;  
+
+  &:disabled 
+  {
+    background:        #c0c0c0;
+    color:             #656565;
+    border:            1px solid #808080;
+  }
+
+  &[Active]::before
+  {
+    content:           "[ ";  
+  }
+
+  &[Active]::after
+  {
+    content:           " ]";  
+  }
+}
+
+
+.HideButton
+{
+  background:       inherit;
+  border:           none;
+  font-family:      $ControlFont;
+  font-size:        12px;
+  color:            #ffffff;
+  float:            right;
+  line-height:      30px;
+  padding-top:      0px;
+  padding-bottom:   0px;
+  border-radius:    0px;
+
+  &[State="SHOWN"]::after
+  {
+    content:           "[Hide\00a0\25b2]";
+  }
+
+  &[State="HIDDEN"]::after
+  {
+    content:           "[Show\00a0\25bc]";
+  }
+}
+ 
+
+
+
+//  -----  Page-top navigation bar  -----
+
+
+.NavBar
+{
+  display:              flex;
+  flex-flow:            row wrap;
+  justify-content:      flex-start;
+  position:             fixed;
+  top:                  0;
+  width:                100%;
+  min-height:           $NavBarHeight;
+  line-height:          $NavBarHeight;
+  margin-left:          -30px;
+  margin-right:         0px;
+  padding-left:         15px;
+  padding-right:        15px;  
+  font-family:          $ControlFont;
+  font-style:           normal;
+  font-weight:          normal;
+  font-size:            $NavBarFontSize;
+  color:                #ffffff;
+  background:           #404040;
+  text-align:           left;
+  border-bottom:        1px solid #000000;
+
+
+  > div
+  {
+    height:             $NavBarHeight;
+    line-height:        $NavBarHeight;
+    padding-left:       16px;
+    padding-right:      5px;
+    margin-left:        16px;
+    border-left:        1px solid #909090;
+  
+    &:nth-child(1)
+    {
+      border-left:      none;
+      padding-left:     0px;
+      margin-left:      0px;
+    }
+  }
+  
+
+  span[Label]
+  {
+    color:              #909090;
+    font-style:         italic;
+ 
+    &::after
+    {
+      content:          "\2002"
+    }
+  }
+  
+
+  a, a:visited
+  {
+    color:              #FFFF00;
+    text-decoration:    none;
+  }
+  
+  a:hover
+  {
+    text-decoration:    underline;
+  }
+  
+
+  button
+  {
+    background:        inherit;
+    color:             #909090;
+    border:            1px solid #909090;
+    border-radius:     5px;
+    font-size:         80%;  
+    height:            26px;
+  
+    &:hover
+    {
+      color:           #ffff00;
+      border:          1px solid #ffffff;
+    }
+  
+    &:disabled, &:hover:disabled
+    {
+      color:           #757575;
+    }
+  }
+  
+
+  select
+  {
+    background:        inherit;
+    color:             #909090;
+    border:            1px solid #909090;  
+    font-size:         80%;
+  }
+  
+
+  select:hover
+  {
+    color:             #c0c0c0;
+    border:            1px solid #c0c0c0;  
+  }
+}
+
+
+
+//   -----  Manual pages  -----
+
+
+body[Type="man"]
+{
+  .PageTitle
+  {
+    font-family:         $TitleFont;
+    font-size:           32px;
+    font-style:          italic;
+    font-weight:         bold;
+    color:               #667292;
+    margin-left:         10px;
+    margin-top:          60px;
+    margin-bottom:       55px;
+    text-decoration:     underline dotted;  
+  }
+
+  .Main
+  {
+    margin:              auto;
+    width:               680px;
+  }
+
+  .Prologue
+  {
+    margin-bottom:       35px;    
+  }
+
+  div.Collapsible
+  {
+    overflow:            hidden;
+    margin-bottom:       35px;
+
+    &[State="HIDDEN"]
+    {
+      margin-bottom:     0px;
+    }
+  }
+
+  pre a[RefType="manpage"]
+  {
+    color:             inherit; 
+    background:        #ffe0b3;
+    text-decoration:   none; 
+  
+    &:hover
+    {
+      color:             #006500;
+      text-decoration:   1px underline solid;
+    }
+  }
+
+  .HeaderBar
+  {
+    display:          inline-block;
+    font-family:      $TitleFont;
+    font-size:        18px;
+    font-style:       italic;
+    font-weight:      normal;
+    color:            #ffffff;
+    background:       #667292;
+    width:            100%;
+    height:           30px;
+    line-height:      30px;
+    padding-left:     18px;
+    padding-right:    4px;  
+    text-align:       left;
+    margin-left:      8px;
+    margin-top:       0px;
+  
+    &[State="HIDDEN"]
+    {
+      border-bottom:    1px solid #fff2df;	
+    }
+  
+    > .HideButton
+    {
+      margin-left:       40px;
+      margin-right:      0px;
+    }
+  }
+}
+
+
+
+//   -----  Info pages  -----
+
+
+body[Type="info"]
+{
+  margin-top:   80px;
+
+  pre a[RefType="info"]
+  {
+    color:             #031f84;
+    text-decoration:   none;
+
+    &:hover
+    {
+      text-decoration:  1px underline solid;
+    }
+  }
+
+
+  .InfoTitle 
+  {
+    display:          inline-block;
+    font-family:      $TitleFont;
+    font-style:       normal;
+    font-weight:      normal;
+    font-size:        16px;
+    color:            #ffffff;
+    background:       #667292;
+    padding-left:     22px;
+    padding-right:    22px;
+    padding-top:      2px;
+    padding-bottom:   2px;
+    margin-left:      10px;
+    margin-top:       -10px;
+    margin-bottom:    25px;
+   
+    > span[Number]
+    {
+      font-size:        19px;
+      font-style:       italic;
+      font-weight:      bold;
+    }
+
+    > span[Number]::after
+    {
+      content:          "\2002\2002";
+    }
+  
+    &[ULType="star"]
+    {
+      font-size:        20px;  
+      padding-top:      4px;
+      padding-bottom:   4px;
+  
+      > span[Number]
+      {
+        font-size:        22px;
+        font-style:       italic;
+        font-weight:      bold;
+        padding-right:    10px;    
+      }
+    }
+  }
+
+
+  .InfoFootnotes
+  {
+    padding-top:     10px;
+    border-top:      1px dotted #C3C3C3;
+    font-size:       80%;
+  }
+}
+
+
+
+//   -----  Apropos pages  -----
+
+
+body[Type="apropos"]
+{
+  font-family:     $ProportionalFont;
+  font-size:       15px;
+
+  #ByNameButton, #BySectionButton
+  {
+    width:             7em;
+  }
+
+
+  .AproposSectionBar
+  {
+    display:          inline-block;
+    font-family:      $TitleFont;
+    font-style:       italic;
+    font-weight:      normal;
+    font-size:        17px;
+    color:            #ffffff;
+    background:       #505050;
+    width:            75%;
+    line-height:      30px;
+    height:           30px;
+    padding-left:     10px;
+    padding-right:    0px;
+    padding-top:      0px;
+    padding-bottom:   0px;
+    margin-left:      84px;
+    margin-right:     0px;
+    margin-top:       0px;
+    margin-bottom:    0px;
+    text-align:       left;
+    border-style:     none;  
+  
+    &[State="HIDDEN"]
+    {
+      border-bottom:    1px solid #fff2df;  
+    }
+  }
+  
+  
+  .AproposContainer
+  {
+    width:           100%;
+    margin-top:      0px;
+    margin-bottom:   45px;
+    padding-left:    0px;
+    padding-right:   0px;
+    padding-top:     0px;
+    padding-bottom:  0px;
+    border-style:    none;  
+    overflow:        hidden;
+  
+    &[State="HIDDEN"]
+    {
+      margin-bottom:   0px;
+    }
+  }
+  
+  
+  .AproposTable
+  {
+    font-family:     $ProportionalFont;
+    font-size:       15px;
+    border-collapse: separate;
+    border-bottom:   2px solid #a2836e;
+    width:           75%;
+    margin-left:     82px;
+    margin-top:      0px;
+    padding-left:    0px;
+    padding-right:   0px;
+    padding-top:     0px;
+    padding-bottom:  0px;
+  }
+  
+  
+  .AproposTableHeader
+  {
+    font-family:      inherit;
+    font-style:       italic;
+    font-weight:      bold;
+    font-size:        15px;
+    color:            #ffffff;
+    background:       #a2836e;
+    text-align:       left;
+   
+  
+    > th
+    {
+      padding-top:      6px;
+      padding-bottom:   6px;
+      padding-left:     10px;
+      border-top:       1px solid #C3C3C3;
+      border-bottom:    1px solid #C3C3C3;  
+    
+  
+      &[Column="page"]
+      {
+        width:  2in;
+      }
+  
+      &[Column="description"]
+      {
+        width:  5in;
+      }
+    }
+  }
+  
+  
+  .AproposTableRow
+  {
+    &:nth-child(even)
+    {
+      background:            inherit;
+      color:                 #505050;
+    }
+  
+    &:nth-child(odd)
+    {
+      background:            #ffe0b3;
+      color:                 #505050;  
+    }
+  
+    > td
+    {
+      font-size:             15px;
+      padding-left:          8px;
+      padding-right:         8px;
+      padding-bottom:        4px;
+      padding-top:           4px; 
+    
+      a
+      {
+        color:               #006500;
+        text-decoration:     none;
+  
+        &:hover
+        {
+          text-decoration:   1px underline solid;
+        }
+      }
+    }
+  }
+}
+
+
+
+//   -----  Splash page and error-notification pages  ----- 
+
+
+body[Type="splash"]
+{
+  font-family:       $ProportionalFont;
+  font-size:         16px;
+  margin-left:       75px;
+  margin-top:        75px;
+
+  > .PageTitle
+  {
+    font-family:       $TitleFont;
+    font-size:         48px;
+    font-style:        italic;
+    font-weight:       bold;
+    color:             #667292;
+    margin-bottom:     20px;  
+  }
+
+
+  .Splash
+  {
+    width:               80%;
+    max-width:           7.5in;
+    padding-left:        24px;
+    padding-right:       24px;
+    padding-top:         18px;
+    padding-bottom:      20px;
+    margin-bottom:       50px;
+    color:               #505050;
+    background:          #ffe0b3;
+    border-left:         5px solid #a2836e;
+  
+  
+    > p[Heading]
+    {
+      font-size:         24px;
+      font-weight:       bold;
+      font-style:        italic;
+      margin-top:        0px;
+      margin-bottom:     15px;
+    }
+    
+    > .Divider
+    {
+      margin-top:        18px;
+      margin-bottom:     18px;
+      border-bottom:     1px dotted #a2836e;
+    }
+    
+    input
+    {
+      border:            1px solid #505050;
+      border-radius:     0px;    
+      padding-left:      8px;
+      padding-right:     8px;
+      padding-top:       6px;
+      padding-bottom:    6px;
+    }
+    
+    button
+    {
+      padding-left:      15px;
+      padding-right:     15px;  
+      padding-top:       5px;
+      padding-bottom:    5px;
+    }
+    
+    .Filename
+    {
+      color:             #000000;
+      font-style:        italic;
+    }
+    
+    .Code
+    {
+      font-family:       $ControlFont;
+      display:           inline-block;
+      color:             #505050;
+      background:        #eeeeee;
+      margin-top:        4px;
+      margin-bottom:     4px;
+      padding:           8px;
+      border:            1px dashed #505050;
+    }
+    
+    .Code > span[Var]
+    {
+      color:             #00a0a0;
+      font-style:        italic;
+    }
+    
+    a, a:visited
+    {
+      color:             #006500;	
+      text-decoration:   none;   
+    }
+    
+    a:hover
+    {
+      text-decoration:   1px underline solid;   
+    }
+  }
+}

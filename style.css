@@ -1,0 +1,143 @@
+body { background: #fff2df; color: #505050; margin-left: 30px; margin-right: 30px; }
+
+pre { font-family: "DejaVu Sans Mono", Hack, Cousine, Monaco, "Lucida Console", monospace; font-size: 15px; margin-left: 10px; }
+
+span[Bold] { font-weight: bold; }
+
+span[Ital] { font-style: italic; }
+
+a[RefType="uri"], a[RefType="uri"]:visited { color: #006500; text-decoration: none; }
+
+a[RefType="uri"]:hover { text-decoration: 1px underline solid; }
+
+button { background: #006500; border: 1px solid #006500; border-radius: 5px; color: #ffffff; font-family: "BBC Reith Sans", "Amazon Ember", "Clear Sans", Roboto, Lato, "Source Sans Pro", Verdana, sans-serif; font-size: 15px; padding-top: 2px; padding-bottom: 2px; }
+
+button:disabled { background: #c0c0c0; color: #656565; border: 1px solid #808080; }
+
+button[Active]::before { content: "[ "; }
+
+button[Active]::after { content: " ]"; }
+
+.HideButton { background: inherit; border: none; font-family: "BBC Reith Sans", "Amazon Ember", "Clear Sans", Roboto, Lato, "Source Sans Pro", Verdana, sans-serif; font-size: 12px; color: #ffffff; float: right; line-height: 30px; padding-top: 0px; padding-bottom: 0px; border-radius: 0px; }
+
+.HideButton[State="SHOWN"]::after { content: "[Hide\00a0\25b2]"; }
+
+.HideButton[State="HIDDEN"]::after { content: "[Show\00a0\25bc]"; }
+
+.NavBar { display: flex; flex-flow: row wrap; justify-content: flex-start; position: fixed; top: 0; width: 100%; min-height: 40px; line-height: 40px; margin-left: -30px; margin-right: 0px; padding-left: 15px; padding-right: 15px; font-family: "BBC Reith Sans", "Amazon Ember", "Clear Sans", Roboto, Lato, "Source Sans Pro", Verdana, sans-serif; font-style: normal; font-weight: normal; font-size: 14px; color: #ffffff; background: #404040; text-align: left; border-bottom: 1px solid #000000; }
+
+.NavBar > div { height: 40px; line-height: 40px; padding-left: 16px; padding-right: 5px; margin-left: 16px; border-left: 1px solid #909090; }
+
+.NavBar > div:nth-child(1) { border-left: none; padding-left: 0px; margin-left: 0px; }
+
+.NavBar span[Label] { color: #909090; font-style: italic; }
+
+.NavBar span[Label]::after { content: "\2002"; }
+
+.NavBar a, .NavBar a:visited { color: #FFFF00; text-decoration: none; }
+
+.NavBar a:hover { text-decoration: underline; }
+
+.NavBar button { background: inherit; color: #909090; border: 1px solid #909090; border-radius: 5px; font-size: 80%; height: 26px; }
+
+.NavBar button:hover { color: #ffff00; border: 1px solid #ffffff; }
+
+.NavBar button:disabled, .NavBar button:hover:disabled { color: #757575; }
+
+.NavBar select { background: inherit; color: #909090; border: 1px solid #909090; font-size: 80%; }
+
+.NavBar select:hover { color: #c0c0c0; border: 1px solid #c0c0c0; }
+
+body[Type="man"] .PageTitle { font-family: "BBC Reith Sans", "Amazon Ember", "Clear Sans", Roboto, Lato, "Source Sans Pro", Verdana, sans-serif; font-size: 32px; font-style: italic; font-weight: bold; color: #667292; margin-left: 10px; margin-top: 60px; margin-bottom: 55px; text-decoration: underline dotted; }
+
+body[Type="man"] .Main { margin: auto; width: 680px; }
+
+body[Type="man"] .Prologue { margin-bottom: 35px; }
+
+body[Type="man"] div.Collapsible { overflow: hidden; margin-bottom: 35px; }
+
+body[Type="man"] div.Collapsible[State="HIDDEN"] { margin-bottom: 0px; }
+
+body[Type="man"] pre a[RefType="manpage"] { color: inherit; background: #ffe0b3; text-decoration: none; }
+
+body[Type="man"] pre a[RefType="manpage"]:hover { color: #006500; text-decoration: 1px underline solid; }
+
+body[Type="man"] .HeaderBar { display: inline-block; font-family: "BBC Reith Sans", "Amazon Ember", "Clear Sans", Roboto, Lato, "Source Sans Pro", Verdana, sans-serif; font-size: 18px; font-style: italic; font-weight: normal; color: #ffffff; background: #667292; width: 100%; height: 30px; line-height: 30px; padding-left: 18px; padding-right: 4px; text-align: left; margin-left: 8px; margin-top: 0px; }
+
+body[Type="man"] .HeaderBar[State="HIDDEN"] { border-bottom: 1px solid #fff2df; }
+
+body[Type="man"] .HeaderBar > .HideButton { margin-left: 40px; margin-right: 0px; }
+
+body[Type="info"] { margin-top: 80px; }
+
+body[Type="info"] pre a[RefType="info"] { color: #031f84; text-decoration: none; }
+
+body[Type="info"] pre a[RefType="info"]:hover { text-decoration: 1px underline solid; }
+
+body[Type="info"] .InfoTitle { display: inline-block; font-family: "BBC Reith Sans", "Amazon Ember", "Clear Sans", Roboto, Lato, "Source Sans Pro", Verdana, sans-serif; font-style: normal; font-weight: normal; font-size: 16px; color: #ffffff; background: #667292; padding-left: 22px; padding-right: 22px; padding-top: 2px; padding-bottom: 2px; margin-left: 10px; margin-top: -10px; margin-bottom: 25px; }
+
+body[Type="info"] .InfoTitle > span[Number] { font-size: 19px; font-style: italic; font-weight: bold; }
+
+body[Type="info"] .InfoTitle > span[Number]::after { content: "\2002\2002"; }
+
+body[Type="info"] .InfoTitle[ULType="star"] { font-size: 20px; padding-top: 4px; padding-bottom: 4px; }
+
+body[Type="info"] .InfoTitle[ULType="star"] > span[Number] { font-size: 22px; font-style: italic; font-weight: bold; padding-right: 10px; }
+
+body[Type="info"] .InfoFootnotes { padding-top: 10px; border-top: 1px dotted #C3C3C3; font-size: 80%; }
+
+body[Type="apropos"] { font-family: "BBC Reith Sans", "Amazon Ember", "Clear Sans", Roboto, Lato, "Source Sans Pro", Verdana, sans-serif; font-size: 15px; }
+
+body[Type="apropos"] #ByNameButton, body[Type="apropos"] #BySectionButton { width: 7em; }
+
+body[Type="apropos"] .AproposSectionBar { display: inline-block; font-family: "BBC Reith Sans", "Amazon Ember", "Clear Sans", Roboto, Lato, "Source Sans Pro", Verdana, sans-serif; font-style: italic; font-weight: normal; font-size: 17px; color: #ffffff; background: #505050; width: 75%; line-height: 30px; height: 30px; padding-left: 10px; padding-right: 0px; padding-top: 0px; padding-bottom: 0px; margin-left: 84px; margin-right: 0px; margin-top: 0px; margin-bottom: 0px; text-align: left; border-style: none; }
+
+body[Type="apropos"] .AproposSectionBar[State="HIDDEN"] { border-bottom: 1px solid #fff2df; }
+
+body[Type="apropos"] .AproposContainer { width: 100%; margin-top: 0px; margin-bottom: 45px; padding-left: 0px; padding-right: 0px; padding-top: 0px; padding-bottom: 0px; border-style: none; overflow: hidden; }
+
+body[Type="apropos"] .AproposContainer[State="HIDDEN"] { margin-bottom: 0px; }
+
+body[Type="apropos"] .AproposTable { font-family: "BBC Reith Sans", "Amazon Ember", "Clear Sans", Roboto, Lato, "Source Sans Pro", Verdana, sans-serif; font-size: 15px; border-collapse: separate; border-bottom: 2px solid #a2836e; width: 75%; margin-left: 82px; margin-top: 0px; padding-left: 0px; padding-right: 0px; padding-top: 0px; padding-bottom: 0px; }
+
+body[Type="apropos"] .AproposTableHeader { font-family: inherit; font-style: italic; font-weight: bold; font-size: 15px; color: #ffffff; background: #a2836e; text-align: left; }
+
+body[Type="apropos"] .AproposTableHeader > th { padding-top: 6px; padding-bottom: 6px; padding-left: 10px; border-top: 1px solid #C3C3C3; border-bottom: 1px solid #C3C3C3; }
+
+body[Type="apropos"] .AproposTableHeader > th[Column="page"] { width: 2in; }
+
+body[Type="apropos"] .AproposTableHeader > th[Column="description"] { width: 5in; }
+
+body[Type="apropos"] .AproposTableRow:nth-child(even) { background: inherit; color: #505050; }
+
+body[Type="apropos"] .AproposTableRow:nth-child(odd) { background: #ffe0b3; color: #505050; }
+
+body[Type="apropos"] .AproposTableRow > td { font-size: 15px; padding-left: 8px; padding-right: 8px; padding-bottom: 4px; padding-top: 4px; }
+
+body[Type="apropos"] .AproposTableRow > td a { color: #006500; text-decoration: none; }
+
+body[Type="apropos"] .AproposTableRow > td a:hover { text-decoration: 1px underline solid; }
+
+body[Type="splash"] { font-family: "BBC Reith Sans", "Amazon Ember", "Clear Sans", Roboto, Lato, "Source Sans Pro", Verdana, sans-serif; font-size: 16px; margin-left: 75px; margin-top: 75px; }
+
+body[Type="splash"] > .PageTitle { font-family: "BBC Reith Sans", "Amazon Ember", "Clear Sans", Roboto, Lato, "Source Sans Pro", Verdana, sans-serif; font-size: 48px; font-style: italic; font-weight: bold; color: #667292; margin-bottom: 20px; }
+
+body[Type="splash"] .Splash { width: 80%; max-width: 7.5in; padding-left: 24px; padding-right: 24px; padding-top: 18px; padding-bottom: 20px; margin-bottom: 50px; color: #505050; background: #ffe0b3; border-left: 5px solid #a2836e; }
+
+body[Type="splash"] .Splash > p[Heading] { font-size: 24px; font-weight: bold; font-style: italic; margin-top: 0px; margin-bottom: 15px; }
+
+body[Type="splash"] .Splash > .Divider { margin-top: 18px; margin-bottom: 18px; border-bottom: 1px dotted #a2836e; }
+
+body[Type="splash"] .Splash input { border: 1px solid #505050; border-radius: 0px; padding-left: 8px; padding-right: 8px; padding-top: 6px; padding-bottom: 6px; }
+
+body[Type="splash"] .Splash button { padding-left: 15px; padding-right: 15px; padding-top: 5px; padding-bottom: 5px; }
+
+body[Type="splash"] .Splash .Filename { color: #000000; font-style: italic; }
+
+body[Type="splash"] .Splash .Code { font-family: "BBC Reith Sans", "Amazon Ember", "Clear Sans", Roboto, Lato, "Source Sans Pro", Verdana, sans-serif; display: inline-block; color: #505050; background: #eeeeee; margin-top: 4px; margin-bottom: 4px; padding: 8px; border: 1px dashed #505050; }
+
+body[Type="splash"] .Splash .Code > span[Var] { color: #00a0a0; font-style: italic; }
+
+body[Type="splash"] .Splash a, body[Type="splash"] .Splash a:visited { color: #006500; text-decoration: none; }
+
+body[Type="splash"] .Splash a:hover { text-decoration: 1px underline solid; }

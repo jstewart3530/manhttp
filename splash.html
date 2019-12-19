@@ -1,0 +1,118 @@
+<div class="PageTitle" style="margin-bottom: 50px;">
+This is MANHTTP.
+</div>
+
+<div class="Splash">
+<p style="margin-bottom: 25px;">
+MANHTTP is an HTTP server that lets you browse and search your system's
+online documentation &mdash; man pages and Info documents &mdash; 
+using a web browser.  It is a web-based frontend for 
+<a href="man/man(1)">man(1)</a>,
+<a href="man/info(1)">info(1)</a>, and 
+<a href="man/apropos(1)">apropos(1)</a>.
+</p>
+
+<table>
+<tr>
+   <td rowspan="3" style="padding: 10px;">
+     <input id="SearchInput" 
+            autofocus 
+            type="text" 
+            style="width: 180px;">
+   </td>
+   <td>
+     <button id="GoToManPageBtn" style="width: 100%;">Go to manual page &#10093;</button>
+   </td>  
+</tr>
+<tr>
+  <td>
+    <button id="GoToInfoPageBtn" style="width: 100%;">Go to Info document &#10093;</button>
+  </td>
+</tr>
+<tr>
+  <td>
+    <button id="AproposBtn" style="width: 100%;">Search with apropos &#10093;</button>
+  </td>  
+</tr>
+</table>
+
+<div class="Divider"></div>
+
+<p style="margin-bottom: 10px;">
+To access manual pages, info documents, and apropos results
+directly, you can point your browser to the following URLs.
+</p>
+To view a manual page:
+<div class="Code" style="margin-left: 6px;" URI="1">man/<span Var="1">page-title</span>
+</div>
+<br>
+To view an info document:
+<div class="Code" style="margin-left: 6px;" URI="1">info/<span Var="1">package-or-command-name</span></div>
+<br>
+To perform an apropos search:
+<div class="Code" style="margin-left: 6px;" URI="1">apropos/<span Var="1">search-term</span></div>
+
+<div style="margin-top: 20px; display: flex; flex-direction: row-reverse;">
+  <div style="font-size: 70%;">
+    <a href="https://www.github.com/jstewart3530/manhttp">GitHub</a>
+  </div>
+</div>
+</div>
+
+
+<script>
+"use strict";
+const BaseURL = document.head.getElementsByTagName ("base") [0].href;
+const SearchInput = document.getElementById ("SearchInput");
+const ManButton = document.getElementById ("GoToManPageBtn");
+const InfoButton = document.getElementById ("GoToInfoPageBtn");
+const AproposButton = document.getElementById ("AproposBtn");
+
+
+function GetSearchText
+   ()
+
+{
+  let t = SearchInput.value;
+  return t ? t.trim () : "";
+}
+
+
+function SyncButtonState
+   (event)
+
+{
+  let fDisable = (GetSearchText () === "");
+
+  ManButton.disabled = fDisable;
+  InfoButton.disabled = fDisable;
+  AproposButton.disabled = fDisable;
+}
+
+
+function GoToPage 
+   (prefix)
+
+{ 
+  let t = GetSearchText ();
+  if (t != "")
+  {
+    window.open (prefix + t, "_self");
+  }
+}
+
+
+for (let elt of document.querySelectorAll ("*[URI]"))
+{
+  elt.innerHTML = BaseURL + elt.innerHTML;
+}
+
+
+SearchInput.addEventListener ("input", SyncButtonState, false);
+ManButton.addEventListener ("click", new Function ("event", `GoToPage ("${BaseURL}man/");`), false);
+InfoButton.addEventListener ("click", new Function ("event", `GoToPage ("${BaseURL}info/")`), false);
+AproposButton.addEventListener ("click", new Function ("event", `GoToPage ("${BaseURL}apropos/");`), false);
+
+
+SyncButtonState (null);
+</script>
