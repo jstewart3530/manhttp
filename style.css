@@ -48,9 +48,9 @@ button[Active]::after { content: " ]"; }
 
 .NavBar select:hover { color: #c0c0c0; border: 1px solid #c0c0c0; }
 
-body[Type="man"] .PageTitle { font-family: "BBC Reith Sans", "Amazon Ember", "Clear Sans", Roboto, Lato, "Source Sans Pro", Verdana, sans-serif; font-size: 32px; font-style: italic; font-weight: bold; color: #667292; margin-left: 10px; margin-top: 60px; margin-bottom: 55px; text-decoration: underline dotted; }
+body[Type="man"] .Main { margin-left: 80px; }
 
-body[Type="man"] .Main { margin: auto; width: 680px; }
+body[Type="man"] .PageTitle { font-family: "BBC Reith Sans", "Amazon Ember", "Clear Sans", Roboto, Lato, "Source Sans Pro", Verdana, sans-serif; font-size: 32px; font-style: italic; font-weight: bold; color: #667292; margin-left: 10px; margin-top: 60px; margin-bottom: 55px; text-decoration: underline dotted; }
 
 body[Type="man"] .Prologue { margin-bottom: 35px; }
 
@@ -62,7 +62,7 @@ body[Type="man"] pre a[RefType="manpage"] { color: inherit; background: #ffe0b3;
 
 body[Type="man"] pre a[RefType="manpage"]:hover { color: #006500; text-decoration: 1px underline solid; }
 
-body[Type="man"] .HeaderBar { display: inline-block; font-family: "BBC Reith Sans", "Amazon Ember", "Clear Sans", Roboto, Lato, "Source Sans Pro", Verdana, sans-serif; font-size: 18px; font-style: italic; font-weight: normal; color: #ffffff; background: #667292; width: 100%; height: 30px; line-height: 30px; padding-left: 18px; padding-right: 4px; text-align: left; margin-left: 8px; margin-top: 0px; }
+body[Type="man"] .HeaderBar { display: inline-block; font-family: "BBC Reith Sans", "Amazon Ember", "Clear Sans", Roboto, Lato, "Source Sans Pro", Verdana, sans-serif; font-size: 18px; font-style: italic; font-weight: normal; color: #ffffff; background: #667292; width: 680px; height: 30px; line-height: 30px; padding-left: 18px; padding-right: 4px; text-align: left; margin-left: 8px; margin-top: 0px; }
 
 body[Type="man"] .HeaderBar[State="HIDDEN"] { border-bottom: 1px solid #fff2df; }
 
