@@ -133,9 +133,9 @@ void ManualPageToHTML
            buffer);
 
 
-  pText = (char*) malloc (cbContent);         
-  pAttributes = (TEXTATTRIBUTES*) malloc (sizeof (TEXTATTRIBUTES) * cbContent);
-  cbText = GetTextAttributes (pContent, cbContent, pText, pAttributes, cbContent);
+  pText = (char*) malloc (cbContent + 1);         
+  pAttributes = (TEXTATTRIBUTES*) malloc (sizeof (TEXTATTRIBUTES) * (cbContent + 1));
+  cbText = GetTextAttributes (pContent, cbContent, pText, pAttributes, cbContent + 1);
 
 
   nSections = 0;
