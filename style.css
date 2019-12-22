@@ -44,7 +44,7 @@ button[Active]::after { content: " ]"; }
 
 .NavBar button:disabled, .NavBar button:hover:disabled { color: #757575; }
 
-.NavBar select { background: inherit; color: #909090; border: 1px solid #909090; font-size: 80%; }
+.NavBar select { background: inherit; color: #909090; border: 1px solid #909090; font-size: 85%; }
 
 .NavBar select:hover { color: #c0c0c0; border: 1px solid #c0c0c0; }
 
