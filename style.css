@@ -82,7 +82,7 @@ body[Type="info"] .InfoTitle > span[Number]::after { content: "\00a0\00a0\00a0";
 
 body[Type="info"] .InfoTitle[ULType="star"], body[Type="info"] .InfoTitle[ULType="equals"] { font-size: 20px; padding-top: 4px; padding-bottom: 4px; }
 
-body[Type="info"] .InfoTitle[ULType="star"] > span[Number], body[Type="info"] .InfoTitle[ULType="equals"] > span[Number] { font-family: "Hemi Head", "BBC Reith Sans", "Amazon Ember", "Clear Sans", Roboto, Lato, "Source Sans Pro", Verdana, sans-serif; font-family-font-size: 160%; font-family-font-style: italic; font-family-font-weight: bold; }
+body[Type="info"] .InfoTitle[ULType="star"] > span[Number], body[Type="info"] .InfoTitle[ULType="equals"] > span[Number] { font-family: "Hemi Head", "BBC Reith Sans", "Amazon Ember", "Clear Sans", Roboto, Lato, "Source Sans Pro", Verdana, sans-serif; font-size: 150%; font-style: italic; font-weight: bold; }
 
 body[Type="info"] .InfoFootnotes { padding-top: 10px; border-top: 1px dotted #C3C3C3; font-size: 80%; }
 

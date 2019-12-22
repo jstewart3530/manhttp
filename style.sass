@@ -34,11 +34,11 @@
 //  Font definitions.
 
 
-$MonoFont:            "DejaVu Sans Mono", Hack, Cousine, Monaco, "Lucida Console", monospace
-$ProportionalFont:    "BBC Reith Sans", "Amazon Ember", "Clear Sans", Roboto, Lato, "Source Sans Pro", Verdana, sans-serif
-$ControlFont:         $ProportionalFont
-$TitleFont:           $ProportionalFont
-$TitleNumberFont:     "Hemi Head", $TitleFont
+$MonoFont           : "DejaVu Sans Mono", Hack, Cousine, Monaco, "Lucida Console", monospace
+$ProportionalFont   : "BBC Reith Sans", "Amazon Ember", "Clear Sans", Roboto, Lato, "Source Sans Pro", Verdana, sans-serif
+$ControlFont        : $ProportionalFont
+$TitleFont          : $ProportionalFont
+$TitleNumberFont    : "Hemi Head", $TitleFont
 
 
 
@@ -112,22 +112,22 @@ button
 
 
 .HideButton
-  background:       inherit
-  border:           none
-  font-family:      $ControlFont
-  font-size:        12px
-  color:            #ffffff
-  float:            right
-  line-height:      30px
-  padding-top:      0px
-  padding-bottom:   0px
-  border-radius:    0px
+  background:           inherit
+  border:               none
+  font-family:          $ControlFont
+  font-size:            12px
+  color:                #ffffff
+  float:                right
+  line-height:          30px
+  padding-top:          0px
+  padding-bottom:       0px
+  border-radius:        0px
 
   &[State="SHOWN"]::after  
-    content:           "[Hide\00a0\25b2]"
+    content:            "[Hide\00a0\25b2]"
 
   &[State="HIDDEN"]::after  
-    content:           "[Show\00a0\25bc]"
+    content:            "[Show\00a0\25bc]"
   
 
 
@@ -320,8 +320,8 @@ body[Type="info"]
       padding-bottom:   4px
   
       > span[Number]      
-      	font-family:      $TitleNumberFont
-        font-size:        160%
+        font-family:      $TitleNumberFont
+        font-size:        150%
         font-style:       italic
         font-weight:      bold
  
