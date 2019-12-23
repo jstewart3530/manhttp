@@ -35,25 +35,29 @@
 
 
 $MonoFont           : "DejaVu Sans Mono", Hack, Cousine, Monaco, 
-                      "Lucida Console", monospace !default;
+                      "Lucida Console", monospace 
+                      !default;
 
 $ProportionalFont   : "BBC Reith Sans", "Amazon Ember", "Clear Sans", 
-                      Roboto, Lato, "Source Sans Pro", Verdana, sans-serif !default;
+                      Roboto, Lato, "Source Sans Pro", Verdana, sans-serif
+                      !default;
 
-$ControlFont        : $ProportionalFont !default;
+$ControlFont        : $ProportionalFont 
+                      !default;
 
-$TitleFont          : $ProportionalFont !default;
+$TitleFont          : $ProportionalFont
+                      !default;
 
-$TitleNumberFont    : "Hemi Head", $TitleFont !default;
-
-
-
-//  "@font-face" definitions would go here if they are needed.
-
+$TitleNumberFont    : "Hemi Head", $TitleFont
+                      !default;
 
 
-$NavBarHeight     :  40px;
-$NavBarFontSize   :  14px;
+//  ("@font-face" definitions would go here if they are needed.)
+
+
+
+$NavBarHeight       : 40px;
+$NavBarFontSize     : 14px;
 
 
 
@@ -142,6 +146,13 @@ button
   padding-top:          0px;
   padding-bottom:       0px;
   border-radius:        0px;
+  margin-left:          40px;
+  margin-right:         0px;
+
+  &:hover
+  {
+    text-decoration:     underline solid;
+  }
 
   &[State="SHOWN"]::after  
   {
@@ -152,8 +163,7 @@ button
   {
     content:            "[Show\00a0\25bc]";
   }  
-}  
-
+}
 
 
 
@@ -260,7 +270,6 @@ button
 
 
 
-
 //   -----  Manual pages  -----
 
 
@@ -326,7 +335,6 @@ body[Type="man"]
     height:           30px;
     line-height:      30px;
     padding-left:     18px;
-    padding-right:    4px;  
     text-align:       left;
     margin-left:      8px;
     margin-top:       0px;
@@ -335,12 +343,6 @@ body[Type="man"]
     {
       border-bottom:    1px solid #fff2df;
     }     
-  
-    > .HideButton    
-    {
-      margin-left:       40px;
-      margin-right:      0px;
-    }  
   }  
 }
 

@@ -18,7 +18,9 @@ button[Active]::before { content: "[ "; }
 
 button[Active]::after { content: " ]"; }
 
-.HideButton { background: inherit; border: none; font-family: "BBC Reith Sans", "Amazon Ember", "Clear Sans", Roboto, Lato, "Source Sans Pro", Verdana, sans-serif; font-size: 12px; color: #ffffff; float: right; line-height: 30px; padding-top: 0px; padding-bottom: 0px; border-radius: 0px; }
+.HideButton { background: inherit; border: none; font-family: "BBC Reith Sans", "Amazon Ember", "Clear Sans", Roboto, Lato, "Source Sans Pro", Verdana, sans-serif; font-size: 12px; color: #ffffff; float: right; line-height: 30px; padding-top: 0px; padding-bottom: 0px; border-radius: 0px; margin-left: 40px; margin-right: 0px; }
+
+.HideButton:hover { text-decoration: underline solid; }
 
 .HideButton[State="SHOWN"]::after { content: "[Hide\00a0\25b2]"; }
 
@@ -62,11 +64,9 @@ body[Type="man"] pre a[RefType="manpage"] { color: inherit; background: #ffe0b3;
 
 body[Type="man"] pre a[RefType="manpage"]:hover { color: #006500; text-decoration: 1px underline solid; }
 
-body[Type="man"] .HeaderBar { display: inline-block; font-family: "BBC Reith Sans", "Amazon Ember", "Clear Sans", Roboto, Lato, "Source Sans Pro", Verdana, sans-serif; font-size: 18px; font-style: italic; font-weight: normal; color: #ffffff; background: #667292; width: 680px; height: 30px; line-height: 30px; padding-left: 18px; padding-right: 4px; text-align: left; margin-left: 8px; margin-top: 0px; }
+body[Type="man"] .HeaderBar { display: inline-block; font-family: "BBC Reith Sans", "Amazon Ember", "Clear Sans", Roboto, Lato, "Source Sans Pro", Verdana, sans-serif; font-size: 18px; font-style: italic; font-weight: normal; color: #ffffff; background: #667292; width: 680px; height: 30px; line-height: 30px; padding-left: 18px; text-align: left; margin-left: 8px; margin-top: 0px; }
 
 body[Type="man"] .HeaderBar[State="HIDDEN"] { border-bottom: 1px solid #fff2df; }
-
-body[Type="man"] .HeaderBar > .HideButton { margin-left: 40px; margin-right: 0px; }
 
 body[Type="info"] { margin-top: 80px; }
 
