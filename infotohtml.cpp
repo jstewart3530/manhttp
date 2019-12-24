@@ -90,6 +90,29 @@ static regex_t LinkRegex1, LinkRegex2, TitleRegex, DirLinkRegex;
 
 
 
+const char ScriptCode []
+        = "const MainDiv = document.getElementById (\"Main\");\n"
+          "const Navbar = document.querySelector (\".NavBar\");\n"
+          "let cxWindow = -1;\n"
+          "\n\n"
+          "function AdjustTopMargin\n"
+          "   (event)\n"
+          "\n"
+          "{\n"
+          "  let cx = window.innerWidth;\n"
+          "  if (cx != cxWindow)\n"
+          "  {\n"
+          "    let cyNavbar = Navbar.offsetHeight;\n"
+          "    MainDiv.style.marginTop = `${cyNavbar + 50}px`;\n"
+          "    cxWindow = cx;\n"
+          "  }\n"
+          "}\n"
+          "\n\n"
+          "AdjustTopMargin (null);\n"
+          "window.addEventListener (\"resize\", AdjustTopMargin, false);\n\n";
+
+
+
 /*  Function prototypes.
 */
 
@@ -251,6 +274,9 @@ void InfoToHTML
   GenerateNavBar (stream, &NavLinks, &FormatInfo);
 
 
+  fprintf (stream, "<div id=\"Main\">\n");
+
+
   if (NodeType == INFO_NODE_DIRECTORY)
   {
     GenerateTitle (stream, "Info Directory", -1, '*', true);
@@ -325,10 +351,19 @@ void InfoToHTML
     }               
   }
 
+  fprintf (stream, "</div>\n");
+
+
+  fprintf (stream, "\n\n<script>\n\"use strict\";\n");
+
+  fprintf (stream, "%s", ScriptCode);
 
   GenerateScript (stream, &NavLinks, &FormatInfo);
 
-  fprintf (stream, "</body>\n</html>\n");
+  fprintf (stream, 
+           "</script>\n\n"
+           "</body>\n"
+           "</html>\n");
 
 
   free (pLines);
@@ -1106,8 +1141,6 @@ void GenerateScript
 
 
   fprintf (stream, 
-           "<script>\n"
-           "\"use strict\";\n"
            "function HandleKeyPress\n"
            "    (event)\n"
            "{\n"
@@ -1146,8 +1179,7 @@ void GenerateScript
   fprintf (stream, 
            "  }\n"
            "}\n\n"
-           "document.addEventListener (\"keypress\", HandleKeyPress, false);\n"
-           "</script>\n"); 
+           "document.addEventListener (\"keypress\", HandleKeyPress, false);\n"); 
 }
 
 

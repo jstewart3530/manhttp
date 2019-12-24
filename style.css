@@ -68,8 +68,6 @@ body[Type="man"] .HeaderBar { display: inline-block; font-family: "BBC Reith San
 
 body[Type="man"] .HeaderBar[State="HIDDEN"] { border-bottom: 1px solid #fff2df; }
 
-body[Type="info"] { margin-top: 80px; }
-
 body[Type="info"] pre a[RefType="info"] { color: #031f84; text-decoration: none; }
 
 body[Type="info"] pre a[RefType="info"]:hover { text-decoration: 1px underline solid; }
