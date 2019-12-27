@@ -38,7 +38,7 @@ $MonoFont           : "DejaVu Sans Mono", Hack, Cousine, Monaco,
                       "Lucida Console", monospace 
                       !default;
 
-$ProportionalFont   : "BBC Reith Sans", "Amazon Ember", "Clear Sans", 
+$ProportionalFont   : "Amazon Ember", "Clear Sans", 
                       Roboto, Lato, "Source Sans Pro", Verdana, sans-serif
                       !default;
 
@@ -413,7 +413,11 @@ body[Type="info"]
   {
     padding-top:     10px;
     border-top:      1px dotted #C3C3C3;
-    font-size:       80%;
+
+    > pre
+    {
+      font-size:     80%;
+    }
   }
 }
 
