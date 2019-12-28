@@ -33,31 +33,47 @@
 
 //  Font definitions.
 
-
-$MonoFont           : "DejaVu Sans Mono", Hack, Cousine, Monaco, 
-                      "Lucida Console", monospace 
-                      !default;
+$MonoFont           : Cousine, Hack, "DejaVu Sans Mono", Monaco, 
+                      "Lucida Console", monospace;
 
 $ProportionalFont   : "Amazon Ember", "Clear Sans", 
-                      Roboto, Lato, "Source Sans Pro", Verdana, sans-serif
-                      !default;
+                      Roboto, Lato, "Source Sans Pro", Verdana,
+                      sans-serif;
 
-$ControlFont        : $ProportionalFont 
-                      !default;
+$ControlFont        : $ProportionalFont;
 
-$TitleFont          : $ProportionalFont
-                      !default;
+$TitleFont          : $ProportionalFont;
 
-$TitleNumberFont    : "Hemi Head", $TitleFont
-                      !default;
+$TitleNumberFont    : "Hemi Head", $TitleFont;
 
 
 //  ("@font-face" definitions would go here if they are needed.)
 
 
 
-$NavBarHeight       : 40px;
-$NavBarFontSize     : 14px;
+//  Color definitions.
+
+$NavbarHeight            : 40px;
+$NavbarFontSize          : 14px;
+
+$MainBackground          : #fff2df;
+$SecondaryBackground     : #ffe0b3;
+$MainTextColor           : #505050;
+$MainLinkColor           : #006500;
+$InfoLinkColor           : #031f84;
+$AccentColor1            : #a2836e;
+$AccentColor2            : #c3c3c3;
+$TitleColor              : #667292;
+$TitleBarBackground      : $TitleColor;
+$TitleBarTextColor1      : #ffffff;
+$TitleBarTextColor2      : #ffff66;
+
+$NavbarBackground        : #404040;
+$NavbarTextColor         : #ffffff;
+$NavbarLabelColor        : #909090;
+$NavbarLinkColor         : #ffff00;
+$NavbarBorderColor       : #000000;
+$NavbarLineColor         : #909090;
 
 
 
@@ -66,8 +82,8 @@ $NavBarFontSize     : 14px;
 
 body
 {
-  background:          #fff2df;
-  color:               #505050;
+  background:          $MainBackground;
+  color:               $MainTextColor;
   margin-left:         30px;
   margin-right:        30px;
 }
@@ -91,7 +107,7 @@ span[Ital]
 
 a[RefType="uri"], a[RefType="uri"]:visited
 {
-  color:             #006500;
+  color:             $MainLinkColor;
   text-decoration:   none;
 }
 
@@ -140,7 +156,7 @@ button
   border:               none;
   font-family:          $ControlFont;
   font-size:            12px;
-  color:                #ffffff;
+  color:                $TitleBarTextColor2;
   float:                right;
   line-height:          30px;
   padding-top:          0px;
@@ -178,8 +194,8 @@ button
   position:             fixed;
   top:                  0;
   width:                100%;
-  min-height:           $NavBarHeight;
-  line-height:          $NavBarHeight;
+  min-height:           $NavbarHeight;
+  line-height:          $NavbarHeight;
   margin-left:          -30px;
   margin-right:         0px;
   padding-left:         15px;
@@ -187,20 +203,20 @@ button
   font-family:          $ControlFont;
   font-style:           normal;
   font-weight:          normal;
-  font-size:            $NavBarFontSize;
-  color:                #ffffff;
-  background:           #404040;
+  font-size:            $NavbarFontSize;
+  color:                $NavbarTextColor;
+  background:           $NavbarBackground;
   text-align:           left;
-  border-bottom:        1px solid #000000;
+  border-bottom:        1px solid $NavbarBorderColor;
 
   > div  
   {
-    height:             $NavBarHeight;
-    line-height:        $NavBarHeight;
+    height:             $NavbarHeight;
+    line-height:        $NavbarHeight;
     padding-left:       16px;
     padding-right:      5px;
     margin-left:        16px;
-    border-left:        1px solid #909090;
+    border-left:        1px solid $NavbarLineColor;
   
     &:nth-child(1)    
     {
@@ -212,7 +228,7 @@ button
 
   span[Label]  
   {
-    color:              #909090;
+    color:              $NavbarLabelColor;
     font-style:         italic;
 
     &::after    
@@ -223,7 +239,7 @@ button
     
   a, a:visited  
   {
-    color:              #FFFF00;
+    color:              $NavbarLinkColor;
     text-decoration:    none;
   }
 
@@ -256,15 +272,14 @@ button
   select  
   {
     background:        inherit;
-    color:             #909090;
-    border:            1px solid #909090;
+    color:             $NavbarTextColor;
+    border:            1px solid $NavbarLineColor;
     font-size:         85%;
   }
 
   select:hover  
   {
-    color:             #c0c0c0;
-    border:            1px solid #c0c0c0;
+    background:        scale_color($NavbarBackground, $lightness : 25%);
   }    
 }  
 
@@ -286,7 +301,7 @@ body[Type="man"]
     font-size:           32px;
     font-style:          italic;
     font-weight:         bold;
-    color:               #667292;
+    color:               $TitleColor;
     margin-left:         10px;
     margin-top:          60px;
     margin-bottom:       55px;
@@ -312,12 +327,12 @@ body[Type="man"]
   pre a[RefType="manpage"]
   {
     color:             inherit; 
-    background:        #ffe0b3;
+    background:        $SecondaryBackground;
     text-decoration:   none; 
   
     &:hover
     {
-      color:             #006500;
+      color:             $MainLinkColor;
       text-decoration:   1px underline solid;
     }
   }
@@ -329,8 +344,8 @@ body[Type="man"]
     font-size:        18px;
     font-style:       italic;
     font-weight:      normal;
-    color:            #ffffff;
-    background:       #667292;
+    color:            $TitleBarTextColor1;
+    background:       $TitleBarBackground;
     width:            680px;
     height:           30px;
     line-height:      30px;
@@ -341,7 +356,7 @@ body[Type="man"]
   
     &[State="HIDDEN"]    
     {
-      border-bottom:    1px solid #fff2df;
+      border-bottom:    1px solid $MainBackground;
     }     
   }  
 }
@@ -355,7 +370,7 @@ body[Type="info"]
 {
   pre a[RefType="info"]  
   {
-    color:             #031f84;
+    color:             $InfoLinkColor;
     text-decoration:   none;
 
     &:hover
@@ -371,8 +386,8 @@ body[Type="info"]
     font-style:       normal;
     font-weight:      normal;
     font-size:        16px;
-    color:            #ffffff;
-    background:       #667292;
+    color:            $TitleBarTextColor1;
+    background:       $TitleBarBackground;
     padding-left:     22px;
     padding-right:    22px;
     padding-top:      2px;
@@ -383,6 +398,7 @@ body[Type="info"]
    
     > span[Number]    
     {
+      color:            $TitleBarTextColor2;
       font-size:        19px;
       font-style:       italic;
       font-weight:      bold;
@@ -412,7 +428,7 @@ body[Type="info"]
   .InfoFootnotes  
   {
     padding-top:     10px;
-    border-top:      1px dotted #C3C3C3;
+    border-top:      1px dotted $AccentColor2;
 
     > pre
     {
@@ -442,8 +458,8 @@ body[Type="apropos"]
     font-style:       italic;
     font-weight:      normal;
     font-size:        17px;
-    color:            #ffffff;
-    background:       #505050;
+    color:            $TitleBarTextColor1;
+    background:       $TitleBarBackground;
     width:            75%;
     line-height:      30px;
     height:           30px;
@@ -460,7 +476,7 @@ body[Type="apropos"]
 
     &[State="HIDDEN"]    
     {
-      border-bottom:    1px solid #fff2df;
+      border-bottom:    1px solid $MainBackground;
     }  
   }
 
@@ -489,7 +505,7 @@ body[Type="apropos"]
     font-family:     $ProportionalFont;
     font-size:       15px;
     border-collapse: separate;
-    border-bottom:   2px solid #a2836e;
+    border-bottom:   2px solid $AccentColor2;
     width:           75%;
     margin-left:     82px;
     margin-top:      0px;
@@ -507,7 +523,7 @@ body[Type="apropos"]
     font-weight:      bold;
     font-size:        15px;
     color:            #ffffff;
-    background:       #a2836e;
+    background:       $AccentColor1;
     text-align:       left;
     
     > th    
@@ -515,8 +531,8 @@ body[Type="apropos"]
       padding-top:      6px;
       padding-bottom:   6px;
       padding-left:     10px;
-      border-top:       1px solid #C3C3C3;
-      border-bottom:    1px solid #C3C3C3; 
+      border-top:       1px solid $AccentColor2;
+      border-bottom:    1px solid $AccentColor2; 
   
       &[Column="page"]      
       {
@@ -533,16 +549,16 @@ body[Type="apropos"]
 
   .AproposTableRow  
   {
+  	color:                   $MainTextColor;
+
     &:nth-child(even)    
     {
-      background:            inherit;
-      color:                 #505050;
+      background:            $MainBackground;
     }
 
     &:nth-child(odd)    
     {
-      background:            #ffe0b3;
-      color:                 #505050;  
+      background:            $SecondaryBackground;
     }
 
     > td    
@@ -555,7 +571,7 @@ body[Type="apropos"]
     
       a
       {
-        color:               #006500;
+        color:               $MainLinkColor;
         text-decoration:     none;
   
         &:hover        
@@ -585,7 +601,7 @@ body[Type="splash"]
     font-size:           48px;
     font-style:          italic;
     font-weight:         bold;
-    color:               #667292;
+    color:               $TitleColor;
     margin-bottom:       20px;
   }
 
@@ -598,9 +614,9 @@ body[Type="splash"]
     padding-top:         18px;
     padding-bottom:      20px;
     margin-bottom:       50px;
-    color:               #505050;
-    background:          #ffe0b3;
-    border-left:         5px solid #a2836e;
+    color:               $MainTextColor;
+    background:          $SecondaryBackground;
+    border-left:         5px solid $AccentColor1;
   
     > p[Heading]    
     {
@@ -615,12 +631,12 @@ body[Type="splash"]
     {
       margin-top:        18px;
       margin-bottom:     18px;
-      border-bottom:     1px dotted #a2836e;
+      border-bottom:     1px dotted $AccentColor1;
     }
 
     input    
     {
-      border:            1px solid #505050;
+      border:            1px solid $MainTextColor;
       border-radius:     0px;
       padding-left:      8px;
       padding-right:     8px;
@@ -662,7 +678,7 @@ body[Type="splash"]
 
     a, a:visited    
     {
-      color:             #006500;
+      color:             $MainLinkColor;
       text-decoration:   none;
     }
 
