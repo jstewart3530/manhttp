@@ -309,7 +309,7 @@ body[Type="man"]
     background:       $TitleBarBackground;
     padding-left:     30px;
     padding-right:    30px;
-    margin-left:      32px;
+    margin-left:      10px;
     margin-bottom:    60px;    
   }
 
@@ -373,6 +373,12 @@ body[Type="man"]
 
 body[Type="info"]
 {
+  #Main
+  {
+    margin-left:         64px;
+    margin-top:          80px;
+  }
+
   pre a[RefType="info"]  
   {
     color:             $InfoLinkColor;
@@ -387,46 +393,44 @@ body[Type="info"]
   .InfoTitle   
   {
     display:          inline-block;
+    height:           35px;
+    line-height:      35px;
     font-family:      $TitleFont;
-    font-style:       normal;
+    font-style:       italic;
     font-weight:      normal;
-    font-size:        16px;
+    font-size:        18px;
     color:            $TitleBarTextColor1;
     background:       $TitleBarBackground;
-    padding-left:     22px;
-    padding-right:    22px;
-    padding-top:      2px;
-    padding-bottom:   2px;
+    padding-left:     30px;
+    padding-right:    30px;
     margin-left:      10px;
-    margin-top:       -10px;
-    margin-bottom:    25px;
+    margin-bottom:    40px;    
    
     > span[Number]    
     {
       color:            $TitleBarTextColor2;
-      font-size:        19px;
-      font-style:       italic;
       font-weight:      bold;
-    }
-
-    > span[Number]::after    
-    {
-      content:          "\00a0\00a0\00a0";
+      
+      &::after
+      {
+        content:          "\2002\2002";
+      }
     }
 
     &[ULType="star"], &[ULType="equals"]  
     {  
-      font-size:        20px;  
-      padding-top:      4px;
-      padding-bottom:   4px;
+      font-size:        25px;  
+      height:           50px;
+      line-height:      50px;
   
       > span[Number]
       {
+        color:            $TitleBarTextColor2;
         font-family:      $TitleNumberFont;
         font-size:        150%;
         font-style:       italic;
         font-weight:      bold;
-      }
+      }      
     }
   }
 

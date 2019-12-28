@@ -52,7 +52,7 @@ button[Active]::after { content: " ]"; }
 
 body[Type="man"] #Main { margin-left: 64px; margin-top: 80px; }
 
-body[Type="man"] .PageTitle { display: inline-block; height: 50px; line-height: 50px; font-family: "Amazon Ember", "Clear Sans", Roboto, Lato, "Source Sans Pro", Verdana, sans-serif; font-style: italic; font-weight: normal; font-size: 25px; color: #ffffff; background: #667292; padding-left: 30px; padding-right: 30px; margin-left: 32px; margin-bottom: 60px; }
+body[Type="man"] .PageTitle { display: inline-block; height: 50px; line-height: 50px; font-family: "Amazon Ember", "Clear Sans", Roboto, Lato, "Source Sans Pro", Verdana, sans-serif; font-style: italic; font-weight: normal; font-size: 25px; color: #ffffff; background: #667292; padding-left: 30px; padding-right: 30px; margin-left: 10px; margin-bottom: 60px; }
 
 body[Type="man"] #Prologue { margin-bottom: 35px; }
 
@@ -68,19 +68,21 @@ body[Type="man"] .HeaderBar { display: inline-block; font-family: "Amazon Ember"
 
 body[Type="man"] .HeaderBar[State="HIDDEN"] { border-bottom: 1px solid #fff2df; }
 
+body[Type="info"] #Main { margin-left: 64px; margin-top: 80px; }
+
 body[Type="info"] pre a[RefType="info"] { color: #031f84; text-decoration: none; }
 
 body[Type="info"] pre a[RefType="info"]:hover { text-decoration: 1px underline solid; }
 
-body[Type="info"] .InfoTitle { display: inline-block; font-family: "Amazon Ember", "Clear Sans", Roboto, Lato, "Source Sans Pro", Verdana, sans-serif; font-style: normal; font-weight: normal; font-size: 16px; color: #ffffff; background: #667292; padding-left: 22px; padding-right: 22px; padding-top: 2px; padding-bottom: 2px; margin-left: 10px; margin-top: -10px; margin-bottom: 25px; }
+body[Type="info"] .InfoTitle { display: inline-block; height: 35px; line-height: 35px; font-family: "Amazon Ember", "Clear Sans", Roboto, Lato, "Source Sans Pro", Verdana, sans-serif; font-style: italic; font-weight: normal; font-size: 18px; color: #ffffff; background: #667292; padding-left: 30px; padding-right: 30px; margin-left: 10px; margin-bottom: 40px; }
 
-body[Type="info"] .InfoTitle > span[Number] { color: #e0e0e0; font-size: 19px; font-style: italic; font-weight: bold; }
+body[Type="info"] .InfoTitle > span[Number] { color: #e0e0e0; font-weight: bold; }
 
-body[Type="info"] .InfoTitle > span[Number]::after { content: "\00a0\00a0\00a0"; }
+body[Type="info"] .InfoTitle > span[Number]::after { content: "\2002\2002"; }
 
-body[Type="info"] .InfoTitle[ULType="star"], body[Type="info"] .InfoTitle[ULType="equals"] { font-size: 20px; padding-top: 4px; padding-bottom: 4px; }
+body[Type="info"] .InfoTitle[ULType="star"], body[Type="info"] .InfoTitle[ULType="equals"] { font-size: 25px; height: 50px; line-height: 50px; }
 
-body[Type="info"] .InfoTitle[ULType="star"] > span[Number], body[Type="info"] .InfoTitle[ULType="equals"] > span[Number] { font-family: "Hemi Head", "Amazon Ember", "Clear Sans", Roboto, Lato, "Source Sans Pro", Verdana, sans-serif; font-size: 150%; font-style: italic; font-weight: bold; }
+body[Type="info"] .InfoTitle[ULType="star"] > span[Number], body[Type="info"] .InfoTitle[ULType="equals"] > span[Number] { color: #e0e0e0; font-family: "Hemi Head", "Amazon Ember", "Clear Sans", Roboto, Lato, "Source Sans Pro", Verdana, sans-serif; font-size: 150%; font-style: italic; font-weight: bold; }
 
 body[Type="info"] .InfoFootnotes { padding-top: 10px; border-top: 1px dotted #c3c3c3; }
 
