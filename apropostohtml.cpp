@@ -98,7 +98,10 @@ void AproposResultsToHTML
            nResults);
 
 
-  fprintf (stream, "<div id=\"Results\" style=\"margin-top: 80px;\"></div>\n\n");
+  fprintf (stream, 
+           "<div id=\"Main\">\n"
+           "<div id=\"Results\"></div>\n"           
+           "</div>\n\n\n");
 
   fprintf (stream, "<script>\n\"use strict\";\n");
   fprintf (stream, "const UriPrefix = \"%s\";\n\n", pUriPrefix);

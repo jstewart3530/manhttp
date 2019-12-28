@@ -290,9 +290,9 @@ button
 
 body[Type="man"]
 {
-  .Main
+  #Main
   {
-    margin-left:         80px;
+    margin-left:         64px;
     margin-top:          80px;
   }
 
@@ -309,11 +309,11 @@ body[Type="man"]
     background:       $TitleBarBackground;
     padding-left:     30px;
     padding-right:    30px;
-    margin-left:      10px;
-    margin-bottom:    25px;
+    margin-left:      32px;
+    margin-bottom:    60px;    
   }
 
-  .Prologue
+  #Prologue
   {
     margin-bottom:       35px;
   }  
@@ -451,6 +451,13 @@ body[Type="apropos"]
   font-family:     $ProportionalFont;
   font-size:       15px;
 
+  #Main
+  {
+    margin-left:         80px;
+    margin-top:          80px;
+    width:               75%;
+  }
+
   #ByNameButton, #BySectionButton  
   {
     width:             7em;  
@@ -458,22 +465,21 @@ body[Type="apropos"]
 
   .AproposSectionBar  
   {
-    display:          inline-block;
+    display:          block;
     font-family:      $TitleFont;
     font-style:       italic;
     font-weight:      normal;
     font-size:        17px;
     color:            $TitleBarTextColor1;
     background:       $TitleBarBackground;
-    width:            75%;
     line-height:      30px;
     height:           30px;
     padding-left:     10px;
     padding-right:    0px;
     padding-top:      0px;
     padding-bottom:   0px;
-    margin-left:      84px;
-    margin-right:     0px;
+    margin-left:      1px;
+    margin-right:     1px;
     margin-top:       0px;
     margin-bottom:    0px;
     text-align:       left;
@@ -485,12 +491,13 @@ body[Type="apropos"]
     }  
   }
 
-
   .AproposContainer
   {
     width:           100%;
     margin-top:      0px;
     margin-bottom:   45px;
+    margin-left:     0px;
+    margin-right:    0px;
     padding-left:    0px;
     padding-right:   0px;
     padding-top:     0px;
@@ -511,8 +518,8 @@ body[Type="apropos"]
     font-size:       15px;
     border-collapse: separate;
     border-bottom:   2px solid $AccentColor2;
-    width:           75%;
-    margin-left:     82px;
+    width:           100%;
+    margin-left:     0px;
     margin-top:      0px;
     padding-left:    0px;
     padding-right:   0px;
@@ -531,6 +538,8 @@ body[Type="apropos"]
     background:       $AccentColor2;
     text-align:       left;
     
+    margin-left:      0px;
+
     > th    
     {
       padding-top:      6px;
@@ -555,6 +564,7 @@ body[Type="apropos"]
   .AproposTableRow  
   {
   	color:                   $MainTextColor;
+    margin-left:      0px;
 
     &:nth-child(even)    
     {

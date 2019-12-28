@@ -124,9 +124,9 @@ void ManualPageToHTML
            "<style>\n%s\n</style>\n"
            "</head>\n"
            "<body Type=\"man\">\n"
-           "<div class=\"Main\">\n"
+           "<div id=\"Main\">\n"
            "<div class=\"PageTitle\">%s</div>\n\n\n"
-           "<div class=\"Prologue\">\n",
+           "<div id=\"Prologue\">\n",
            buffer, 
            pUriPrefix,
            pStylesheet, 
