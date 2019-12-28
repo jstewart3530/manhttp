@@ -33,7 +33,7 @@
 
 //  Font definitions.
 
-$MonoFont           : Cousine, Hack, "DejaVu Sans Mono", Monaco, 
+$MonoFont           : Hack, Cousine, "DejaVu Sans Mono", Monaco, 
                       "Lucida Console", monospace;
 
 $ProportionalFont   : "Amazon Ember", "Clear Sans", 
@@ -66,7 +66,7 @@ $AccentColor2            : #c3c3c3;
 $TitleColor              : #667292;
 $TitleBarBackground      : $TitleColor;
 $TitleBarTextColor1      : #ffffff;
-$TitleBarTextColor2      : #ffff66;
+$TitleBarTextColor2      : #e0e0e0;
 
 $NavbarBackground        : #404040;
 $NavbarTextColor         : #ffffff;
@@ -293,19 +293,24 @@ body[Type="man"]
   .Main
   {
     margin-left:         80px;
+    margin-top:          80px;
   }
 
   .PageTitle
   {
-    font-family:         $TitleFont;
-    font-size:           32px;
-    font-style:          italic;
-    font-weight:         bold;
-    color:               $TitleColor;
-    margin-left:         10px;
-    margin-top:          60px;
-    margin-bottom:       55px;
-    text-decoration:     underline dotted;  
+    display:          inline-block;
+    height:           50px;
+    line-height:      50px;
+    font-family:      $TitleFont;
+    font-style:       italic;
+    font-weight:      normal;
+    font-size:        25px;
+    color:            $TitleBarTextColor1;
+    background:       $TitleBarBackground;
+    padding-left:     30px;
+    padding-right:    30px;
+    margin-left:      10px;
+    margin-bottom:    25px;
   }
 
   .Prologue
@@ -522,8 +527,8 @@ body[Type="apropos"]
     font-style:       italic;
     font-weight:      bold;
     font-size:        15px;
-    color:            #ffffff;
-    background:       $AccentColor1;
+    color:            $MainTextColor;
+    background:       $AccentColor2;
     text-align:       left;
     
     > th    

@@ -1,6 +1,6 @@
 body { background: #fff2df; color: #505050; margin-left: 30px; margin-right: 30px; }
 
-pre { font-family: Cousine, Hack, "DejaVu Sans Mono", Monaco, "Lucida Console", monospace; font-size: 15px; margin-left: 10px; }
+pre { font-family: Hack, Cousine, "DejaVu Sans Mono", Monaco, "Lucida Console", monospace; font-size: 15px; margin-left: 10px; }
 
 span[Bold] { font-weight: bold; }
 
@@ -18,7 +18,7 @@ button[Active]::before { content: "[ "; }
 
 button[Active]::after { content: " ]"; }
 
-.HideButton { background: inherit; border: none; font-family: "Amazon Ember", "Clear Sans", Roboto, Lato, "Source Sans Pro", Verdana, sans-serif; font-size: 12px; color: #ffff66; float: right; line-height: 30px; padding-top: 0px; padding-bottom: 0px; border-radius: 0px; margin-left: 40px; margin-right: 0px; }
+.HideButton { background: inherit; border: none; font-family: "Amazon Ember", "Clear Sans", Roboto, Lato, "Source Sans Pro", Verdana, sans-serif; font-size: 12px; color: #e0e0e0; float: right; line-height: 30px; padding-top: 0px; padding-bottom: 0px; border-radius: 0px; margin-left: 40px; margin-right: 0px; }
 
 .HideButton:hover { text-decoration: underline solid; }
 
@@ -50,9 +50,9 @@ button[Active]::after { content: " ]"; }
 
 .NavBar select:hover { background: #707070; }
 
-body[Type="man"] .Main { margin-left: 80px; }
+body[Type="man"] .Main { margin-left: 80px; margin-top: 80px; }
 
-body[Type="man"] .PageTitle { font-family: "Amazon Ember", "Clear Sans", Roboto, Lato, "Source Sans Pro", Verdana, sans-serif; font-size: 32px; font-style: italic; font-weight: bold; color: #667292; margin-left: 10px; margin-top: 60px; margin-bottom: 55px; text-decoration: underline dotted; }
+body[Type="man"] .PageTitle { display: inline-block; height: 50px; line-height: 50px; font-family: "Amazon Ember", "Clear Sans", Roboto, Lato, "Source Sans Pro", Verdana, sans-serif; font-style: italic; font-weight: normal; font-size: 25px; color: #ffffff; background: #667292; padding-left: 30px; padding-right: 30px; margin-left: 10px; margin-bottom: 25px; }
 
 body[Type="man"] .Prologue { margin-bottom: 35px; }
 
@@ -74,7 +74,7 @@ body[Type="info"] pre a[RefType="info"]:hover { text-decoration: 1px underline s
 
 body[Type="info"] .InfoTitle { display: inline-block; font-family: "Amazon Ember", "Clear Sans", Roboto, Lato, "Source Sans Pro", Verdana, sans-serif; font-style: normal; font-weight: normal; font-size: 16px; color: #ffffff; background: #667292; padding-left: 22px; padding-right: 22px; padding-top: 2px; padding-bottom: 2px; margin-left: 10px; margin-top: -10px; margin-bottom: 25px; }
 
-body[Type="info"] .InfoTitle > span[Number] { color: #ffff66; font-size: 19px; font-style: italic; font-weight: bold; }
+body[Type="info"] .InfoTitle > span[Number] { color: #e0e0e0; font-size: 19px; font-style: italic; font-weight: bold; }
 
 body[Type="info"] .InfoTitle > span[Number]::after { content: "\00a0\00a0\00a0"; }
 
@@ -100,7 +100,7 @@ body[Type="apropos"] .AproposContainer[State="HIDDEN"] { margin-bottom: 0px; }
 
 body[Type="apropos"] .AproposTable { font-family: "Amazon Ember", "Clear Sans", Roboto, Lato, "Source Sans Pro", Verdana, sans-serif; font-size: 15px; border-collapse: separate; border-bottom: 2px solid #c3c3c3; width: 75%; margin-left: 82px; margin-top: 0px; padding-left: 0px; padding-right: 0px; padding-top: 0px; padding-bottom: 0px; }
 
-body[Type="apropos"] .AproposTableHeader { font-family: inherit; font-style: italic; font-weight: bold; font-size: 15px; color: #ffffff; background: #a2836e; text-align: left; }
+body[Type="apropos"] .AproposTableHeader { font-family: inherit; font-style: italic; font-weight: bold; font-size: 15px; color: #505050; background: #c3c3c3; text-align: left; }
 
 body[Type="apropos"] .AproposTableHeader > th { padding-top: 6px; padding-bottom: 6px; padding-left: 10px; border-top: 1px solid #c3c3c3; border-bottom: 1px solid #c3c3c3; }
 
