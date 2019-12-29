@@ -1,4 +1,6 @@
 const SectionList = document.getElementById ("SectionList");
+const fChrome = (/Chrome/i).test (window.navigator.userAgent);
+
 
 let idTimeout = -1;
 
@@ -49,7 +51,15 @@ function GoToSection
   let header = document.getElementById (`Sec${n}_Header`);
   let y = Math.max (0, header.offsetTop - header.clientHeight - 15);
 
-  window.scrollTo ({ top: y, left: 0, behavior: "smooth" });
+  
+  if (fChrome)
+  {
+    window.scrollTo (0, y);
+  }  
+  else  
+  {
+    window.scrollTo ({ top: y, left: 0, behavior: "smooth" });
+  }
   
   ShowSection (n, "show");
 }
