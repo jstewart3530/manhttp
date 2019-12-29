@@ -289,9 +289,9 @@ void ManualPageToHTML
   fprintf (stream, "</select>\n");
 
   fprintf (stream, 
-           "&nbsp;\n"
+           "&emsp;\n"
            "<button id=\"ShowAllBtn\">Show all</button>\n"
-           "&nbsp;\n"
+           "&ensp;\n"
            "<button id=\"HideAllBtn\">Hide all</button>\n"
            "</div>\n");
 

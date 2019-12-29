@@ -58,7 +58,7 @@ $NavbarFontSize          : 14px;
 
 $MainBackground          : #fff2df;
 $SecondaryBackground     : #ffe0b3;
-$MainTextColor           : #505050;
+$MainTextColor           : #202020;
 $MainLinkColor           : #006500;
 $InfoLinkColor           : #031f84;
 $AccentColor1            : #a2836e;
@@ -131,6 +131,16 @@ button
   padding-top:         2px;
   padding-bottom:      2px; 
 
+  &:hover
+  {
+  	filter:            brightness(120%);
+  }
+
+  &:disabled:hover
+  {
+  	filter:            none;
+  }
+
   &:disabled 
   {
     background:        #c0c0c0;
@@ -167,7 +177,8 @@ button
 
   &:hover
   {
-    text-decoration:     underline solid;
+    text-decoration:    underline solid;
+    filter:             none;  
   }
 
   &[State="SHOWN"]::after  
@@ -250,19 +261,11 @@ button
 
   button  
   {
-    background:        inherit;
-    color:             #909090;
-    border:            1px solid #909090;
-    border-radius:     5px;
+    border:            1px solid $NavbarLineColor;
+    border-radius:     0px;
     font-size:         80%; 
     height:            26px;
   
-    &:hover    
-    {
-      color:           #ffff00;
-      border:          1px solid #ffffff;
-    }
-
     &:disabled, &:hover:disabled    
     {
       color:           #757575;
