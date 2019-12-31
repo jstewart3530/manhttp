@@ -44,7 +44,7 @@ $ControlFont        : $ProportionalFont;
 
 $TitleFont          : $ProportionalFont;
 
-$TitleNumberFont    : "Hemi Head", $TitleFont;
+$TitleNumberFont    : $TitleFont;
 
 
 //  ("@font-face" definitions would go here if they are needed.)
@@ -58,7 +58,7 @@ $NavbarFontSize          : 14px;
 
 $MainBackground          : #fff2df;
 $SecondaryBackground     : #ffe0b3;
-$MainTextColor           : #202020;
+$MainTextColor           : #454545;
 $MainLinkColor           : #006500;
 $InfoLinkColor           : #031f84;
 $AccentColor1            : #a2836e;
@@ -150,12 +150,12 @@ button
 
   &[Active]::before
   {
-    content:           "[ ";  
+    content:           "[\00a0";  
   }
 
   &[Active]::after  
   {
-    content:           " ]";  
+    content:           "\00a0 ]";  
   }
 }
 
@@ -244,7 +244,7 @@ button
 
     &::after    
     {
-      content:          "\2002"
+      content:          "\00a0\00a0"
     }
   }
     
@@ -416,7 +416,7 @@ body[Type="info"]
       
       &::after
       {
-        content:          "\2002\2002";
+        content:          "\2002";
       }
     }
 
@@ -524,7 +524,7 @@ body[Type="apropos"]
     font-family:     $ProportionalFont;
     font-size:       15px;
     border-collapse: separate;
-    border-bottom:   2px solid $AccentColor2;
+    border-bottom:   2px solid $AccentColor1;
     width:           100%;
     margin-left:     0px;
     margin-top:      0px;
@@ -541,10 +541,9 @@ body[Type="apropos"]
     font-style:       italic;
     font-weight:      bold;
     font-size:        15px;
-    color:            $MainTextColor;
-    background:       $AccentColor2;
-    text-align:       left;
-    
+    color:            $MainBackground;
+    background:       $MainTextColor;
+    text-align:       left;    
     margin-left:      0px;
 
     > th    
@@ -552,8 +551,6 @@ body[Type="apropos"]
       padding-top:      6px;
       padding-bottom:   6px;
       padding-left:     10px;
-      border-top:       1px solid $AccentColor2;
-      border-bottom:    1px solid $AccentColor2; 
   
       &[Column="page"]      
       {
