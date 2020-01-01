@@ -155,7 +155,7 @@ button
 
   &[Active]::after  
   {
-    content:           "\00a0 ]";  
+    content:           "\00a0]";  
   }
 }
 
@@ -396,7 +396,8 @@ body[Type="info"]
   .InfoTitle   
   {
     display:          inline-block;
-    height:           35px;
+    max-width:        680px;
+    min-height:       35px;
     line-height:      35px;
     font-family:      $TitleFont;
     font-style:       italic;
@@ -408,32 +409,24 @@ body[Type="info"]
     padding-right:    30px;
     margin-left:      10px;
     margin-bottom:    40px;    
-   
-    > span[Number]    
-    {
-      color:            $TitleBarTextColor2;
-      font-weight:      bold;
-      
-      &::after
-      {
-        content:          "\2002";
-      }
-    }
 
     &[ULType="star"], &[ULType="equals"]  
     {  
       font-size:        25px;  
-      height:           50px;
+      min-height:       50px;
       line-height:      50px;
-  
-      > span[Number]
+    }
+   
+    > span[Number]    
+    {
+      color:            $TitleBarTextColor2;
+      font-family:      $TitleNumberFont;
+      font-size:        125%;
+     
+      &::after
       {
-        color:            $TitleBarTextColor2;
-        font-family:      $TitleNumberFont;
-        font-size:        150%;
-        font-style:       italic;
-        font-weight:      bold;
-      }      
+        content:          "\2002";
+      }
     }
   }
 
