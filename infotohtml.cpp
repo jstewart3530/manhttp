@@ -87,6 +87,7 @@ struct NAVIGATIONLINKS
 
 
 static regex_t LinkRegex1, LinkRegex2, TitleRegex, DirLinkRegex;
+static regex_t NoteLinkRegex;
 
 
 
@@ -126,6 +127,7 @@ static void RecognizeLinks (INFONODETYPE, const char*, int, TEXTATTRIBUTES*);
 static int RecognizeInfoLinks (const char*, int, TEXTATTRIBUTES*);
 static int RecognizeInfoIndexLinks (const char*, int, TEXTATTRIBUTES*);
 static int RecognizeDirLinks (const char*, int, TEXTATTRIBUTES*);
+static int RecognizeNoteLinks (const char*, int, TEXTATTRIBUTES*);
 static bool IsFootnotesLine (const char*, int);
 static bool IsUnderline (const char*, int);
 static int ValueFromHexDigit (char);
@@ -142,6 +144,25 @@ void infoInitializeRegexes
 {
   int error;
 
+
+  /*  Regular expression for extracting section and subsection titles.
+  */
+
+  error = tre_regcomp 
+              (&TitleRegex, 
+               "^((?:Appendix[[:space:]]+)?[A-Z0-9][0-9]*(?:\\.[0-9]+)*)[[:space:]]+", 
+               REG_EXTENDED | REG_ICASE | REG_NEWLINE);
+
+  if (error != 0)
+  {
+    fprintf (stderr, "\ntre_regcomp() failed for TitleRegex (result code %d).\n\n",
+             error);
+    exit (100);
+  }    
+
+
+  /*  Two regular expressions for recognizing hyperlinks in ordinary Info nodes.
+  */
 
   error = tre_regcomp 
               (&LinkRegex1, 
@@ -169,18 +190,25 @@ void infoInitializeRegexes
   }  
 
 
+  /*  Regular expression for recognizing "*Note" links.
+  */
+
   error = tre_regcomp 
-              (&TitleRegex, 
-               "^((?:Appendix[[:space:]]+)?[A-Z0-9][0-9]*(?:\\.[0-9]+)*)[[:space:]]+", 
-               REG_EXTENDED | REG_ICASE | REG_NEWLINE);
+              (&NoteLinkRegex, 
+               "\\*Note[[:space:]].{0,99}?[^[:space:]]:[[:space:]]+([[:alnum:][:space:]_+-]{1,64})\\.", 
+               REG_EXTENDED);
 
   if (error != 0)
   {
-    fprintf (stderr, "\ntre_regcomp() failed for TitleRegex (result code %d).\n\n",
+    fprintf (stderr, "\ntre_regcomp() failed for NoteLinkRegex (result code %d).\n\n",
              error);
     exit (100);
-  }    
+  }
 
+
+  /*  Regular expression for recognizing the specially formatted links in index
+  *   and directory nodes.
+  */
 
   error = tre_regcomp 
               (&DirLinkRegex, 
@@ -193,7 +221,6 @@ void infoInitializeRegexes
              error);
     exit (100);
   }    
-
 }
 
 
@@ -826,7 +853,8 @@ void RecognizeLinks
   	case INFO_NODE_NORMAL:
       RecognizeURIs (pText, length, pAttributes);
       RecognizeInfoLinks (pText, length, pAttributes);
-  	  break;
+      RecognizeNoteLinks (pText, length, pAttributes);
+      break;
 
   	case INFO_NODE_INDEX:
   	  RecognizeInfoIndexLinks (pText, length, pAttributes);
@@ -946,6 +974,76 @@ int RecognizeInfoIndexLinks
 
     index += match [0].rm_eo;
     flags = REG_NOTBOL;
+  }
+
+  return count;
+}
+
+
+
+/*-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-
+                                                       RecognizeNoteLinks
+-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-*/
+
+static
+int RecognizeNoteLinks
+   (const char      *pText,
+    int              length,
+    TEXTATTRIBUTES  *pAttributes)
+
+{
+  int i, index, iStart, iEnd, count;
+  int iStart2, iEnd2;
+  bool fValidLink;
+  regmatch_t match [2];
+
+
+  if (length < 0)
+  {
+    length = strlen (pText);
+  }
+
+
+  index = count = 0;
+  
+  while ((index < length)
+              && !tre_regnexec (&NoteLinkRegex, pText + index, length - index, 2, match, 0))
+  {
+    iStart = index + match [0].rm_so;
+    iEnd = index + match [0].rm_eo;
+
+  
+    fValidLink = true;
+    for (i = iStart; i < iEnd; i++)
+    {
+      if (pAttributes [i] & TEXT_ATTR_URI)
+      {
+        fValidLink = false;
+        break;
+      }
+    }
+
+
+    if (fValidLink)
+    {
+      for (i = iStart; i < iEnd; i++)
+      {
+        pAttributes [i] = (pAttributes [i] & ~TEXT_ATTR_APPEARANCE_MASK)
+                              | TEXT_ATTR_INFO_LINK;
+      }
+  
+      iStart2 = index + match [1].rm_so;
+      iEnd2 = index + match [1].rm_eo;
+      for (i = iStart2; i < iEnd2; i++)
+      {
+        pAttributes [i] |= TEXT_ATTR_INFO_TARGET;
+      }
+  
+      count++;
+    }
+
+
+    index += match [0].rm_eo;
   }
 
   return count;
