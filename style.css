@@ -80,9 +80,13 @@ body[Type="info"] .InfoTitle { display: inline-block; max-width: 680px; min-heig
 
 body[Type="info"] .InfoTitle[ULType="star"], body[Type="info"] .InfoTitle[ULType="equals"] { font-size: 25px; min-height: 50px; line-height: 50px; }
 
-body[Type="info"] .InfoTitle > span[Number] { color: #e0e0e0; font-family: "Amazon Ember", "Clear Sans", Roboto, Lato, "Source Sans Pro", Verdana, sans-serif; font-size: 125%; }
+body[Type="info"] .InfoTitle[ULType="star"] > span[Number], body[Type="info"] .InfoTitle[ULType="equals"] > span[Number] { font-size: 125%; }
 
-body[Type="info"] .InfoTitle > span[Number]::after { content: "\2002"; }
+body[Type="info"] .InfoTitle[ULType="star"] > span[Number]::after, body[Type="info"] .InfoTitle[ULType="equals"] > span[Number]::after { content: "\2002"; }
+
+body[Type="info"] .InfoTitle > span[Number] { color: #e0e0e0; font-family: "Amazon Ember", "Clear Sans", Roboto, Lato, "Source Sans Pro", Verdana, sans-serif; }
+
+body[Type="info"] .InfoTitle > span[Number]::after { content: "\2002\2002"; }
 
 body[Type="info"] .InfoFootnotes { padding-top: 10px; border-top: 1px dotted #c3c3c3; }
 

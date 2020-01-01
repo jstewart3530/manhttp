@@ -415,17 +415,26 @@ body[Type="info"]
       font-size:        25px;  
       min-height:       50px;
       line-height:      50px;
+
+      > span[Number] 
+      {
+        font-size:        125%;
+
+        &::after
+        {
+          content:          "\2002";
+        }
+      }
     }
    
     > span[Number]    
     {
       color:            $TitleBarTextColor2;
-      font-family:      $TitleNumberFont;
-      font-size:        125%;
+      font-family:      $TitleNumberFont;      
      
       &::after
       {
-        content:          "\2002";
+        content:          "\2002\2002";
       }
     }
   }
