@@ -87,7 +87,7 @@ struct NAVIGATIONLINKS
 
 
 static regex_t LinkRegex1, LinkRegex2, TitleRegex, DirLinkRegex;
-static regex_t NoteLinkRegex;
+static regex_t NoteLinkRegex, NoteLinkRegex2;
 
 
 
@@ -128,6 +128,7 @@ static int RecognizeInfoLinks (const char*, int, TEXTATTRIBUTES*);
 static int RecognizeInfoIndexLinks (const char*, int, TEXTATTRIBUTES*);
 static int RecognizeDirLinks (const char*, int, TEXTATTRIBUTES*);
 static int RecognizeNoteLinks (const char*, int, TEXTATTRIBUTES*);
+static int RecognizeNoteLinks2 (const char*, int, TEXTATTRIBUTES*);
 static bool IsFootnotesLine (const char*, int);
 static bool IsUnderline (const char*, int);
 static int ValueFromHexDigit (char);
@@ -190,12 +191,25 @@ void infoInitializeRegexes
   }  
 
 
-  /*  Regular expression for recognizing "*Note" links.
+  /*  Two regular expressions for recognizing "*Note" links.
   */
 
   error = tre_regcomp 
               (&NoteLinkRegex, 
-               "\\*Note[[:space:]].{0,99}?[^[:space:]]:[[:space:]]+([[:alnum:][:space:]_+-]{1,64})\\.", 
+               "\\*Note[[:space:]][^:]{0,99}?[^[:space:]]:[[:space:]]+([[:alnum:][:space:]_+-]{1,64})\\.", 
+               REG_EXTENDED);
+
+  if (error != 0)
+  {
+    fprintf (stderr, "\ntre_regcomp() failed for NoteLinkRegex (result code %d).\n\n",
+             error);
+    exit (100);
+  }
+
+
+  error = tre_regcomp 
+              (&NoteLinkRegex2, 
+               "\\*Note[[:space:]][^:]{0,99}?[^[:space:]]:[[:space:]]+(\\([[:alnum:]._+-]{1,32}\\))([[:alnum:]._+-]{1,64})", 
                REG_EXTENDED);
 
   if (error != 0)
@@ -853,6 +867,7 @@ void RecognizeLinks
   	case INFO_NODE_NORMAL:
       RecognizeURIs (pText, length, pAttributes);
       RecognizeInfoLinks (pText, length, pAttributes);
+      RecognizeNoteLinks2 (pText, length, pAttributes);
       RecognizeNoteLinks (pText, length, pAttributes);
       break;
 
@@ -1016,7 +1031,7 @@ int RecognizeNoteLinks
     fValidLink = true;
     for (i = iStart; i < iEnd; i++)
     {
-      if (pAttributes [i] & TEXT_ATTR_URI)
+      if (pAttributes [i] & (TEXT_ATTR_INFO_LINK | TEXT_ATTR_URI))
       {
         fValidLink = false;
         break;
@@ -1034,6 +1049,81 @@ int RecognizeNoteLinks
   
       iStart2 = index + match [1].rm_so;
       iEnd2 = index + match [1].rm_eo;
+      for (i = iStart2; i < iEnd2; i++)
+      {
+        pAttributes [i] |= TEXT_ATTR_INFO_TARGET;
+      }
+  
+      count++;
+    }
+
+
+    index += match [0].rm_eo;
+  }
+
+  return count;
+}
+
+
+
+/*-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-
+                                                      RecognizeNoteLinks2
+-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-*/
+
+static
+int RecognizeNoteLinks2
+   (const char      *pText,
+    int              length,
+    TEXTATTRIBUTES  *pAttributes)
+
+{
+  int i, index, iStart, iEnd, iStart2, iEnd2, count;
+  bool fValidLink;
+  regmatch_t match [3];
+
+
+  if (length < 0)
+  {
+    length = strlen (pText);
+  }
+
+
+  index = count = 0;
+  
+  while ((index < length)
+              && !tre_regnexec (&NoteLinkRegex2, pText + index, length - index, 3, match, 0))
+  {
+    iStart = index + match [0].rm_so;
+    iEnd = index + match [0].rm_eo;
+    fValidLink = true;
+    for (i = iStart; i < iEnd; i++)
+    {
+      if (pAttributes [i] & (TEXT_ATTR_INFO_LINK | TEXT_ATTR_URI))
+      {
+        fValidLink = false;
+        break;
+      }
+    }
+
+
+    if (fValidLink)
+    {
+      for (i = iStart; i < iEnd; i++)
+      {
+        pAttributes [i] = (pAttributes [i] & ~TEXT_ATTR_APPEARANCE_MASK)
+                              | TEXT_ATTR_INFO_LINK;
+      }
+  
+      iStart2 = index + match [1].rm_so + 1;
+      iEnd2 = index + match [1].rm_eo - 1;
+      for (i = iStart2; i < iEnd2; i++)
+      {
+        pAttributes [i] |= TEXT_ATTR_INFO_FILENAME;
+      }
+
+
+      iStart2 = index + match [2].rm_so;
+      iEnd2 = index + match [2].rm_eo;
       for (i = iStart2; i < iEnd2; i++)
       {
         pAttributes [i] |= TEXT_ATTR_INFO_TARGET;
