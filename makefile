@@ -29,6 +29,7 @@
 
 COMPILE = gcc
 LINK = gcc
+SASS = sassc -t compact
 COMPILE_OPTS := -c -g -pipe
 LINK_OPTS = -g -pipe
 LIBS := -lstdc++ -ltre -lmicrohttpd -lpopt
@@ -43,11 +44,17 @@ else
 	Arrow = "\e[31;1m-->\e[0m"
 endif
 
+
 define Compile
 $(call Message, "Compiling", $(notdir $<), $(Arrow), $(notdir $@))
 @$(COMPILE) $(COMPILE_OPTS) -o $@ $<
 endef
 
+
+define SassProcess
+$(call Message, "Processing", $(notdir $<), $(Arrow), $(notdir $@))
+@$(SASS) $< $@
+endef
 
 
 #  Directory where intermediate files are placed.
@@ -183,6 +190,12 @@ dynamic/favicon.h :  favicon.ico | data2def dynamic
 	@./data2def FavIcon < $< > $@
 
 
+
+# Sass processing
+
+style.css :  style.scss
+	$(SassProcess)
+	
 
 
 BUILDALWAYS :
