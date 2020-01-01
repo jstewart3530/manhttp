@@ -196,7 +196,7 @@ void infoInitializeRegexes
 
   error = tre_regcomp 
               (&NoteLinkRegex, 
-               "\\*Note[[:space:]][^:]{0,99}?[^[:space:]]:[[:space:]]+([[:alnum:][:space:]_+-]{1,64})\\.", 
+               "\\*Note[[:space:]][^:*]{0,99}?[^[:space:]]:[[:space:]]+([[:alnum:][:space:]_+-]{1,64})\\.", 
                REG_EXTENDED);
 
   if (error != 0)
@@ -209,12 +209,12 @@ void infoInitializeRegexes
 
   error = tre_regcomp 
               (&NoteLinkRegex2, 
-               "\\*Note[[:space:]][^:]{0,99}?[^[:space:]]:[[:space:]]+(\\([[:alnum:]._+-]{1,32}\\))([[:alnum:]._+-]{1,64})", 
+               "\\*Note[[:space:]][^:*]{0,99}?[^[:space:]]:[[:space:]]+(\\([[:alnum:]._+-]{1,32}\\))([[:alnum:]._+-]{1,64})", 
                REG_EXTENDED);
 
   if (error != 0)
   {
-    fprintf (stderr, "\ntre_regcomp() failed for NoteLinkRegex (result code %d).\n\n",
+    fprintf (stderr, "\ntre_regcomp() failed for NoteLinkRegex2 (result code %d).\n\n",
              error);
     exit (100);
   }
