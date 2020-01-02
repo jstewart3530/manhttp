@@ -1115,16 +1115,22 @@ int RecognizeNoteLinks2
       }
   
       iStart2 = index + match [1].rm_so + 1;
-      iEnd2 = index + match [1].rm_eo - 1;
-      for (i = iStart2; i < iEnd2; i++)
+      iEnd2 = index + match [1].rm_eo - 2;
+      for (i = iStart2; i <= iEnd2; i++)
       {
         pAttributes [i] |= TEXT_ATTR_INFO_FILENAME;
       }
 
 
       iStart2 = index + match [2].rm_so;
-      iEnd2 = index + match [2].rm_eo;
-      for (i = iStart2; i < iEnd2; i++)
+      iEnd2 = index + match [2].rm_eo - 1;
+
+      if (pText [iEnd2] == '.')
+      {
+      	iEnd2--;
+      }
+
+      for (i = iStart2; i <= iEnd2; i++)
       {
         pAttributes [i] |= TEXT_ATTR_INFO_TARGET;
       }
