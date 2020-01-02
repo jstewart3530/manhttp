@@ -46,6 +46,9 @@ $TitleFont          : $ProportionalFont;
 
 $TitleNumberFont    : $TitleFont;
 
+$MainFontSize       : 15px;
+
+
 
 //  ("@font-face" definitions would go here if they are needed.)
 
@@ -91,8 +94,7 @@ body
 pre
 {
   font-family:         $MonoFont;
-  font-size:           15px;
-  margin-left:         10px;
+  font-size:           $MainFontSize;
 }
 
 span[Bold]
@@ -359,7 +361,6 @@ body[Type="man"]
     line-height:      30px;
     padding-left:     18px;
     text-align:       left;
-    margin-left:      8px;
     margin-top:       0px;
   
     &[State="HIDDEN"]    
