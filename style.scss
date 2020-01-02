@@ -33,8 +33,8 @@
 
 //  Font definitions.
 
-$MonoFont           : Hack, Cousine, "DejaVu Sans Mono", Monaco, 
-                      "Lucida Console", monospace;
+$MonoFont           : Cousine, Hack, "Ubuntu Mono", "DejaVu Sans Mono",
+                      Monaco, "Lucida Console", monospace;
 
 $ProportionalFont   : "Amazon Ember", "Clear Sans", 
                       Roboto, Lato, "Source Sans Pro", Verdana,
@@ -46,7 +46,7 @@ $TitleFont          : $ProportionalFont;
 
 $TitleNumberFont    : $TitleFont;
 
-$MainFontSize       : 15px;
+$MainFontSize       : 16px;
 
 
 
@@ -379,78 +379,78 @@ body[Type="info"]
 {
   #Main
   {
-    margin-left:         64px;
-    margin-top:          80px;
+    margin-left:           64px;
+    margin-top:            80px;
   }
 
   pre a[RefType="info"]  
   {
-    color:             $InfoLinkColor;
-    text-decoration:   none;
+    color:                 $InfoLinkColor;
+    text-decoration:       none;
 
     &:hover
     {
-      text-decoration:  1px underline solid;
+      text-decoration:     1px underline solid;
     }
   }
 
   .InfoTitle   
   {
-    display:          inline-block;
-    max-width:        680px;
-    min-height:       35px;
-    line-height:      35px;
-    font-family:      $TitleFont;
-    font-style:       italic;
-    font-weight:      normal;
-    font-size:        18px;
-    color:            $TitleBarTextColor1;
-    background:       $TitleBarBackground;
-    padding-left:     30px;
-    padding-right:    30px;
-    margin-left:      10px;
-    margin-bottom:    40px;    
+    display:               inline-block;
+    max-width:             500px;
+    font-family:           $TitleFont;
+    font-style:            italic;
+    font-weight:           normal;
+    font-size:             18px;
+    color:                 $TitleBarTextColor1;
+    background:            $TitleBarBackground;
+    padding-left:          30px;
+    padding-right:         30px;
+    padding-top:           5px;
+    padding-bottom:        5px;
+    margin-bottom:         40px;    
 
     &[ULType="star"], &[ULType="equals"]  
     {  
-      font-size:        25px;  
-      min-height:       50px;
-      line-height:      50px;
+      font-size:           25px;  
+      padding-top:         5px;
+      padding-bottom:      5px;
 
       > span[Number] 
       {
-        font-size:        125%;
+        font-size:         125%;
 
         &::after
         {
-          content:          "\2002";
+          content:         "\2002";
         }
       }
     }
    
     > span[Number]    
     {
-      color:            $TitleBarTextColor2;
-      font-family:      $TitleNumberFont;      
+      color:               $TitleBarTextColor2;
+      font-family:         $TitleNumberFont;      
      
       &::after
       {
-        content:          "\2002\2002";
+        content:           "\2002\2002";
       }
     }
   }
 
   .InfoFootnotes  
   {
-    padding-top:     10px;
-    border-top:      1px dotted $AccentColor2;
+    padding-top:           10px;
+    border-top:            1px dotted $AccentColor2;
 
     > pre
     {
-      font-size:     80%;
+      font-size:           80%;
     }
   }
 }
+
 
 
 //   -----  Apropos pages  -----
