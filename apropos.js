@@ -4,6 +4,8 @@ const BySectionBtn = document.getElementById ("BySectionButton");
 const ByNameBtn = document.getElementById ("ByNameButton");
 const ResultsDiv = document.getElementById ("Results");
 
+let SortMode = null;
+
 
 
 function CompareBySection
@@ -74,15 +76,14 @@ function SortByName
    (event)
 
 {
-  if (document.body.getAttribute ("AproposSortingMode") == "BYNAME")
+  if (SortMode === "BYNAME")
   	return;
 
-  document.body.setAttribute ("AproposSortingMode", "BYNAME");
+  SortMode = "BYNAME";
+
 
   ByNameBtn.setAttribute ("Active", "1");
   BySectionBtn.removeAttribute ("Active");
-
-
   ShowAllBtn.onclick = function (event) { };
   ShowAllBtn.disabled = true;
   HideAllBtn.onclick = function (event) { };
@@ -150,10 +151,11 @@ function SortBySection
    (event)
 
 {
-  if (document.body.getAttribute ("AproposSortingMode") == "BYSECTION")
+  if (SortMode === "BYSECTION")
     return;
 
-  document.body.setAttribute ("AproposSortingMode", "BYSECTION");
+  SortMode = "BYSECTION";
+
 
   ByNameBtn.removeAttribute ("Active");
   BySectionBtn.setAttribute ("Active", "1");
