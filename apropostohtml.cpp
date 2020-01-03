@@ -33,6 +33,7 @@
 #include "html_formatting.h"
 #include "apropostohtml.h"
 #include "installation.h"
+#include "common_js.h"
 
 
 
@@ -79,7 +80,7 @@ void AproposResultsToHTML
 
 
   fprintf (stream, 
-           "<div class=\"NavBar\">\n"
+           "<div id=\"NavBar\">\n"
            "<div id=\"Nav-Apropos-NResults\">\n"
            "<span Label=\"1\">Results found:</span>%d\n"
            "</div>\n"
@@ -105,6 +106,8 @@ void AproposResultsToHTML
 
   fprintf (stream, "<script>\n\"use strict\";\n");
   fprintf (stream, "const UriPrefix = \"%s\";\n\n", pUriPrefix);
+
+  fprintf (stream, "%s", AdjustMarginCode);
 
 
   fprintf (stream, "const SectionDefs =\n{\n");

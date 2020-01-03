@@ -87,8 +87,6 @@ body
 {
   background:          $MainBackground;
   color:               $MainTextColor;
-  margin-left:         30px;
-  margin-right:        30px;
 }
 
 pre
@@ -199,7 +197,7 @@ button
 //  -----  Page-top navigation bar  -----
 
 
-.NavBar
+#NavBar
 {
   display:              flex;
   flex-flow:            row wrap;
@@ -209,7 +207,7 @@ button
   width:                100%;
   min-height:           $NavbarHeight;
   line-height:          $NavbarHeight;
-  margin-left:          -30px;
+  margin-left:          -10px;
   margin-right:         0px;
   padding-left:         15px;
   padding-right:        15px; 
@@ -314,7 +312,7 @@ body[Type="man"]
     background:       $TitleBarBackground;
     padding-left:     30px;
     padding-right:    30px;
-    margin-left:      10px;
+    margin-left:      0px;
     margin-bottom:    60px;    
   }
 
@@ -434,7 +432,8 @@ body[Type="info"]
      
       &::after
       {
-        content:           "\2002\2002";
+        content:           "\2002\2502\2002\2002";
+        color:             scale-color($TitleBarBackground, $lightness : 25%);
       }
     }
   }

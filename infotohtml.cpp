@@ -34,6 +34,7 @@
 #include "utility.h"                   /*  Application headers.  */
 #include "html_formatting.h"
 #include "infotohtml.h"
+#include "common_js.h"
 
 
 
@@ -88,29 +89,6 @@ struct NAVIGATIONLINKS
 
 static regex_t LinkRegex1, LinkRegex2, TitleRegex, DirLinkRegex;
 static regex_t NoteLinkRegex, NoteLinkRegex2;
-
-
-
-const char ScriptCode []
-        = "const MainDiv = document.getElementById (\"Main\");\n"
-          "const Navbar = document.querySelector (\".NavBar\");\n"
-          "let cxWindow = -1;\n"
-          "\n\n"
-          "function AdjustTopMargin\n"
-          "   (event)\n"
-          "\n"
-          "{\n"
-          "  let cx = window.innerWidth;\n"
-          "  if (cx != cxWindow)\n"
-          "  {\n"
-          "    let cyNavbar = Navbar.offsetHeight;\n"
-          "    MainDiv.style.marginTop = `${cyNavbar + 50}px`;\n"
-          "    cxWindow = cx;\n"
-          "  }\n"
-          "}\n"
-          "\n\n"
-          "AdjustTopMargin (null);\n"
-          "window.addEventListener (\"resize\", AdjustTopMargin, false);\n\n";
 
 
 
@@ -397,7 +375,7 @@ void InfoToHTML
 
   fprintf (stream, "\n\n<script>\n\"use strict\";\n");
 
-  fprintf (stream, "%s", ScriptCode);
+  fprintf (stream, "%s", AdjustMarginCode);
 
   GenerateScript (stream, &NavLinks, &FormatInfo);
 
@@ -1238,7 +1216,7 @@ void GenerateNavBar
 
 
   fprintf (stream,
-           "<div class=\"NavBar\">\n");
+           "<div id=\"NavBar\">\n");
 
 
   /*  Previous node link.

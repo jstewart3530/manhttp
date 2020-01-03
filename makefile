@@ -123,18 +123,19 @@ $(INTERMEDIATE_DIR)/utility.o : \
 
 $(INTERMEDIATE_DIR)/manualpagetohtml.o : \
 		manualpagetohtml.cpp  manualpagetohtml.h  man_page_api.h \
-		html_formatting.h  utility.h  dynamic/man_page_script.h
+		html_formatting.h  utility.h  common_js.h \
+		dynamic/man_page_script.h
 	$(Compile)
 
 $(INTERMEDIATE_DIR)/apropostohtml.o : \
 		apropostohtml.cpp  apropostohtml.h  man_page_api.h \
-		html_formatting.h  utility.h \
+		html_formatting.h  utility.h  common_js.h \
 		installation.h  dynamic/apropos_script.h 
 	$(Compile)
 
 $(INTERMEDIATE_DIR)/infotohtml.o : \
 		infotohtml.cpp  infotohtml.h  man_page_api.h \
-		html_formatting.h  utility.h 
+		html_formatting.h  utility.h  common_js.h
 	$(Compile)
 
 $(INTERMEDIATE_DIR)/man_page_api.o : \

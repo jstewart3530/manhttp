@@ -34,6 +34,8 @@
 #include "utility.h"                   /*  Application headers.  */
 #include "html_formatting.h"
 #include "manualpagetohtml.h"
+#include "common_js.h"
+
 
 
 /*  Dynamically-generated headers.
@@ -265,7 +267,7 @@ void ManualPageToHTML
 
 
   fprintf (stream, 
-           "\n\n<div class=\"NavBar\">\n"
+           "\n\n<div id=\"NavBar\">\n"
            "<div id=\"Nav-Man-GoToSection\">\n"
            "<span Label=\"1\">Go to section:</span>\n"
            "<select id=\"SectionList\">\n"
@@ -301,9 +303,11 @@ void ManualPageToHTML
   fprintf (stream, 
            "<script>\n"
            "\"use strict\";\n"
+           "%s\n"
            "const nSections = %d;\n"
            "%s"
            "</script>\n", 
+           AdjustMarginCode,
            nSections,
            ScriptCode);
 

@@ -1,4 +1,4 @@
-body { background: #fff2df; color: #454545; margin-left: 30px; margin-right: 30px; }
+body { background: #fff2df; color: #454545; }
 
 pre { font-family: Cousine, Hack, "Ubuntu Mono", "DejaVu Sans Mono", Monaco, "Lucida Console", monospace; font-size: 16px; }
 
@@ -30,31 +30,31 @@ button[Active]::after { content: "\00a0]"; }
 
 .HideButton[State="HIDDEN"]::after { content: "[Show\00a0\25bc]"; }
 
-.NavBar { display: flex; flex-flow: row wrap; justify-content: flex-start; position: fixed; top: 0; width: 100%; min-height: 40px; line-height: 40px; margin-left: -30px; margin-right: 0px; padding-left: 15px; padding-right: 15px; font-family: "Amazon Ember", "Clear Sans", Roboto, Lato, "Source Sans Pro", Verdana, sans-serif; font-style: normal; font-weight: normal; font-size: 14px; color: #ffffff; background: #404040; text-align: left; border-bottom: 1px solid #000000; }
+#NavBar { display: flex; flex-flow: row wrap; justify-content: flex-start; position: fixed; top: 0; width: 100%; min-height: 40px; line-height: 40px; margin-left: -10px; margin-right: 0px; padding-left: 15px; padding-right: 15px; font-family: "Amazon Ember", "Clear Sans", Roboto, Lato, "Source Sans Pro", Verdana, sans-serif; font-style: normal; font-weight: normal; font-size: 14px; color: #ffffff; background: #404040; text-align: left; border-bottom: 1px solid #000000; }
 
-.NavBar > div { height: 40px; line-height: 40px; padding-left: 16px; padding-right: 5px; margin-left: 16px; border-left: 1px solid #909090; }
+#NavBar > div { height: 40px; line-height: 40px; padding-left: 16px; padding-right: 5px; margin-left: 16px; border-left: 1px solid #909090; }
 
-.NavBar > div:nth-child(1) { border-left: none; padding-left: 0px; margin-left: 0px; }
+#NavBar > div:nth-child(1) { border-left: none; padding-left: 0px; margin-left: 0px; }
 
-.NavBar span[Label] { color: #909090; font-style: italic; }
+#NavBar span[Label] { color: #909090; font-style: italic; }
 
-.NavBar span[Label]::after { content: "\00a0\00a0"; }
+#NavBar span[Label]::after { content: "\00a0\00a0"; }
 
-.NavBar a, .NavBar a:visited { color: #ffff00; text-decoration: none; }
+#NavBar a, #NavBar a:visited { color: #ffff00; text-decoration: none; }
 
-.NavBar a:hover { text-decoration: underline; }
+#NavBar a:hover { text-decoration: underline; }
 
-.NavBar button { border: 1px solid #909090; border-radius: 0px; font-size: 80%; height: 26px; }
+#NavBar button { border: 1px solid #909090; border-radius: 0px; font-size: 80%; height: 26px; }
 
-.NavBar button:disabled, .NavBar button:hover:disabled { color: #757575; }
+#NavBar button:disabled, #NavBar button:hover:disabled { color: #757575; }
 
-.NavBar select { background: inherit; color: #ffffff; border: 1px solid #909090; font-size: 85%; }
+#NavBar select { background: inherit; color: #ffffff; border: 1px solid #909090; font-size: 85%; }
 
-.NavBar select:hover { background: #707070; }
+#NavBar select:hover { background: #707070; }
 
 body[Type="man"] #Main { margin-left: 64px; margin-top: 80px; }
 
-body[Type="man"] .PageTitle { display: inline-block; height: 50px; line-height: 50px; font-family: "Amazon Ember", "Clear Sans", Roboto, Lato, "Source Sans Pro", Verdana, sans-serif; font-style: italic; font-weight: normal; font-size: 25px; color: #ffffff; background: #667292; padding-left: 30px; padding-right: 30px; margin-left: 10px; margin-bottom: 60px; }
+body[Type="man"] .PageTitle { display: inline-block; height: 50px; line-height: 50px; font-family: "Amazon Ember", "Clear Sans", Roboto, Lato, "Source Sans Pro", Verdana, sans-serif; font-style: italic; font-weight: normal; font-size: 25px; color: #ffffff; background: #667292; padding-left: 30px; padding-right: 30px; margin-left: 0px; margin-bottom: 60px; }
 
 body[Type="man"] #Prologue { margin-bottom: 35px; }
 
@@ -86,7 +86,7 @@ body[Type="info"] .InfoTitle[ULType="star"] > span[Number]::after, body[Type="in
 
 body[Type="info"] .InfoTitle > span[Number] { color: #e0e0e0; font-family: "Amazon Ember", "Clear Sans", Roboto, Lato, "Source Sans Pro", Verdana, sans-serif; }
 
-body[Type="info"] .InfoTitle > span[Number]::after { content: "\2002\2002"; }
+body[Type="info"] .InfoTitle > span[Number]::after { content: "\2002\2502\2002\2002"; color: #8b95ae; }
 
 body[Type="info"] .InfoFootnotes { padding-top: 10px; border-top: 1px dotted #c3c3c3; }
 
