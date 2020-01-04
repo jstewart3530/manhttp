@@ -12,29 +12,13 @@ using a web browser.  It is a web-based frontend for
 <a href="man/apropos(1)">apropos(1)</a>.
 </p>
 
-<table>
-<tr>
-   <td rowspan="3" style="padding: 10px;">
-     <input id="SearchInput" 
-            autofocus 
-            type="text" 
-            style="width: 180px;">
-   </td>
-   <td>
-     <button id="GoToManPageBtn" style="width: 100%;">Go to manual page &#10093;</button>
-   </td>  
-</tr>
-<tr>
-  <td>
-    <button id="GoToInfoPageBtn" style="width: 100%;">Go to Info document &#10093;</button>
-  </td>
-</tr>
-<tr>
-  <td>
-    <button id="AproposBtn" style="width: 100%;">Search with apropos &#10093;</button>
-  </td>  
-</tr>
-</table>
+<input id="SearchInput" autofocus type="text" style="width: 180px;">
+&ensp;
+<select id="Mode">
+  <option value="m">Manual page</option>
+  <option value="i">Info</option>
+  <option value="a">Apropos search</option>
+</select>
 
 <div class="Divider"></div>
 
@@ -64,40 +48,32 @@ To perform an apropos search:
 "use strict";
 const BaseURL = document.head.getElementsByTagName ("base") [0].href;
 const SearchInput = document.getElementById ("SearchInput");
-const ManButton = document.getElementById ("GoToManPageBtn");
-const InfoButton = document.getElementById ("GoToInfoPageBtn");
-const AproposButton = document.getElementById ("AproposBtn");
+const ModeSelect = document.getElementById ("Mode");
 
 
-function GetSearchText
-   ()
-
-{
-  let t = SearchInput.value;
-  return t ? t.trim () : "";
-}
-
-
-function SyncButtonState
+function HandleKeyPress
    (event)
 
 {
-  let fDisable = (GetSearchText () === "");
+  if (event.isComposing || event.keyCode === 229)
+    return;
 
-  ManButton.disabled = fDisable;
-  InfoButton.disabled = fDisable;
-  AproposButton.disabled = fDisable;
-}
-
-
-function GoToPage 
-   (prefix)
-
-{ 
-  let t = GetSearchText ();
-  if (t != "")
+  if (event.code === "Enter")
   {
-    window.open (prefix + t, "_self");
+    let text, prefix;
+
+    if ((text = SearchInput.value.trim ()) === "")
+      return;    
+
+    switch (ModeSelect.value)
+    {
+      case "m":  prefix = "man";      break;
+      case "i":  prefix = "info";     break;      
+      case "a":  prefix = "apropos";  break;
+      default:   return;
+    }
+  
+    window.open (`${BaseURL}${prefix}/${text}`, "_self");
   }
 }
 
@@ -108,11 +84,8 @@ for (let elt of document.querySelectorAll ("*[URI]"))
 }
 
 
-SearchInput.addEventListener ("input", SyncButtonState, false);
-ManButton.addEventListener ("click", new Function ("event", `GoToPage ("${BaseURL}man/");`), false);
-InfoButton.addEventListener ("click", new Function ("event", `GoToPage ("${BaseURL}info/")`), false);
-AproposButton.addEventListener ("click", new Function ("event", `GoToPage ("${BaseURL}apropos/");`), false);
+ModeSelect.value = "m";
 
 
-SyncButtonState (null);
+document.addEventListener ("keydown", HandleKeyPress, false);
 </script>

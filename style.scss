@@ -657,20 +657,19 @@ body[Type="splash"]
 
     input    
     {
+      height:            25px;
       border:            1px solid $MainTextColor;
       border-radius:     0px;
       padding-left:      8px;
       padding-right:     8px;
-      padding-top:       6px;
-      padding-bottom:    6px;
     }
 
-    button    
+    select
     {
-      padding-left:      15px;
-      padding-right:     15px; 
-      padding-top:       5px;
-      padding-bottom:    5px;
+      height:            30px;
+      background:        $NavbarBackground;
+      color:             $NavbarTextColor;
+      border:            1px solid $NavbarLineColor;
     }
 
     .Filename    

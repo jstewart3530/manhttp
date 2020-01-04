@@ -138,9 +138,9 @@ body[Type="splash"] .Splash > p[Heading] { font-size: 24px; font-weight: bold; f
 
 body[Type="splash"] .Splash > .Divider { margin-top: 18px; margin-bottom: 18px; border-bottom: 1px dotted #a2836e; }
 
-body[Type="splash"] .Splash input { border: 1px solid #454545; border-radius: 0px; padding-left: 8px; padding-right: 8px; padding-top: 6px; padding-bottom: 6px; }
+body[Type="splash"] .Splash input { height: 25px; border: 1px solid #454545; border-radius: 0px; padding-left: 8px; padding-right: 8px; }
 
-body[Type="splash"] .Splash button { padding-left: 15px; padding-right: 15px; padding-top: 5px; padding-bottom: 5px; }
+body[Type="splash"] .Splash select { height: 30px; background: #404040; color: #ffffff; border: 1px solid #909090; }
 
 body[Type="splash"] .Splash .Filename { color: #000000; font-style: italic; }
 
