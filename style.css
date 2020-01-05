@@ -1,6 +1,6 @@
 body { background: #fff2df; color: #454545; }
 
-pre { font-family: Cousine, Hack, "Ubuntu Mono", "DejaVu Sans Mono", Monaco, "Lucida Console", monospace; font-size: 16px; }
+pre { font-family: Hack, "Ubuntu Mono", "DejaVu Sans Mono", Monaco, "Lucida Console", monospace; font-size: 15px; }
 
 span[Bold] { font-weight: bold; }
 
