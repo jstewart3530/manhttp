@@ -43,6 +43,55 @@
 
 
 /*-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-
+                                                          EllipsizeString
+-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-*/
+
+bool EllipsizeString
+   (const char   *pSourceStr,
+    char         *pDestStr,
+    int           cbMax,
+    int           nMaxChars)
+
+{
+  int i, cb, nChars;
+  char c;
+
+
+  for (i = nChars = 0; (c = pSourceStr [i]) != '\0'; i++)
+  {
+    if (((c & 0xc0) != 0x80) && (++nChars == nMaxChars))
+      break;
+  }
+
+  cb = i;
+
+
+  if (nChars < nMaxChars)
+  {
+    if (pSourceStr != pDestStr)
+    {
+      strncpy (pDestStr, pSourceStr, cbMax);
+    }
+
+    return false;
+  }
+
+
+  if (pSourceStr == pDestStr)
+  {
+    strcpy (pDestStr + cb, "..."); 
+  }
+  else
+  {
+    snprintf (pDestStr, cbMax, "%.*s...", cb, pSourceStr);
+  }
+
+  return true;
+}
+
+
+
+/*-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-
                                                                  LoadFile
 -~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-*/
 

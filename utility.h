@@ -46,6 +46,12 @@ enum
 
 extern "C"
 {
+extern bool EllipsizeString
+   (const char   *pSourceStr,
+    char         *pDestStr,
+    int           cbMax,
+    int           nMaxChars);
+
 
 extern bool LoadFile
    (const char   *pPath,

@@ -274,13 +274,21 @@ void ManualPageToHTML
            "   <option value=\"x\">-----</option>\n");
 
 
+  char SectionTitle [64], SectionTitle2 [64];
+
   for (pSection = pFirstSection, i = 1
         ; pSection != NULL
         ; pSection = pNextSection, i++)
   {
+    EllipsizeString (pSection->pTitle, SectionTitle, 
+                     sizeof (SectionTitle), 24);
+
+    HTMLizeText (SectionTitle2, sizeof (SectionTitle2), 
+                 SectionTitle, -1, NULL, NULL, 0);
+
     fprintf (stream, 
              "   <option value=\"%d\">%s</option>\n",
-             i, pSection->pTitle);
+             i, SectionTitle2);
 
     pNextSection = pSection->pNext;
     free (pSection->pTitle);
