@@ -53,40 +53,40 @@ bool EllipsizeString
     int           nMaxChars)
 
 {
-  int i, cb, nChars;
+  int i, nChars = 0, cb = -1;
   char c;
 
 
-  for (i = nChars = 0; (c = pSourceStr [i]) != '\0'; i++)
+  for (i = 0; (c = pSourceStr [i]) != '\0'; i++)
   {
     if (((c & 0xc0) != 0x80) && (++nChars == nMaxChars))
-      break;
-  }
-
-  cb = i;
-
-
-  if (nChars < nMaxChars)
-  {
-    if (pSourceStr != pDestStr)
     {
-      strncpy (pDestStr, pSourceStr, cbMax);
+      cb = i;
+      break;
     }
-
-    return false;
   }
 
 
   if (pSourceStr == pDestStr)
   {
-    strcpy (pDestStr + cb, "..."); 
+    if (cb >= 0)
+    {
+      strcpy (pDestStr + cb, "..."); 
+    }
   }
   else
   {
-    snprintf (pDestStr, cbMax, "%.*s...", cb, pSourceStr);
+    if (cb >= 0)
+    {
+      snprintf (pDestStr, cbMax, "%.*s...", cb, pSourceStr);
+    }
+    else
+    {
+      strncpy (pDestStr, pSourceStr, cbMax);
+    }
   }
 
-  return true;
+  return cb >= 0;
 }
 
 
