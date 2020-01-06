@@ -103,23 +103,21 @@ int GetTextAttributes
     int              cbMax)
 
 {
-  int i, j, k, iEnd, code;
+  int i, j, k, iStart;
   TEXTATTRIBUTES attrs;
   char c, escape [16];
  
 
-  i = j = iEnd = 0;
+  i = j = 0;
   attrs = 0;
    
   while ((i < cbText) && (j < cbMax - 1))
   {
-    if ((c = pText [i++]) == '\033')
+    if (((c = pText [i]) == '\033')
+            && (pText [i + 1] == '['))
     {
-      if (pText [i] != '[')
-        continue;
-
-      i++;
-
+      iStart = i;	
+      i += 2;
       k = 0; 
       c = '\0';
       while ((i < cbText) && (k < ((int) sizeof (escape)) - 1))
@@ -132,16 +130,29 @@ int GetTextAttributes
       escape [k] = '\0';
 
 
-      if ((c == 'm') && (sscanf (escape, "%d", &code) == 1))
+      if (strcmp (escape, "0m") == 0)
       {
-        switch (code)
-        {
-          case 0:   attrs = 0;                   break;
-          case 1:   attrs |= TEXT_ATTR_BOLD;     break;
-          case 4:   attrs |= TEXT_ATTR_ITALIC;   break;
-          case 22:  attrs &= ~TEXT_ATTR_BOLD;    break;
-          case 24:  attrs &= ~TEXT_ATTR_ITALIC;  break;
-        }
+        attrs = 0;
+      }
+      else if (strcmp (escape, "1m") == 0)
+      {
+        attrs |= TEXT_ATTR_BOLD;
+      }
+      else if (strcmp (escape, "4m") == 0)
+      {
+        attrs |= TEXT_ATTR_ITALIC;
+      }
+      else if (strcmp (escape, "22m") == 0)
+      {
+        attrs &= ~TEXT_ATTR_BOLD;
+      }
+      else if (strcmp (escape, "24m") == 0)
+      {
+        attrs &= ~TEXT_ATTR_ITALIC;
+      }
+      else
+      {
+      	i = iStart;
       }
 
       continue;
@@ -155,12 +166,9 @@ int GetTextAttributes
 
     pTextOut [j] = c;
     pAttrsOut [j] = attrs;
+
+    i++;
     j++;
-      
-    if ((c != ' ') && (c != '\t'))
-    {
-      iEnd = j;
-    }
   }
 
 
