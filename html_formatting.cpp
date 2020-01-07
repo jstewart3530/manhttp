@@ -103,56 +103,55 @@ int GetTextAttributes
     int              cbMax)
 
 {
-  int i, j, k, iStart;
+  int i, j, k, iStart, length, value;
+  bool fNumeric;
   TEXTATTRIBUTES attrs;
-  char c, escape [16];
- 
+  char c;
+  unsigned char d;
+
 
   i = j = 0;
   attrs = 0;
    
   while ((i < cbText) && (j < cbMax - 1))
   {
-    if (((c = pText [i]) == '\033')
-            && (pText [i + 1] == '['))
+  	c = pText [i++];
+
+
+    if ((c == '\033') && (pText [i] == '['))
     {
-      iStart = i;	
-      i += 2;
-      k = 0; 
-      c = '\0';
-      while ((i < cbText) && (k < ((int) sizeof (escape)) - 1))
+      iStart = ++i;
+      value = 0;
+      fNumeric = true;
+
+      while ((i < cbText)
+      	        && (d = (unsigned char) pText [i], ((d < 0x40) || (d > 0x7e))))
       {
-        c = escape [k++] = pText [i++];
-        if (((c >= 'a') && (c <= 'z')) || ((c >= 'A') && (c <= 'Z')))
-          break;
+      	if ((d < '0') || (d > '9'))
+      	{
+      	  fNumeric = false;	
+      	}
+
+        if (fNumeric)
+      	{
+      	  value = value * 10 + (int) (d - 0x30);	
+      	}
+
+      	i++;      	
       }
 
-      escape [k] = '\0';
+      length = ++i - iStart;
 
-
-      if (strcmp (escape, "0m") == 0)
+      if ((d == 'm') && fNumeric && (length >= 2))
       {
-        attrs = 0;
-      }
-      else if (strcmp (escape, "1m") == 0)
-      {
-        attrs |= TEXT_ATTR_BOLD;
-      }
-      else if (strcmp (escape, "4m") == 0)
-      {
-        attrs |= TEXT_ATTR_ITALIC;
-      }
-      else if (strcmp (escape, "22m") == 0)
-      {
-        attrs &= ~TEXT_ATTR_BOLD;
-      }
-      else if (strcmp (escape, "24m") == 0)
-      {
-        attrs &= ~TEXT_ATTR_ITALIC;
-      }
-      else
-      {
-      	i = iStart;
+        switch (value)
+        {
+          case 0:   attrs = 0;                   break;
+          case 1:   attrs |= TEXT_ATTR_BOLD;     break;
+          case 4:   attrs |= TEXT_ATTR_ITALIC;   break;
+          case 22:  attrs &= ~TEXT_ATTR_BOLD;    break;
+          case 24:  attrs &= ~TEXT_ATTR_ITALIC;
+        }
       }
 
       continue;
@@ -166,8 +165,6 @@ int GetTextAttributes
 
     pTextOut [j] = c;
     pAttrsOut [j] = attrs;
-
-    i++;
     j++;
   }
 
