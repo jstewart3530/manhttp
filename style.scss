@@ -543,17 +543,20 @@ body[Type="apropos"]
     font-style:       italic;
     font-weight:      bold;
     font-size:        15px;
-    color:            $MainBackground;
-    background:       $MainTextColor;
+    color:            $MainTextColor;
+    background:       $SecondaryBackground;
     text-align:       left;    
     margin-left:      0px;
+
 
     > th    
     {
       padding-top:      6px;
       padding-bottom:   6px;
       padding-left:     10px;
-  
+      border-top:       2px solid $AccentColor1;
+      border-bottom:    2px solid $AccentColor1;
+ 
       &[Column="page"]      
       {
         width:  2in;
@@ -574,12 +577,12 @@ body[Type="apropos"]
 
     &:nth-child(even)    
     {
-      background:            $MainBackground;
+      background:            $SecondaryBackground;
     }
 
     &:nth-child(odd)    
     {
-      background:            $SecondaryBackground;
+      background:            $MainBackground;
     }
 
     > td    

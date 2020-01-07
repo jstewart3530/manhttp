@@ -108,9 +108,9 @@ body[Type="apropos"] .AproposContainer[State="HIDDEN"] { margin-bottom: 0px; }
 
 body[Type="apropos"] .AproposTable { font-family: "Amazon Ember", "Clear Sans", Roboto, Lato, "Source Sans Pro", Verdana, sans-serif; font-size: 15px; border-collapse: separate; border-bottom: 2px solid #a2836e; width: 100%; margin-left: 0px; margin-top: 0px; padding-left: 0px; padding-right: 0px; padding-top: 0px; padding-bottom: 0px; }
 
-body[Type="apropos"] .AproposTableHeader { font-family: inherit; font-style: italic; font-weight: bold; font-size: 15px; color: #fff2df; background: #454545; text-align: left; margin-left: 0px; }
+body[Type="apropos"] .AproposTableHeader { font-family: inherit; font-style: italic; font-weight: bold; font-size: 15px; color: #454545; background: #ffe0b3; text-align: left; margin-left: 0px; }
 
-body[Type="apropos"] .AproposTableHeader > th { padding-top: 6px; padding-bottom: 6px; padding-left: 10px; }
+body[Type="apropos"] .AproposTableHeader > th { padding-top: 6px; padding-bottom: 6px; padding-left: 10px; border-top: 2px solid #a2836e; border-bottom: 2px solid #a2836e; }
 
 body[Type="apropos"] .AproposTableHeader > th[Column="page"] { width: 2in; }
 
@@ -118,9 +118,9 @@ body[Type="apropos"] .AproposTableHeader > th[Column="description"] { width: 5in
 
 body[Type="apropos"] .AproposTableRow { color: #454545; margin-left: 0px; }
 
-body[Type="apropos"] .AproposTableRow:nth-child(even) { background: #fff2df; }
+body[Type="apropos"] .AproposTableRow:nth-child(even) { background: #ffe0b3; }
 
-body[Type="apropos"] .AproposTableRow:nth-child(odd) { background: #ffe0b3; }
+body[Type="apropos"] .AproposTableRow:nth-child(odd) { background: #fff2df; }
 
 body[Type="apropos"] .AproposTableRow > td { font-size: 15px; padding-left: 8px; padding-right: 8px; padding-bottom: 4px; padding-top: 4px; }
 
