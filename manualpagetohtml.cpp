@@ -247,7 +247,7 @@ void ManualPageToHTML
                "</div>\n\n\n"            
                "<div class=\"HeaderBar\" id=\"Sec%d_Header\">\n"
                "%s\n"                             
-               "<button id=\"Sec%d_ShowBtn\" class=\"HideButton\" onclick=\"ShowSection (%d, 'toggle')\"></button>\n"
+               "<span id=\"Sec%d_ShowBtn\" class=\"HideButton\" onclick=\"ShowSection (%d, 'toggle')\"></span>\n"
                "</div>\n\n"               
                "<div class=\"Collapsible\" id=\"Sec%d\">\n",
                nSections,
@@ -300,9 +300,9 @@ void ManualPageToHTML
 
   fprintf (stream, 
            "&nbsp;\n"
-           "<button id=\"ShowAllBtn\">Show all</button>\n"
+           "<span id=\"ShowAllBtn\" class=\"Button\">Show all</span>\n"
            "&nbsp;\n"
-           "<button id=\"HideAllBtn\">Hide all</button>\n"
+           "<span id=\"HideAllBtn\" class=\"Button\">Hide all</span>\n"
            "</div>\n");
 
   fprintf (stream, "</div>\n\n\n");

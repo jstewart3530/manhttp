@@ -85,10 +85,10 @@ function SortByName
   ByNameBtn.setAttribute ("Active", "1");
   BySectionBtn.removeAttribute ("Active");
   ShowAllBtn.onclick = function (event) { };
-  ShowAllBtn.disabled = true;
-  HideAllBtn.onclick = function (event) { };
-  HideAllBtn.disabled = true;  
+  ShowAllBtn.setAttribute ("Disabled", "1");
 
+  HideAllBtn.onclick = function (event) { };
+  HideAllBtn.setAttribute ("Disabled", "1");
 
   results.sort (CompareByName);
 
@@ -194,7 +194,7 @@ function SortBySection
       bar.setAttribute ("State", "SHOWN");
       ResultsDiv.append (bar);
 
-      HideBtn = document.createElement ("button");
+      HideBtn = document.createElement ("span");
       HideBtn.id = `Section_${section}_HideButton`;
       HideBtn.className = "HideButton";
       HideBtn.style.marginLeft = "50px";
@@ -259,9 +259,10 @@ function SortBySection
 
 
   ShowAllBtn.onclick = ShowAll.bind ({ SectionNames : sections, state : "show" });
-  ShowAllBtn.disabled = false;
+  ShowAllBtn.removeAttribute ("Disabled");
+
   HideAllBtn.onclick = ShowAll.bind ({ SectionNames : sections, state : "hide" });
-  HideAllBtn.disabled = false;  
+  HideAllBtn.removeAttribute ("Disabled");
 }
 
 

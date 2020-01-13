@@ -86,14 +86,14 @@ void AproposResultsToHTML
            "</div>\n"
            "<div id=\"Nav-Apropos-Sort\">\n"
            "<span Label=\"1\">Sort by:</span>"
-           "<button id=\"ByNameButton\" class=\"FormatSelector\">Name</button>\n"
+           "<span id=\"ByNameButton\" class=\"Button FormatSelector\">Name</span>\n"
            "&nbsp;\n"
-           "<button id=\"BySectionButton\" class=\"FormatSelector\">Section</button>\n"
+           "<span id=\"BySectionButton\" class=\"Button FormatSelector\">Section</span>\n"
            "</div>\n"
            "<div id=\"Nav-Apropos-ShowHide\">\n"
-           "<button id=\"ShowAllButton\">Show all</button>\n"
+           "<span id=\"ShowAllButton\" class=\"Button\">Show all</span>\n"
            "&nbsp;\n"
-           "<button id=\"HideAllButton\">Hide all</button>\n"
+           "<span id=\"HideAllButton\" class=\"Button\">Hide all</span>\n"
            "</div>\n"           
            "</div>\n",
            nResults);

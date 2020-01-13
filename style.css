@@ -22,9 +22,9 @@ button[Active]::before { content: "[\00a0"; }
 
 button[Active]::after { content: "\00a0]"; }
 
-.HideButton { background: inherit; border: none; font-family: "Amazon Ember", "Clear Sans", Roboto, Lato, "Source Sans Pro", Verdana, sans-serif; font-size: 12px; color: #e0e0e0; float: right; line-height: 30px; padding-top: 0px; padding-bottom: 0px; border-radius: 0px; margin-left: 40px; margin-right: 0px; }
+.HideButton { display: inline-block; cursor: default; height: 30px; line-height: 30px; background: inherit; border: none; font-family: "Amazon Ember", "Clear Sans", Roboto, Lato, "Source Sans Pro", Verdana, sans-serif; font-size: 12px; font-style: normal; color: #e0e0e0; float: right; margin-left: 40px; margin-right: 10px; }
 
-.HideButton:hover { text-decoration: underline solid; filter: none; }
+.HideButton:hover { text-decoration: underline solid; }
 
 .HideButton[State="SHOWN"]::after { content: "[Hide\00a0\25b2]"; }
 
@@ -44,9 +44,15 @@ button[Active]::after { content: "\00a0]"; }
 
 #NavBar a:hover { text-decoration: underline; }
 
-#NavBar button { border: 1px solid #909090; border-radius: 0px; font-size: 80%; height: 26px; }
+#NavBar .Button { display: inline-block; cursor: default; border: 1px solid #909090; height: 26px; line-height: 26px; padding-left: 6px; padding-right: 6px; color: white; background: #535353; text-align: center; }
 
-#NavBar button:disabled, #NavBar button:hover:disabled { color: #757575; }
+#NavBar .Button:hover { background: green; }
+
+#NavBar .Button[Disabled], #NavBar .Button[Disabled]:hover { color: #757575; background: #535353; }
+
+#NavBar .Button[Active]::before { content: "["; }
+
+#NavBar .Button[Active]::after { content: "]"; }
 
 #NavBar select { background: inherit; color: #ffffff; border: 1px solid #909090; font-size: 85%; }
 
@@ -96,7 +102,7 @@ body[Type="apropos"] { font-family: "Amazon Ember", "Clear Sans", Roboto, Lato, 
 
 body[Type="apropos"] #Main { margin-left: 80px; margin-top: 80px; width: 75%; }
 
-body[Type="apropos"] #ByNameButton, body[Type="apropos"] #BySectionButton { width: 7em; }
+body[Type="apropos"] #ByNameButton, body[Type="apropos"] #BySectionButton { width: 5em; }
 
 body[Type="apropos"] .AproposSectionBar { display: block; font-family: "Amazon Ember", "Clear Sans", Roboto, Lato, "Source Sans Pro", Verdana, sans-serif; font-style: italic; font-weight: normal; font-size: 17px; color: #ffffff; background: #667292; line-height: 30px; height: 30px; padding-left: 10px; padding-right: 0px; padding-top: 0px; padding-bottom: 0px; margin-left: 1px; margin-right: 1px; margin-top: 0px; margin-bottom: 0px; text-align: left; border-style: none; }
 

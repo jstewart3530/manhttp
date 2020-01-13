@@ -162,23 +162,23 @@ button
 
 .HideButton
 {
+  display:              inline-block;
+  cursor:               default;
+  height:               30px;
+  line-height:          30px;
   background:           inherit;
   border:               none;
   font-family:          $ControlFont;
   font-size:            12px;
+  font-style:           normal;
   color:                $TitleBarTextColor2;
   float:                right;
-  line-height:          30px;
-  padding-top:          0px;
-  padding-bottom:       0px;
-  border-radius:        0px;
   margin-left:          40px;
-  margin-right:         0px;
+  margin-right:         10px;
 
   &:hover
   {
     text-decoration:    underline solid;
-    filter:             none;  
   }
 
   &[State="SHOWN"]::after  
@@ -259,17 +259,39 @@ button
     text-decoration:    underline;
   }
 
-  button  
+  .Button
   {
+    display:           inline-block;
+    cursor:            default;
     border:            1px solid $NavbarLineColor;
-    border-radius:     0px;
-    font-size:         80%; 
     height:            26px;
-  
-    &:disabled, &:hover:disabled    
+    line-height:       26px;
+    padding-left:      6px;
+    padding-right:     6px;
+    color:             rgb(255, 255, 255);
+    background:        scale-color($NavbarBackground, $lightness : 10%);
+    text-align:        center;
+
+    &:hover
+    {
+      background:      rgb(0, 128, 0);
+    }
+
+    &[Disabled], &[Disabled]:hover
     {
       color:           #757575;
+      background:      scale-color($NavbarBackground, $lightness : 10%);
     }
+
+    &[Active]::before
+    {
+      content:         "[";      
+    }
+
+    &[Active]::after
+    {
+      content:         "]";      
+    }    
   }
 
   select  
@@ -469,7 +491,7 @@ body[Type="apropos"]
 
   #ByNameButton, #BySectionButton  
   {
-    width:             7em;  
+    width:             5em;  
   }
 
   .AproposSectionBar  
