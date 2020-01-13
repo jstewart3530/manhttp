@@ -67,100 +67,49 @@ function ShowAll
 {
   for (let s of this.SectionNames)
   {
-    ShowSection (s, this.state);
+    ShowSection (s, "show");
   }
 }
 
 
-function SortByName
-   (event)
+function HideAll
+   ()
 
 {
-  if (SortMode === "BYNAME")
-  	return;
-
-  SortMode = "BYNAME";
-
-
-  ByNameBtn.setAttribute ("Active", "1");
-  BySectionBtn.removeAttribute ("Active");
-  ShowAllBtn.onclick = function (event) { };
-  ShowAllBtn.setAttribute ("Disabled", "1");
-
-  HideAllBtn.onclick = function (event) { };
-  HideAllBtn.setAttribute ("Disabled", "1");
-
-  results.sort (CompareByName);
-
-
-  for (let c of [... ResultsDiv.children].reverse ())
+  for (let s of this.SectionNames)
   {
-  	ResultsDiv.removeChild (c);
-  }
-
-
-  let table = document.createElement ("table"); 
-  table.className = "AproposTable";
-  ResultsDiv.append (table);
-
-  let row, cell, content;
-  
-  row = document.createElement ("tr");
-  row.className = "AproposTableHeader";
-  table.append (row);
-  
-  cell = document.createElement ("th");
-  cell.setAttribute ("Column", "page");
-  cell.textContent = "Page";
-  row.append (cell);
-  
-  cell = document.createElement ("th");
-  cell.setAttribute ("Column", "description");
-  cell.textContent = "Description";
-  row.append (cell);
-  
-  
-  let n = results.length;
-  for (let i = 0; i < n; i++)
-  {
-    let [page, section, description] = results [i];
-    let prefix = (page.indexOf (":") >= 0) ? UriPrefix : "";
-  
-    row = document.createElement ("tr");
-    row.className = "AproposTableRow";
-    table.append (row);
-  
-    cell = document.createElement ("td");
-    row.append (cell);
-    content = document.createElement ("a");
-    content.textContent = `${page}(${section})`;
-    content.setAttribute ("RefType", "manpage");
-    content.setAttribute ("href", `${prefix}man/${page}(${section})`);
-    content.setAttribute ("target", "_blank");
-    cell.append (content);
-  
-    cell = document.createElement ("td");
-    row.append (cell);  
-    cell.textContent = description;
+    ShowSection (s, "hide");
   }
 }
 
 
-
-function SortBySection
-   (event)
+function SetSortMode
+   (mode)
 
 {
-  if (SortMode === "BYSECTION")
+  let fBySection;
+
+  switch (mode)
+  {
+    case "bysection":   fBySection = true;   break;
+    case "byname":      fBySection = false;  break;
+    default:            return;
+  }
+
+  if (SortMode === mode)
     return;
 
-  SortMode = "BYSECTION";
+  SortMode = mode;
 
 
-  ByNameBtn.removeAttribute ("Active");
-  BySectionBtn.setAttribute ("Active", "1");
+  results.sort (fBySection ? CompareBySection : CompareByName);
 
-  results.sort (CompareBySection);
+
+  (fBySection ? ByNameBtn : BySectionBtn)
+       .removeAttribute ("Active");
+
+  (fBySection ? BySectionBtn : ByNameBtn)
+       .setAttribute ("Active", "1");
 
 
   for (let c of [... ResultsDiv.children].reverse ())
@@ -172,13 +121,36 @@ function SortBySection
   let bar, HideBtn, container, table, row, cell, content;
   let PrevSection = null, n = results.length, sections = [];
 
+  
+  if (!fBySection)
+  {
+    table = document.createElement ("table"); 
+    table.className = "AproposTable";
+    ResultsDiv.append (table);
+  
+    row = document.createElement ("tr");
+    row.className = "AproposTableHeader";
+    table.append (row);
+    
+    cell = document.createElement ("th");
+    cell.setAttribute ("Column", "page");
+    cell.textContent = "Page";
+    row.append (cell);
+    
+    cell = document.createElement ("th");
+    cell.setAttribute ("Column", "description");
+    cell.textContent = "Description";
+    row.append (cell);
+  }
+
 
   for (let i = 0; i < n; i++)
   {
     let [page, section, description] = results [i];    
     let prefix = (page.indexOf (":") >= 0) ? UriPrefix : "";
   
-    if (section != PrevSection)
+
+    if (fBySection && (section != PrevSection))
     {
       let ElementID = "Section_" + section;
       let description = SectionDefs [section.toLowerCase ()];
@@ -234,7 +206,6 @@ function SortBySection
       row.append (cell);
 
       sections.push (section);
-
       PrevSection = section;
     }
 
@@ -246,7 +217,7 @@ function SortBySection
     cell = document.createElement ("td");
     row.append (cell);
     content = document.createElement ("a");
-    content.textContent = page;
+    content.textContent = fBySection ? page : `${page}(${section})`;
     content.setAttribute ("href", `${prefix}man/${page}(${section})`);
     content.setAttribute ("target", "_blank");
     content.setAttribute ("RefType", "manpage");
@@ -258,17 +229,28 @@ function SortBySection
   }
 
 
-  ShowAllBtn.onclick = ShowAll.bind ({ SectionNames : sections, state : "show" });
-  ShowAllBtn.removeAttribute ("Disabled");
+  if (fBySection)
+  {
+    ShowAllBtn.onclick = ShowAll.bind ({ SectionNames : sections });
+    ShowAllBtn.removeAttribute ("Disabled");
 
-  HideAllBtn.onclick = ShowAll.bind ({ SectionNames : sections, state : "hide" });
-  HideAllBtn.removeAttribute ("Disabled");
+    HideAllBtn.onclick = HideAll.bind ({ SectionNames : sections });
+    HideAllBtn.removeAttribute ("Disabled");
+  }
+  else
+  {
+    ShowAllBtn.onclick = function (event) {};
+    ShowAllBtn.setAttribute ("Disabled", "1");
+
+    HideAllBtn.onclick = function (event) {};
+    HideAllBtn.setAttribute ("Disabled", "1");
+  }
 }
 
 
 
-ByNameBtn.onclick = SortByName;
-BySectionBtn.onclick = SortBySection;
+ByNameBtn.onclick = function (event) { SetSortMode ("byname"); };
+BySectionBtn.onclick = function (event) { SetSortMode ("bysection"); };
 
-SortBySection (null);
+SetSortMode ("bysection");
 
