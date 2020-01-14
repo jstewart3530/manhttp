@@ -4,8 +4,11 @@ const BySectionBtn = document.getElementById ("BySectionButton");
 const ByNameBtn = document.getElementById ("ByNameButton");
 const ResultsDiv = document.getElementById ("Results");
 
-let SortMode = null;
+const TitleSeparator = "\u2002\u2014\u2002";
 
+
+let SortMode = null;
+let nSections = 0;
 
 
 function CompareBySection
@@ -30,7 +33,7 @@ function ShowSection
     state)
 
 {
-  let content = document.getElementById ("Section_" + section);
+  let content = document.getElementById (`Section_${section}`);
   let fCurrentState = (content.getAttribute ("State") != "HIDDEN");
   let fShow;
 
@@ -65,9 +68,9 @@ function ShowAll
    ()
 
 {
-  for (let s of this.SectionNames)
+  for (let i = 0; i < nSections; i++)
   {
-    ShowSection (s, "show");
+    ShowSection (i, "show");
   }
 }
 
@@ -76,9 +79,9 @@ function HideAll
    ()
 
 {
-  for (let s of this.SectionNames)
+  for (let i = 0; i < nSections; i++)
   {
-    ShowSection (s, "hide");
+    ShowSection (i, "hide");
   }
 }
 
@@ -119,7 +122,10 @@ function SetSortMode
 
 
   let bar, HideBtn, container, table, row, cell, content;
-  let PrevSection = null, n = results.length, sections = [];
+  let PrevSection = null, nResults = results.length, n = 0;
+  let LinkText = fBySection
+                    ? ((PageName, section) => PageName)
+                    : ((PageName, section) => `${PageName}(${section})`);
 
   
   if (!fBySection)
@@ -144,7 +150,7 @@ function SetSortMode
   }
 
 
-  for (let i = 0; i < n; i++)
+  for (let i = 0; i < nResults; i++)
   {
     let [page, section, description] = results [i];    
     let prefix = (page.indexOf (":") >= 0) ? UriPrefix : "";
@@ -152,26 +158,24 @@ function SetSortMode
 
     if (fBySection && (section != PrevSection))
     {
-      let ElementID = "Section_" + section;
-      let description = SectionDefs [section.toLowerCase ()];
-      let title = description 
-                     ? `Section ${section}\u2002\u2014\u2002${description}`
-                     : `Section ${section}`;
+      let ElementID = `Section_${n}`;
+      let FullSectionTitle = SectionDefs [section.toLowerCase ()];
 
 
       bar = document.createElement ("div");
-      bar.id = `Section_${section}_HeaderBar`;
+      bar.id = ElementID + "_HeaderBar";
       bar.className = "AproposSectionBar";
-      bar.textContent = title;
+      bar.textContent = (FullSectionTitle && (FullSectionTitle != ""))
+                          ? `Section ${section}${TitleSeparator}${FullSectionTitle}`
+                          : `Section ${section}`
       bar.setAttribute ("State", "SHOWN");
       ResultsDiv.append (bar);
 
       HideBtn = document.createElement ("span");
-      HideBtn.id = `Section_${section}_HideButton`;
+      HideBtn.id = ElementID + "_HideButton";
       HideBtn.className = "HideButton";
-      HideBtn.style.marginLeft = "50px";
       HideBtn.setAttribute ("State", "SHOWN");
-      HideBtn.onclick = new Function ("event", `ShowSection ("${section}", "toggle");`);
+      HideBtn.onclick = new Function ("event", `ShowSection (${n}, "toggle");`);
       bar.append (HideBtn);
 
  
@@ -205,10 +209,9 @@ function SetSortMode
       cell.textContent = "Description";
       row.append (cell);
 
-      sections.push (section);
       PrevSection = section;
+      n++;
     }
-
 
     row = document.createElement ("tr");
     row.className = "AproposTableRow";
@@ -217,32 +220,27 @@ function SetSortMode
     cell = document.createElement ("td");
     row.append (cell);
     content = document.createElement ("a");
-    content.textContent = fBySection ? page : `${page}(${section})`;
+    content.textContent = LinkText (page, section);
     content.setAttribute ("href", `${prefix}man/${page}(${section})`);
     content.setAttribute ("target", "_blank");
     content.setAttribute ("RefType", "manpage");
     cell.append (content);
   
     cell = document.createElement ("td");
-    row.append (cell);  
     cell.textContent = description;
+    row.append (cell);  
   }
 
+  nSections = n;
 
   if (fBySection)
   {
-    ShowAllBtn.onclick = ShowAll.bind ({ SectionNames : sections });
     ShowAllBtn.removeAttribute ("Disabled");
-
-    HideAllBtn.onclick = HideAll.bind ({ SectionNames : sections });
     HideAllBtn.removeAttribute ("Disabled");
   }
   else
   {
-    ShowAllBtn.onclick = function (event) {};
     ShowAllBtn.setAttribute ("Disabled", "1");
-
-    HideAllBtn.onclick = function (event) {};
     HideAllBtn.setAttribute ("Disabled", "1");
   }
 }
@@ -251,6 +249,8 @@ function SetSortMode
 
 ByNameBtn.onclick = function (event) { SetSortMode ("byname"); };
 BySectionBtn.onclick = function (event) { SetSortMode ("bysection"); };
+ShowAllBtn.onclick = ShowAll;
+HideAllBtn.onclick = HideAll;
 
 SetSortMode ("bysection");
 
