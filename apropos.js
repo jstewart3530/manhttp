@@ -1,10 +1,10 @@
+const TitleSeparator = "\u2002\u2014\u2002";
+
 const ShowAllBtn = document.getElementById ("ShowAllButton");
 const HideAllBtn = document.getElementById ("HideAllButton");
 const BySectionBtn = document.getElementById ("BySectionButton");
 const ByNameBtn = document.getElementById ("ByNameButton");
 const ResultsDiv = document.getElementById ("Results");
-
-const TitleSeparator = "\u2002\u2014\u2002";
 
 
 let SortMode = null;
@@ -12,7 +12,8 @@ let nSections = 0;
 
 
 function CompareBySection
-   (left, right)
+   (left, 
+    right)
 
 {
   let t = left [1].localeCompare (right [1]);
@@ -21,7 +22,8 @@ function CompareBySection
 
 
 function CompareByName
-   (left, right)
+   (left,
+    right)
 
 {
   return left [0].localeCompare (right [0]);
@@ -105,14 +107,23 @@ function SetSortMode
   SortMode = mode;
 
 
+  if (fBySection)
+  {
+    ShowAllBtn.removeAttribute ("Disabled");
+    HideAllBtn.removeAttribute ("Disabled");
+    ByNameBtn.removeAttribute ("Active");
+    BySectionBtn.setAttribute ("Active", "1");
+  }
+  else
+  {
+    ShowAllBtn.setAttribute ("Disabled", "1");
+    HideAllBtn.setAttribute ("Disabled", "1");
+    BySectionBtn.removeAttribute ("Active");
+    ByNameBtn.setAttribute ("Active", "1");
+  }
+
+
   results.sort (fBySection ? CompareBySection : CompareByName);
-
-
-  (fBySection ? ByNameBtn : BySectionBtn)
-       .removeAttribute ("Active");
-
-  (fBySection ? BySectionBtn : ByNameBtn)
-       .setAttribute ("Active", "1");
 
 
   for (let c of [... ResultsDiv.children].reverse ())
@@ -153,13 +164,12 @@ function SetSortMode
   for (let i = 0; i < nResults; i++)
   {
     let [page, section, description] = results [i];    
-    let prefix = (page.indexOf (":") >= 0) ? UriPrefix : "";
   
 
     if (fBySection && (section != PrevSection))
     {
       let ElementID = `Section_${n}`;
-      let FullSectionTitle = SectionDefs [section.toLowerCase ()];
+      let FullSectionTitle = SectionTitles [section.toLowerCase ()];
 
 
       bar = document.createElement ("div");
@@ -213,6 +223,9 @@ function SetSortMode
       n++;
     }
 
+
+    let prefix = (page.indexOf (":") >= 0) ? UriPrefix : "";
+
     row = document.createElement ("tr");
     row.className = "AproposTableRow";
     table.append (row);
@@ -232,19 +245,7 @@ function SetSortMode
   }
 
   nSections = n;
-
-  if (fBySection)
-  {
-    ShowAllBtn.removeAttribute ("Disabled");
-    HideAllBtn.removeAttribute ("Disabled");
-  }
-  else
-  {
-    ShowAllBtn.setAttribute ("Disabled", "1");
-    HideAllBtn.setAttribute ("Disabled", "1");
-  }
 }
-
 
 
 ByNameBtn.onclick = function (event) { SetSortMode ("byname"); };
@@ -252,5 +253,14 @@ BySectionBtn.onclick = function (event) { SetSortMode ("bysection"); };
 ShowAllBtn.onclick = ShowAll;
 HideAllBtn.onclick = HideAll;
 
+
 SetSortMode ("bysection");
+
+
+let text = (results.length == 1)
+             ? "1 page"
+             : `${results.length} pages in ${nSections} section${(nSections == 1) ? "" : "s"}`;
+
+document.getElementById ("Nav-Apropos-NResults").innerHTML 
+      = "<span Label=\"\">Results:</span>" + text;
 

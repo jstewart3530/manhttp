@@ -81,9 +81,7 @@ void AproposResultsToHTML
 
   fprintf (stream, 
            "<div id=\"NavBar\">\n"
-           "<div id=\"Nav-Apropos-NResults\">\n"
-           "<span Label=\"1\">Results found:</span>%d\n"
-           "</div>\n"
+           "<div id=\"Nav-Apropos-NResults\"></div>\n"
            "<div id=\"Nav-Apropos-Sort\">\n"
            "<span Label=\"1\">Sort by:</span>"
            "<span id=\"ByNameButton\" class=\"Button FormatSelector\">Name</span>\n"
@@ -95,8 +93,7 @@ void AproposResultsToHTML
            "&nbsp;\n"
            "<span id=\"HideAllButton\" class=\"Button\">Hide all</span>\n"
            "</div>\n"           
-           "</div>\n",
-           nResults);
+           "</div>\n");
 
 
   fprintf (stream, 
@@ -110,7 +107,7 @@ void AproposResultsToHTML
   fprintf (stream, "%s", AdjustMarginCode);
 
 
-  fprintf (stream, "const SectionDefs =\n{\n");
+  fprintf (stream, "const SectionTitles =\n{\n");
   for (i = 0; ManualSections [i] != NULL; i += 2)
   {
     JSEscapeString (ManualSections [i], id, sizeof (id));

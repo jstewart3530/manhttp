@@ -120,46 +120,6 @@ a[RefType="uri"]:hover
 
 //   -----  Controls  -----
 
-button
-{
-  background:          #006500;
-  border:              1px solid #006500;
-  border-radius:       5px;
-  color:               #ffffff;
-  font-family:         $ControlFont;
-  font-size:           15px;
-  padding-top:         2px;
-  padding-bottom:      2px; 
-
-  &:hover
-  {
-  	filter:            brightness(120%);
-  }
-
-  &:disabled:hover
-  {
-  	filter:            none;
-  }
-
-  &:disabled 
-  {
-    background:        #c0c0c0;
-    color:             #656565;
-    border:            1px solid #808080;
-  }
-
-  &[Active]::before
-  {
-    content:           "[\00a0";  
-  }
-
-  &[Active]::after  
-  {
-    content:           "\00a0]";  
-  }
-}
-
-
 .HideButton
 {
   display:              inline-block;
@@ -264,8 +224,8 @@ button
     display:           inline-block;
     cursor:            default;
     border:            1px solid $NavbarLineColor;
-    height:            26px;
-    line-height:       26px;
+    height:            24px;
+    line-height:       24px;
     padding-left:      6px;
     padding-right:     6px;
     color:             rgb(255, 255, 255);
