@@ -397,7 +397,7 @@ body[Type="info"]
     padding-bottom:        5px;
     margin-bottom:         40px;    
 
-    &[ULType="star"], &[ULType="equals"]  
+    &[ULType="star"], &[ULType="equals"]
     {  
       font-size:           25px;  
       padding-top:         5px;
@@ -413,7 +413,7 @@ body[Type="info"]
         }
       }
     }
-   
+
     > span[Number]    
     {
       color:               $TitleBarTextColor2;
@@ -429,8 +429,15 @@ body[Type="info"]
 
   .InfoFootnotes  
   {
-    padding-top:           10px;
-    border-top:            1px dotted $AccentColor2;
+    margin-top:           10px;
+
+    > .Separator
+    {
+      display:             inline-block;
+      width:               200px;
+      border-top:          1px dotted $MainTextColor;
+      margin-bottom:       15px;
+    }
 
     > pre
     {

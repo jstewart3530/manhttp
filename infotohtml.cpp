@@ -345,10 +345,24 @@ void InfoToHTML
         pHtml = (char*) malloc (cbMax);
         HTMLizeText (pHtml, cbMax, pText, length, pAttributes, &FormatInfo, 0);
 
-        fprintf (stream, "%s<pre>\n%s\n</pre>\n%s", 
-                 fIsFootnote ? "<div class=\"InfoFootnotes\">\n" : "",
-                 pHtml,
-                 fIsFootnote ? "</div>\n" : "");
+        if (fIsFootnote)
+        {
+          fprintf (stream, 
+                   "<div class=\"InfoFootnotes\">\n"
+                   "<div class=\"Separator\"></div>\n"
+                   "<pre>\n"
+                   "%s\n"
+                   "</pre>\n"
+                   "</div>\n\n\n",
+                   pHtml);
+        }
+        else
+        {
+          fprintf (stream, 
+                   "<pre>\n%s\n</pre>\n\n\n",
+                   pHtml);
+        }
+
         free (pHtml);
         free (pAttributes);
         break;

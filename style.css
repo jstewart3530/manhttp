@@ -82,7 +82,9 @@ body[Type="info"] .InfoTitle > span[Number] { color: #e0e0e0; font-family: "Amaz
 
 body[Type="info"] .InfoTitle > span[Number]::after { content: "\2002\2502\2002\2002"; color: #8b95ae; }
 
-body[Type="info"] .InfoFootnotes { padding-top: 10px; border-top: 1px dotted #c3c3c3; }
+body[Type="info"] .InfoFootnotes { margin-top: 10px; }
+
+body[Type="info"] .InfoFootnotes > .Separator { display: inline-block; width: 200px; border-top: 1px dotted #454545; margin-bottom: 15px; }
 
 body[Type="info"] .InfoFootnotes > pre { font-size: 80%; }
 
