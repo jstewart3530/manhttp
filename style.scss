@@ -80,6 +80,30 @@ $NavbarLineColor         : #909090;
 
 
 
+@mixin HeaderBar($Width)
+{
+  display:          inline-block;
+  width:            $Width;
+  font-family:      $TitleFont;
+  font-size:        16px;
+  font-style:       italic;
+  font-weight:      normal;
+  color:            $TitleBarTextColor1;
+  background:       $TitleBarBackground;
+  height:           30px;
+  line-height:      30px;
+  padding-left:     18px;
+  text-align:       left;
+  margin-top:       0px;
+
+  &[State="HIDDEN"]    
+  {
+    border-bottom:    1px solid $MainBackground;
+  }  
+}
+
+
+
 //   -----  General formatting  -----
 
 
@@ -124,8 +148,8 @@ a[RefType="uri"]:hover
 {
   display:              inline-block;
   cursor:               default;
-  height:               30px;
-  line-height:          30px;
+  height:               inherit;
+  line-height:          inherit;
   background:           inherit;
   border:               none;
   font-family:          $ControlFont;
@@ -329,24 +353,7 @@ body[Type="man"]
 
   .HeaderBar
   {
-    display:          inline-block;
-    font-family:      $TitleFont;
-    font-size:        18px;
-    font-style:       italic;
-    font-weight:      normal;
-    color:            $TitleBarTextColor1;
-    background:       $TitleBarBackground;
-    width:            680px;
-    height:           30px;
-    line-height:      30px;
-    padding-left:     18px;
-    text-align:       left;
-    margin-top:       0px;
-  
-    &[State="HIDDEN"]    
-    {
-      border-bottom:    1px solid $MainBackground;
-    }     
+    @include HeaderBar(680px);
   }  
 }
 
@@ -456,30 +463,8 @@ body[Type="apropos"]
 
   .AproposSectionBar  
   {
-    display:          block;
-    font-family:      $TitleFont;
-    font-style:       italic;
-    font-weight:      normal;
-    font-size:        17px;
-    color:            $TitleBarTextColor1;
-    background:       $TitleBarBackground;
-    line-height:      30px;
-    height:           30px;
-    padding-left:     10px;
-    padding-right:    0px;
-    padding-top:      0px;
-    padding-bottom:   0px;
-    margin-left:      1px;
-    margin-right:     1px;
-    margin-top:       0px;
-    margin-bottom:    0px;
-    text-align:       left;
-    border-style:     none; 
-
-    &[State="HIDDEN"]    
-    {
-      border-bottom:    1px solid $MainBackground;
-    }  
+    @include HeaderBar(calc(100% - 22px));
+    margin-left:       2px;
   }
 
   .AproposContainer

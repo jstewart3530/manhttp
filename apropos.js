@@ -258,8 +258,7 @@ SetSortMode ("bysection");
 
 
 let text = (results.length == 1)
-             ? "1 page"
-             : `${results.length} pages in ${nSections} section${(nSections == 1) ? "" : "s"}`;
+             ? "1 page" : `${results.length} pages in ${nSections} section${(nSections == 1) ? "" : "s"}`;
 
 document.getElementById ("Nav-Apropos-NResults").innerHTML 
       = "<span Label=\"\">Results:</span>" + text;
