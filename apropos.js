@@ -11,13 +11,19 @@ let SortMode = null;
 let nSections = 0;
 
 
+let language = navigator.language || "en";
+let PageCollator = new Intl.Collator (language, { sensitivity : "case" });
+let SectionCollator = new Intl.Collator (language, { sensitivity : "base", numeric : true });
+
+
+
 function CompareBySection
    (left, 
     right)
 
 {
-  let t = left [1].localeCompare (right [1]);
-  return (t == 0) ? (left [0].localeCompare (right [0])) : t;
+  let t = SectionCollator.compare (left [1], right [1]);
+  return (t == 0) ? PageCollator.compare (left [0], right [0]) : t;
 }
 
 
@@ -26,7 +32,8 @@ function CompareByName
     right)
 
 {
-  return left [0].localeCompare (right [0]);
+  let t = PageCollator.compare (left [0], right [0]);
+  return (t == 0) ? SectionCollator.compare (left [1], right [1]) : t;
 }
 
 
@@ -92,7 +99,7 @@ function SetSortMode
    (mode)
 
 {
-  let fBySection;
+  let fBySection, Compare, LinkText;
 
   switch (mode)
   {
@@ -113,6 +120,9 @@ function SetSortMode
     HideAllBtn.removeAttribute ("Disabled");
     ByNameBtn.removeAttribute ("Active");
     BySectionBtn.setAttribute ("Active", "1");
+
+    Compare = CompareBySection;
+    LinkText = ((PageName, section) => PageName);
   }
   else
   {
@@ -120,10 +130,13 @@ function SetSortMode
     HideAllBtn.setAttribute ("Disabled", "1");
     BySectionBtn.removeAttribute ("Active");
     ByNameBtn.setAttribute ("Active", "1");
+
+    Compare = CompareByName;
+    LinkText = ((PageName, section) => `${PageName}(${section})`);
   }
 
 
-  results.sort (fBySection ? CompareBySection : CompareByName);
+  results.sort (Compare);
 
 
   for (let c of [... ResultsDiv.children].reverse ())
@@ -134,10 +147,7 @@ function SetSortMode
 
   let bar, HideBtn, container, table, row, cell, content;
   let PrevSection = null, nResults = results.length, n = 0;
-  let LinkText = fBySection
-                    ? ((PageName, section) => PageName)
-                    : ((PageName, section) => `${PageName}(${section})`);
-
+ 
   
   if (!fBySection)
   {
