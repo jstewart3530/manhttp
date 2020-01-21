@@ -300,9 +300,9 @@ void ManualPageToHTML
 
   fprintf (stream, 
            "&nbsp;\n"
-           "<span id=\"ShowAllBtn\" class=\"Button\">Show all</span>\n"
+           "<span id=\"ShowAllBtn\" class=\"Button\">Show all sections</span>\n"
            "&nbsp;\n"
-           "<span id=\"HideAllBtn\" class=\"Button\">Hide all</span>\n"
+           "<span id=\"HideAllBtn\" class=\"Button\">Hide all sections</span>\n"
            "</div>\n");
 
   fprintf (stream, "</div>\n\n\n");

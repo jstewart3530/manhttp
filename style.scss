@@ -36,13 +36,12 @@
 $MonoFont           : Hack, "Ubuntu Mono", "DejaVu Sans Mono",
                       Monaco, "Lucida Console", monospace;
 
-$ProportionalFont   : "Amazon Ember", "Clear Sans", 
-                      Roboto, Lato, "Source Sans Pro", Verdana,
-                      sans-serif;
+$ProportionalFont   : Roboto, "Amazon Ember", "Clear Sans", 
+                      Lato, "Source Sans Pro", sans-serif;
 
-$ControlFont        : $ProportionalFont;
+$ControlFont        : "Roboto Condensed", $ProportionalFont;
 
-$TitleFont          : $ProportionalFont;
+$TitleFont          : "Roboto Condensed", $ProportionalFont;
 
 $TitleNumberFont    : $TitleFont;
 
@@ -79,19 +78,20 @@ $NavbarBorderColor       : #000000;
 $NavbarLineColor         : #909090;
 
 
+$HeaderBarHeight         : 30px;
 
 @mixin HeaderBar($Width)
 {
   display:          inline-block;
   width:            $Width;
   font-family:      $TitleFont;
-  font-size:        16px;
+  font-size:        $HeaderBarHeight - 10px;
   font-style:       italic;
   font-weight:      normal;
   color:            $TitleBarTextColor1;
   background:       $TitleBarBackground;
-  height:           30px;
-  line-height:      30px;
+  height:           $HeaderBarHeight;
+  line-height:      $HeaderBarHeight;
   padding-left:     18px;
   text-align:       left;
   margin-top:       0px;
@@ -630,7 +630,7 @@ body[Type="splash"]
     {
       margin-top:        18px;
       margin-bottom:     18px;
-      border-bottom:     1px dotted $AccentColor1;
+      border-bottom:     1px dashed $AccentColor1;
     }
 
     input    
