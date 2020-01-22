@@ -45,6 +45,7 @@ struct APROPOSRESULT
 enum
 {
   INFO_SUCCESS                = 0,
+  INFO_ERROR                  = 1,
   INFO_NOT_FOUND              = -1,
   INFO_REDIRECT_TO_MAN_PAGE   = -2
 };
@@ -58,21 +59,21 @@ extern void manInitializeRegexes
    (void);
    
 
-extern int GetManPageContent
-   (const char   *pszExecutable,
-    const char   *pszPageTitle,
-    const char   *pszSection,
-    char        **ppDataOut,
-    int          *pcbDataOut,
-    int          *pExitCodeOut);
+extern bool GetManPageContent
+   (const char          *pExecutable,
+    const char          *pPageTitle,
+    const char          *pSection,
+    char               **ppDataOut,
+    int                 *pcbDataOut,
+    PROCESSERRORINFO    *pErrorOut);
 
 
-extern int GetAproposContent
-   (const char      *pszExecutable,
-    const char      *pszSearchKeyword,
-    APROPOSRESULT  **ppResultsOut,
-    int             *pnResultsOut,
-    int             *pExitCodeOut);
+extern bool GetAproposContent
+   (const char          *pExecutable,
+    const char          *pSearchKeyword,
+    APROPOSRESULT      **ppResultsOut,
+    int                 *pnResultsOut,
+    PROCESSERRORINFO    *pErrorOut);
 
 
 extern bool ParseManPageTitle
@@ -89,12 +90,13 @@ extern int InfoFileFromKeyword
     char        **ppFileOut);
   
 
-extern int GetInfoContent
-   (const char   *pExecutable,
-    const char   *pInfoFile,
-    const char   *pNodeName,
-    char        **ppDataOut,
-    int          *pcbDataOut);
+extern bool GetInfoContent
+   (const char         *pExecutable,
+    const char         *pInfoFile,
+    const char         *pNodeName,
+    char              **ppDataOut,
+    int                *pcbDataOut,
+    PROCESSERRORINFO   *pErrorOut);
 
 }
 

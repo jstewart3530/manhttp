@@ -55,6 +55,7 @@
 #include <sys/stat.h>
 #include <sys/types.h>
 #include <sys/socket.h>
+#include <sys/wait.h>
 #include <netinet/in.h>
 #include <netinet/tcp.h>
 #include <arpa/inet.h>
@@ -123,7 +124,7 @@ static void HandleManPageRequest (struct MHD_Connection*, const char*);
 static void HandleInfoRequest (struct MHD_Connection*, const char*); 
 static void HandleAproposRequest (struct MHD_Connection*, const char*); 
 static void GenerateSplashPage (struct MHD_Connection*, const char*);
-static void HandleInternalError (struct MHD_Connection*, const char*, int);
+static void HandleInternalError (struct MHD_Connection*, const char*, const PROCESSERRORINFO*);
 static void GenerateErrorPage (struct MHD_Connection*, const char*, 
                                int, const char*, ...)
        __attribute__ ((format (printf, 4, 5)));;
@@ -757,11 +758,13 @@ void HandleManPageRequest
     const char      *pPath)
 
 {
-  int result, ExitStatus, cbPageContent;
+  int cbPageContent;
+  bool fSuccess;
   size_t cbResponse = 0;
   char *pPageContent, *pResponse = NULL;
   FILE *stream;
   struct MHD_Response *pResp;
+  PROCESSERRORINFO error;
   char page [64], section [8], CanonicalID [80];
  
 
@@ -787,47 +790,45 @@ void HandleManPageRequest
   /*  Obtain the raw manual page text.
   */
 
-  result = GetManPageContent
-                (ManPath, 
-                 page, 
-                 section,
-                 &pPageContent,
-                 &cbPageContent,
-                 &ExitStatus);
+  fSuccess = GetManPageContent 
+                 (ManPath, page, section, &pPageContent,
+                  &cbPageContent, &error);
 
 
-  if ((result == 0) && (ExitStatus == 0))
+  if (!fSuccess)
   {
-    stream = open_memstream (&pResponse, &cbResponse);
-    ManualPageToHTML (stream, CanonicalID, pUriPrefix, pStylesheet, 
-                      pPageContent, cbPageContent);
-    fclose (stream);
+    if ((error.context == ERRORCTXT_OTHER)
+    	     && !WIFSIGNALED (error.ErrorCode))
+    {
+      GenerateErrorPage 
+              (pConn, "Not found", 404,
+               "No manual page is available for &ldquo;%s&rdquo;.",
+               CanonicalID);
+    }
+    else
+    {
+      HandleInternalError (pConn, ManPath, &error);
+    }
 
-    free (pPageContent);
+  	return;
+  }
 
 
-    pResp = MHD_create_response_from_buffer
+  stream = open_memstream (&pResponse, &cbResponse);
+  ManualPageToHTML (stream, CanonicalID, pUriPrefix, pStylesheet, 
+                    pPageContent, cbPageContent);
+  fclose (stream);
+
+  free (pPageContent);
+
+
+  pResp = MHD_create_response_from_buffer
                 (cbResponse, pResponse, MHD_RESPMEM_MUST_FREE);
     
-    MHD_add_response_header (pResp, "Content-Type", "text/html");
-    MHD_add_response_header (pResp, "Cache-Control", CachePolicy);
-    MHD_queue_response (pConn, 200, pResp);
-    MHD_destroy_response (pResp);
-    return; 
-  }
-
-
-  if (result == 0)
-  {
-    GenerateErrorPage 
-            (pConn, "Not found", 404,
-             "No manual page is available for &ldquo;%s&rdquo;.",
-             CanonicalID);
-  }
-  else
-  {
-    HandleInternalError (pConn, ManPath, result);
-  }
+  MHD_add_response_header (pResp, "Content-Type", "text/html");
+  MHD_add_response_header (pResp, "Cache-Control", CachePolicy);
+  MHD_queue_response (pConn, 200, pResp);
+  MHD_destroy_response (pResp);
 } 
 
 
@@ -848,6 +849,7 @@ void HandleInfoRequest
   char *pNodeName, *pContent, *pDecodedName;
   FILE *stream;
   struct MHD_Response *pResp;
+  PROCESSERRORINFO error;
   char keyword [128];
 
 
@@ -869,38 +871,43 @@ void HandleInfoRequest
   if ((pNodeName = strchr (keyword, '/')) != NULL)
   {
     *(pNodeName++) = '\0';
-
     pDecodedName = DecodeInfoNodeName (pNodeName, -1);
-    result = GetInfoContent (InfoPath, keyword, pDecodedName, &pContent, &cbContent);
-  
-    switch (result)
+
+
+    if (!GetInfoContent (InfoPath, keyword, pDecodedName, 
+                         &pContent, &cbContent, &error))
     {
-      case INFO_SUCCESS:
-        stream = open_memstream (&pResponse, &cbResponse);
-        InfoToHTML (stream, keyword, pDecodedName, pUriPrefix, pStylesheet,
-                    pContent, cbContent);
-        fclose (stream);
-
-        pResp = MHD_create_response_from_buffer
-                    (cbResponse, pResponse, MHD_RESPMEM_MUST_FREE);
-
-        MHD_add_response_header (pResp, "Content-Type", "text/html");
-        MHD_add_response_header (pResp, "Cache-Control", CachePolicy);
-        MHD_queue_response (pConn, 200, pResp);
-        MHD_destroy_response (pResp);
-        break;
-  
-      case INFO_NOT_FOUND:
-        GenerateErrorPage 
-             (pConn, "Node not found", 404,
-              "The Info file <span class=\"Filename\">%s</span> contains"
-              " no node with the name &ldquo;%s&rdquo;.",
-              keyword, pDecodedName);
-        break;
-  
-      default:
-        HandleInternalError (pConn, InfoPath, result);
+      free (pDecodedName);
+      HandleInternalError (pConn, InfoPath, &error);
+      return;    	
     }
+
+
+    if (pContent == NULL)
+    {
+      GenerateErrorPage 
+               (pConn, "Node not found", 404,
+                "The Info file <span class=\"Filename\">%s</span> contains"
+                " no node with the name &ldquo;%s&rdquo;.",
+                keyword, pDecodedName);
+
+      free (pDecodedName);
+      return;     
+    }
+
+
+    stream = open_memstream (&pResponse, &cbResponse);
+    InfoToHTML (stream, keyword, pDecodedName, pUriPrefix, pStylesheet,
+                pContent, cbContent);
+    fclose (stream);
+
+    pResp = MHD_create_response_from_buffer
+                (cbResponse, pResponse, MHD_RESPMEM_MUST_FREE);
+    
+    MHD_add_response_header (pResp, "Content-Type", "text/html");
+    MHD_add_response_header (pResp, "Cache-Control", CachePolicy);
+    MHD_queue_response (pConn, 200, pResp);
+    MHD_destroy_response (pResp);
 
     free (pContent);    
     free (pDecodedName);
@@ -950,9 +957,6 @@ void HandleInfoRequest
             "No Info file found for &ldquo;%s&rdquo;.",
             keyword);
       break;
-
-    default:
-      HandleInternalError (pConn, InfoPath, result);
   }
 
   free (pFile);
@@ -970,15 +974,24 @@ void HandleAproposRequest
     const char      *pPath)
 
 {
-  int nResults = 0, result, ExitCode;
+  int nResults = 0;
+  bool fSuccess;
   size_t cbResponse = 0;
   char *pResponse = NULL;
   APROPOSRESULT *pResultList = NULL;
   FILE *stream;
   struct MHD_Response *pResp;
   char keyword [80];
+  PROCESSERRORINFO error;
 
- 
+
+#if defined(TARGET_BSD)
+  static const char RebuildCommand [] = "makewhatis(8)";
+#else
+  static const char RebuildCommand [] = "mandb(8)";
+#endif
+
+
   if ((pPath [8] != '/')
          || (NormalizeSpaces (pPath + 9, keyword, sizeof (keyword)) == 0))
   {
@@ -987,48 +1000,49 @@ void HandleAproposRequest
   }
 
 
-  result = GetAproposContent (AproposPath, keyword, &pResultList, &nResults, &ExitCode);
+  fSuccess = GetAproposContent (AproposPath, keyword, &pResultList, &nResults, &error);
 
 
-  if ((result == 0) && (ExitCode == 0))
+  if (!fSuccess)
   {
-    stream = open_memstream (&pResponse, &cbResponse);
-    AproposResultsToHTML (stream, keyword, pUriPrefix, pStylesheet, pResultList, nResults);
-    fclose (stream);
+    if ((error.context == ERRORCTXT_OTHER)
+   	        && !WIFSIGNALED (error.ErrorCode))
+    {	
+      GenerateErrorPage 
+           (pConn, "Nothing found", 404,
+            "Apropos search for &ldquo;%s&rdquo; returned no results.\n"
+            "<div style=\"height: 1.5em\"></div>\n"
+            "If you keep getting this message, it is likely that the\n"
+            "system's manual page index needs to be updated.  You\n"
+            "(or the system administrator) can do this by running\n"
+            "<a href=\"man/%s\">%s</a>.\n",
+            keyword,
+            RebuildCommand,
+            RebuildCommand);
+    }
+    else
+    {
+      HandleInternalError (pConn, AproposPath, &error);
+    }
 
-    free (pResultList);
-
-
-    pResp = MHD_create_response_from_buffer
-                (cbResponse, pResponse, MHD_RESPMEM_MUST_FREE);
-
-    MHD_add_response_header (pResp, "Content-Type", "text/html");
-    MHD_add_response_header (pResp, "Cache-Control", CachePolicy);
-    MHD_queue_response (pConn, 200, pResp);
-    MHD_destroy_response (pResp);
-    return;
+    return;    	
   }
 
+
+  stream = open_memstream (&pResponse, &cbResponse);
+  AproposResultsToHTML (stream, keyword, pUriPrefix, pStylesheet, pResultList, nResults);
+  fclose (stream);
 
   free (pResultList);
 
 
-  if (result == -1)
-  {
-    GenerateErrorPage 
-         (pConn, "Nothing found", 404,
-          "Apropos search for &ldquo;%s&rdquo; returned no results.\n"
-          "<div style=\"height: 1.5em\"></div>\n"
-          "If you keep getting this message, it is likely that the\n"
-          "system's manual page index needs to be updated.  You\n"
-          "(or the system administrator) can do this by running\n"
-          "<a href=\"man/mandb(8)\">mandb</a>.\n",
-          keyword);
-  } 
-  else
-  {
-    HandleInternalError (pConn, AproposPath, result);
-  }
+  pResp = MHD_create_response_from_buffer
+              (cbResponse, pResponse, MHD_RESPMEM_MUST_FREE);
+
+  MHD_add_response_header (pResp, "Content-Type", "text/html");
+  MHD_add_response_header (pResp, "Cache-Control", CachePolicy);
+  MHD_queue_response (pConn, 200, pResp);
+  MHD_destroy_response (pResp);
 } 
 
 
@@ -1118,7 +1132,7 @@ void GenerateErrorPage
            "<base href=\"%s\">\n"                      
            "<style>\n%s\n</style>\n"
            "</head>\n"
-           "<body Type=\"splash\" ErrorPage=\"1\">\n",
+           "<body Type=\"splash\" ErrorPage=\"\">\n",
            pErrorType,
            pUriPrefix,
            pStylesheet);
@@ -1126,7 +1140,7 @@ void GenerateErrorPage
 
   fprintf (stream, "<div class=\"Splash\">\n");
 
-  fprintf (stream, "<p Heading=\"1\">%s</p>\n", pErrorType);
+  fprintf (stream, "<p Heading=\"\">%s</p>\n", pErrorType);
 
   if (strchr (pFormatStr, '%') == NULL)
   {
@@ -1169,40 +1183,112 @@ void GenerateErrorPage
 
 static
 void HandleInternalError
-   (MHD_Connection  *pConn,
-    const char      *pCommand,
-    int              idError)
+   (MHD_Connection          *pConn,
+    const char              *pCommandPath,
+    const PROCESSERRORINFO  *pError)
 
 {
   int cbMax;
-  const char *pMessage;
-  char *pErrorHTML;
+  size_t cbResponse = 0;
+  char *pResponse = NULL, *pErrorHTML = NULL;
+  const char *pCommand, *pMessage;
+  FILE *stream;
+  struct MHD_Response *pResp;
   char buffer [256] = "";
 
 
-  pMessage = strerror_r (idError, buffer, sizeof (buffer));
-  
-  if ((pMessage == NULL) || (pMessage [0] == '\0'))
-  {
-    snprintf (buffer, sizeof (buffer),
-              "(No error information was provided; error code=%d.)",
-              idError);
+  stream = open_memstream (&pResponse, &cbResponse);
 
-    pMessage = buffer;
+  fprintf (stream, 
+           "<!DOCTYPE html>\n\n"
+           "<html>\n"
+           "<head>\n"
+           "<title>MANHTTP Internal Error</title>\n"
+           "<meta http-equiv=\"content-type\" content=\"text/html; charset=UTF-8\">\n"
+           "<base href=\"%s\">\n"                      
+           "<style>\n%s\n</style>\n"
+           "</head>\n"
+           "<body Type=\"splash\" ErrorPage=\"\">\n",
+           pUriPrefix,
+           pStylesheet);
+
+
+  fprintf (stream, 
+           "<div class=\"Splash\">\n"
+           "<p Heading=\"\">Internal error</p>\n");
+
+
+  pCommand = strrchr (pCommandPath, '/');
+  pCommand = (pCommand == NULL) ? pCommandPath : (pCommand + 1);
+
+  fprintf (stream,
+           "MANHTTP encountered an unrecoverable error when running\n"
+           "<span class=\"Filename\">%s</span>.  Detailed error information\n"
+           "follows.\n<br>\n<br>\n",
+           pCommand);
+
+
+  if ((pError->context == ERRORCTXT_FORK_FAILED)
+         || (pError->context == ERRORCTXT_EXEC_FAILED))
+  {
+    pMessage = strerror_r (pError->ErrorCode, buffer, sizeof (buffer));
+    if ((pMessage == NULL) || (pMessage [0] == '\0'))
+    {
+      snprintf (buffer, sizeof (buffer),
+                "(No error information was provided; error code=%d.)",
+                 pError->ErrorCode);
+      pMessage = buffer;
+    }
+
+    cbMax = strlen (pMessage) * 5 + 1;
+    pErrorHTML = (char*) malloc (cbMax);
+    HTMLizeText (pErrorHTML, cbMax, pMessage, -1, NULL, NULL, 0);
+
+
+    if (pError->context == ERRORCTXT_EXEC_FAILED)
+    {
+      fprintf (stream,
+               "Unable to execute <span class=\"Filename\">%s</span>.<br>\n"
+               "%s\n",
+               pCommandPath,
+               pErrorHTML);
+    }
+    else
+    {
+      fprintf (stream,
+               "Unable to create a new process.<br>\n"
+               "%s\n",
+               pErrorHTML);
+    }
+
+    free (pErrorHTML);
+  }
+  else
+  {
+    if (WIFSIGNALED (pError->ErrorCode))
+    {
+      fprintf (stream,
+               "Process was terminated unexpectedly.<br>\n"
+               "Signal ID: %d\n",
+               WTERMSIG (pError->ErrorCode));
+    }
   }
 
 
-  cbMax = strlen (pMessage) * 5 + 1;
-  pErrorHTML = (char*) malloc (cbMax);
-  HTMLizeText (pErrorHTML, cbMax, pMessage, -1, NULL, NULL, 0);
+  fprintf (stream, 
+           "<p style=\"font-size: 75%%; margin-top: 40px; margin-bottom: 3px;\">\n"
+           "<a href=\"/\">MANHTTP home</a>\n"
+           "</p>\n"
+           "</div>\n</body>\n</html>\n");
+
+  fclose (stream);
 
 
-  GenerateErrorPage
-       (pConn, "Unable to run command", 500,
-        "MANHTTP encountered the following error when running <br>\n"        
-        "<span class=\"Filename\">%s</span>:\n"
-        "<p>\n%s\n</p>",
-        pCommand, pErrorHTML);
+  pResp = MHD_create_response_from_buffer
+              (cbResponse, pResponse, MHD_RESPMEM_MUST_FREE);
 
-  free (pErrorHTML);       
+  MHD_add_response_header (pResp, "Content-Type", "text/html");
+  MHD_add_response_header (pResp, "Cache-Control", CachePolicy);
+  MHD_queue_response (pConn, 500, pResp);
+  MHD_destroy_response (pResp);  
 }

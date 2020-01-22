@@ -351,14 +351,14 @@ void SetCloseOnExec
 -~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-*/
 
 bool CreateChildProcess
-    (pid_t          *pidOut,     
-     int            *pResultOut,   
-     const char     *pszExecutable,
-     const char    **ppszArguments,
-     int             flags,
-     int            *pfdStdInput,
-     int            *pfdStdOutput,
-     int            *pfdStdError)
+   (pid_t              *pidOut,     
+    PROCESSERRORINFO   *pErrorOut,   
+    const char         *pszExecutable,
+    const char        **ppszArguments,
+    int                 flags,
+    int                *pfdStdInput,
+    int                *pfdStdOutput,
+    int                *pfdStdError)
 
 {
   int result = 0, fdInput = -1, fdOutput = -1, fdError = -1;
@@ -435,7 +435,8 @@ bool CreateChildProcess
 
   if ((idChild = fork ()) < 0)
   {
-    result = errno;
+    pErrorOut->context     = ERRORCTXT_FORK_FAILED;
+    pErrorOut->ErrorCode   = errno;
     fSuccess = false;
   }
 
@@ -514,6 +515,9 @@ bool CreateChildProcess
     {
       read (fdFailurePipe [0], &result, sizeof (int));
       waitpid (idChild, NULL, 0);
+
+      pErrorOut->context    = ERRORCTXT_EXEC_FAILED;
+      pErrorOut->ErrorCode  = result;      
       fSuccess = false;
     }
   }
@@ -545,11 +549,6 @@ bool CreateChildProcess
  
 
   *pidOut = idChild;
-
-  if (pResultOut != NULL)
-  {
-    *pResultOut = result;
-  }
 
   if (pfdStdInput != NULL)
   {

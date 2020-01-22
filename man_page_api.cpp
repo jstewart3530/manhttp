@@ -45,43 +45,6 @@ static regex_t ParseRegex;
 
 
 
-#define MAX_ARGUMENTS        8
-
-
-
-/*  Templates for formatting the command arguments passed to man(1).  These 
-*   are system-dependent; for example, only the Linux man(1) understands the 
-*   "--encoding" option.  The placeholder arguments "$Page" and "$Section" 
-*   are replaced with the page name and section identifier, respectively. 
-*   The last element of each array must be NULL.   
-*/
-
-#if defined(TARGET_BSD)
-
-static const char *PageAndSectionArgs []
-     = { "$Section", "$Page", NULL };
-static const char *PageOnlyArgs []
-     = { "$Page", NULL };
-
-#elif defined(TARGET_SOLARIS)
-
-static const char *PageAndSectionArgs []
-     = { "-s", "$Section", "$Page", NULL };
-static const char *PageOnlyArgs []
-     = { "$Page", NULL };
-
-#else
-
-static const char *PageAndSectionArgs []
-     = { "--encoding=UTF-8", "$Section", "$Page", NULL };
-static const char *PageOnlyArgs []
-     = { "--encoding=UTF-8", "$Page", NULL };
-
-#endif
-
-
-
-
 /*-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-
                                                                       Min
 -~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-*/
@@ -127,56 +90,43 @@ void manInitializeRegexes
                                                         GetManPageContent
 -~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-*/
 
-int GetManPageContent
-   (const char    *pExecutable,
-    const char    *pPageTitle,
-    const char    *pSection,
-    char         **ppDataOut,
-    int           *pcbDataOut,
-    int           *pExitCodeOut)
+bool GetManPageContent
+   (const char          *pExecutable,
+    const char          *pPageTitle,
+    const char          *pSection,
+    char               **ppDataOut,
+    int                 *pcbDataOut,
+    PROCESSERRORINFO    *pErrorOut)
 
 {
-  int i, fdOutput, result, status, cbData;
+  int nArgs = 0, fdOutput, status = 0, cbData;
   pid_t pid;
   char *pData;
-  const char *pArg, **ppArgs, *pArguments [MAX_ARGUMENTS];
+  const char *pCommand, *pArguments [8];
 
 
   *ppDataOut = NULL;
   *pcbDataOut = 0;
-  *pExitCodeOut = 0;
 
  
-  /*  Construct the argument list.  The first argument is always
-  *   the command name; the rest of the arguments are defined
-  *   by the template arrays PageOnlyArgs and PageAndSectionArgs.
+  /*  Construct the argument list.
   */
 
-  pArguments [0] = ((pArg = strrchr (pExecutable, '/')) == NULL) 
-                      ? pExecutable 
-                      : (pArg + 1);
+  pArguments [nArgs++] = ((pCommand = strrchr (pExecutable, '/')) == NULL)
+                             ? pExecutable
+                             : (pCommand + 1);
 
-  ppArgs = ((pSection == NULL) || (pSection [0] == '\0'))
-              ? PageOnlyArgs
-              : PageAndSectionArgs;
+#if !defined(TARGET_BSD)
+  pArguments [nArgs++] = "--encoding=UTF-8";
+#endif
 
-  for (i = 1; (pArg = *ppArgs) != NULL; ppArgs++, i++)
+  if ((pSection != NULL) && (pSection [0] != '\0'))
   {
-    if (strcmp (pArg, "$Page") == 0)
-    {
-      pArguments [i] = pPageTitle;
-    }
-    else if (strcmp (pArg, "$Section") == 0)
-    {
-      pArguments [i] = pSection;
-    }
-    else      
-    {
-      pArguments [i] = pArg;
-    }  
+    pArguments [nArgs++] = pSection;
   }
 
-  pArguments [i] = NULL;
+  pArguments [nArgs++] = pPageTitle;
+  pArguments [nArgs] = NULL;  
 
 
   /*  Set environment variables that man(1) needs.
@@ -190,10 +140,10 @@ int GetManPageContent
   /*  Run man(1) as a child process.
   */
 
-  if (!CreateChildProcess (&pid, &result, pExecutable, pArguments,
+  if (!CreateChildProcess (&pid, pErrorOut, pExecutable, pArguments,
                            STDIN_NULL | STDOUT_REDIRECT | STDERR_NULL, 
                            NULL, &fdOutput, NULL))
-    return result;
+    return false;
 
 
   /*  Capture the output from man(1) into a buffer.
@@ -208,11 +158,22 @@ int GetManPageContent
 
   waitpid (pid, &status, 0);
 
-  *pExitCodeOut = WEXITSTATUS (status);
+
+  if (WIFSIGNALED (status) || (WEXITSTATUS (status) != 0))
+  {
+    free (pData);
+
+    pErrorOut->context    = ERRORCTXT_OTHER;
+    pErrorOut->ErrorCode  = status;
+
+    return false;
+  }
+
+
   *ppDataOut = pData;
   *pcbDataOut = cbData;
 
-  return 0;
+  return true;
 }
 
 
@@ -221,44 +182,49 @@ int GetManPageContent
                                                         GetAproposContent
 -~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-*/
 
-int GetAproposContent
-   (const char      *pExecutable,
-    const char      *pSearchKeyword,
-    APROPOSRESULT  **ppResultsOut,
-    int             *pnResultsOut,
-    int             *pExitCodeOut)
+bool GetAproposContent
+   (const char          *pExecutable,
+    const char          *pSearchKeyword,
+    APROPOSRESULT      **ppResultsOut,
+    int                 *pnResultsOut,
+    PROCESSERRORINFO    *pErrorOut)
 
 {
-  int i, status, ExitStatus, index, fdOutput, result, nLines, cbData;
+  int i, status = 0, index, fdOutput, nLines, cbData;
+  int nArgs = 0;
   pid_t pid;
   char c, *p, *pData, *pLine, *pNextLine;
   char *pPageTitle, *pSection, *pDescription;
   APROPOSRESULT *pResults;
-  const char *pCmd, *pArgs [4];
+  const char *pCommand, *pArguments [5];
 
 
   *ppResultsOut = NULL;
   *pnResultsOut = 0;
-  *pExitCodeOut = 0;
 
   
   /*  Construct the argument list.
   */
 
-  pCmd = strrchr (pExecutable, '/');
-  pArgs [0] = (pCmd == NULL) ? pExecutable : (pCmd + 1);
-  pArgs [1] = "--long";
-  pArgs [2] = pSearchKeyword;
-  pArgs [3] = NULL;
+  pArguments [nArgs++] = ((pCommand = strrchr (pExecutable, '/')) == NULL)
+                             ? pExecutable
+                             : (pCommand + 1);
+
+#if !defined(TARGET_BSD)
+  pArguments [nArgs++] = "--long";
+#endif
+
+  pArguments [nArgs++] = pSearchKeyword;
+  pArguments [nArgs] = NULL;
 
 
   /*  Run apropos(1) as a child process.
   */
 
-  if (!CreateChildProcess (&pid, &result, pExecutable, pArgs,
+  if (!CreateChildProcess (&pid, pErrorOut, pExecutable, pArguments,
                            STDIN_NULL | STDOUT_REDIRECT | STDERR_NULL, 
                            NULL, &fdOutput, NULL))
-    return result;
+    return false;
 
 
   /*  Capture the output from apropos(1) into a buffer.
@@ -272,14 +238,16 @@ int GetAproposContent
   */
 
   waitpid (pid, &status, 0);
-  ExitStatus = WEXITSTATUS (status);
 
-  *pExitCodeOut = ExitStatus;
 
-  if (ExitStatus != 0)
+  if (WIFSIGNALED (status) || (WEXITSTATUS (status) != 0))
   {
     free (pData);
-    return -1;
+
+    pErrorOut->context    = ERRORCTXT_OTHER;
+    pErrorOut->ErrorCode  = status;
+
+    return false;
   }
 
 
@@ -415,7 +383,7 @@ int GetAproposContent
   *ppResultsOut = pResults;
   *pnResultsOut = index;
 
-  return 0;
+  return true;
 }
 
 
@@ -479,10 +447,11 @@ int InfoFileFromKeyword
     char        **ppFileOut)
 
 {
-  int i, t, fdOutput, result, length;
+  int i, t, nArgs = 0, fdOutput, length, status = 0;
   pid_t pid;
   char c, *pFilename, *pBasename;
-  const char *pCmd, *pExtension, *pArgs [4];
+  const char *pCommand, *pExtension, *pArguments [4];
+  PROCESSERRORINFO ErrorInfo;
 
   static const char *extensions []
           = {".z", ".gz", ".xz", ".bz2", ".lz", ".lzma", ".Z", ".Y", NULL};
@@ -494,20 +463,22 @@ int InfoFileFromKeyword
   /*  Construct the argument list.
   */
 
-  pCmd = strrchr (pExecutable, '/');
-  pArgs [0] = (pCmd == NULL) ? pExecutable : (pCmd + 1);
-  pArgs [1] = "-w";
-  pArgs [2] = pKeyword;
-  pArgs [3] = NULL;
+  pArguments [nArgs++] = ((pCommand = strrchr (pExecutable, '/')) == NULL)
+                             ? pExecutable
+                             : (pCommand + 1);
+
+  pArguments [nArgs++] = "-w";
+  pArguments [nArgs++] = pKeyword;
+  pArguments [nArgs] = NULL;
 
 
   /*  Run info(1) as a child process.
   */
 
-  if (!CreateChildProcess (&pid, &result, pExecutable, pArgs,
+  if (!CreateChildProcess (&pid, &ErrorInfo, pExecutable, pArguments,
                            STDIN_NULL | STDOUT_REDIRECT | STDERR_NULL, 
                            NULL, &fdOutput, NULL))
-    return result;
+    return INFO_ERROR;
 
 
   /*  Capture the output from info(1) into a buffer.
@@ -516,7 +487,7 @@ int InfoFileFromKeyword
   CaptureInput (fdOutput, (void**) &pFilename, &length, PATH_MAX, '\0');
   close (fdOutput);
 
-  waitpid (pid, NULL, 0);
+  waitpid (pid, &status, 0);
 
 
   if (pFilename == NULL)
@@ -599,18 +570,19 @@ int InfoFileFromKeyword
                                                            GetInfoContent
 -~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-*/
 
-int GetInfoContent
-   (const char   *pExecutable,
-    const char   *pInfoFile,
-    const char   *pNodeName,
-    char        **ppDataOut,
-    int          *pcbDataOut)
+bool GetInfoContent
+   (const char         *pExecutable,
+    const char         *pInfoFile,
+    const char         *pNodeName,
+    char              **ppDataOut,
+    int                *pcbDataOut,
+    PROCESSERRORINFO   *pErrorOut)
 
 {
-  int fdOutput, result, cbData;
+  int fdOutput, cbData, status = 0;
   pid_t pid;
   char *pData;
-  const char *pCmd, *pArgs [8];
+  const char *pCommand;
 
 
   *ppDataOut = NULL;
@@ -620,45 +592,69 @@ int GetInfoContent
   /*  Construct the argument list.
   */
 
-  pCmd = strrchr (pExecutable, '/');
-  pArgs [0] = (pCmd == NULL) ? pExecutable : (pCmd + 1);
-  pArgs [1] = "-o";
-  pArgs [2] = "-";
-  pArgs [3] = pInfoFile;
-  pArgs [4] = "-n";
-  pArgs [5] = pNodeName;
-  pArgs [6] = NULL;
+  pCommand = strrchr (pExecutable, '/');
+  pCommand = (pCommand == NULL) ? pExecutable : (pCommand + 1);
+
+  const char *pArguments [] =
+       { pCommand, "-o", "-", pInfoFile, "-n", pNodeName, NULL };
 
 
   /*  Run "info" as a child process.
   */
 
-  if (!CreateChildProcess (&pid, &result, pExecutable, pArgs,
+  if (!CreateChildProcess (&pid, pErrorOut, pExecutable, pArguments,
                            STDIN_NULL | STDOUT_REDIRECT | STDERR_NULL, 
                            NULL, &fdOutput, NULL))
-    return result;
+    return false;
 
 
-  /*  Capture the output from "info" into a buffer.
+  /*  Capture the output from info(1) into a buffer.
   */
 
   CaptureInput (fdOutput, (void**) &pData, &cbData, 0, ' ');
   close (fdOutput);
 
-  waitpid (pid, NULL, 0);
+
+  /*  Wait for the process to terminate.
+  */
+
+  waitpid (pid, &status, 0);
 
 
-  if ((pData == NULL) || (cbData == 0))
+  /*  If the info(1) process terminated as the result of a signal,
+  *   fill out the PROCESSERRORINFO structure and return false.
+  *   We don't check the exit code, since info (apparently) always
+  *   returns 0, even when an invalid file or node name was
+  *   specified.
+  */
+
+  if (WIFSIGNALED (status))
   {
     free (pData);
-    return -1;
+
+    pErrorOut->context    = ERRORCTXT_OTHER;
+    pErrorOut->ErrorCode  = status;
+
+    return false;    
+  }
+
+
+  /*  Handle the case where info(1) produced no output, indicating that
+  *   the specified node wasn't found.  Return true, since technically
+  *   no error occurred.
+  */
+
+  if (cbData == 0)
+  {
+    free (pData);
+    return true;
   }
 
 
   *ppDataOut = pData;
   *pcbDataOut = cbData;
 
-  return INFO_SUCCESS;
+  return true;
 }
 
 

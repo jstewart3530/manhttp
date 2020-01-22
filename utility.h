@@ -44,6 +44,24 @@ enum
 };
 
 
+
+enum ERRORCONTEXT
+{
+  ERRORCTXT_NONE            = 0,
+  ERRORCTXT_FORK_FAILED,
+  ERRORCTXT_EXEC_FAILED,
+  ERRORCTXT_OTHER
+};
+
+
+struct PROCESSERRORINFO
+{
+  ERRORCONTEXT  context;
+  int           ErrorCode;
+};
+
+
+
 extern "C"
 {
 extern bool EllipsizeString
@@ -83,15 +101,15 @@ extern void SetCloseOnExec
 
 
 extern bool CreateChildProcess
-   (pid_t          *pidOut,     
-    int            *pResultOut,   
-    const char     *pszExecutable,
-    const char    **ppszArguments,
-    int             flags,
-    int            *pfdStdInput,
-    int            *pfdStdOutput,
-    int            *pfdStdError);
-
+   (pid_t              *pidOut,     
+    PROCESSERRORINFO   *pResultOut,   
+    const char         *pszExecutable,
+    const char        **ppszArguments,
+    int                 flags,
+    int                *pfdStdInput,
+    int                *pfdStdOutput,
+    int                *pfdStdError);
+ 
 
 extern int CaptureInput
    (int      fd,
