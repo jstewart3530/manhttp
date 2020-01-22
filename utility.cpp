@@ -296,7 +296,6 @@ int CountCharsUTF8
 
 {
   int i, count;
-  char c;
 
 
   if (cbStr < 0)

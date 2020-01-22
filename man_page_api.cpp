@@ -51,9 +51,9 @@ static regex_t ParseRegex;
 
 /*  Templates for formatting the command arguments passed to man(1).  These 
 *   are system-dependent; for example, only the Linux man(1) understands the 
-*   "--encoding" option.  "$Page" and "$Section" are replaced with the
-*   page name and section identifier, respectively.  The last element of
-*   each array must be NULL.   
+*   "--encoding" option.  The placeholder arguments "$Page" and "$Section" 
+*   are replaced with the page name and section identifier, respectively. 
+*   The last element of each array must be NULL.   
 */
 
 #if defined(TARGET_BSD)
@@ -607,10 +607,10 @@ int GetInfoContent
     int          *pcbDataOut)
 
 {
-  int i, fdOutput, result, length, cbData;
+  int fdOutput, result, cbData;
   pid_t pid;
-  char *pData, *pDot;
-  const char *pCmd, *pBasename, *pArgs [8];
+  char *pData;
+  const char *pCmd, *pArgs [8];
 
 
   *ppDataOut = NULL;

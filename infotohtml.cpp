@@ -231,7 +231,7 @@ void InfoToHTML
      int            cbContent)
 
 {
-  int t, iLine, nLines, iFirst, iLast, length, cbMax;
+  int iLine, nLines, iFirst, iLast, length, cbMax;
   int cbAttributes, nTitles = 0;
   const char *pText;
   char *pHtml;

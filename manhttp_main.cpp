@@ -122,7 +122,6 @@ static const char* FontTypeFromFilename (const char*);
 static void HandleManPageRequest (struct MHD_Connection*, const char*);
 static void HandleInfoRequest (struct MHD_Connection*, const char*); 
 static void HandleAproposRequest (struct MHD_Connection*, const char*); 
-static void HandleMiscRequest (struct MHD_Connection*, const char*);
 static void GenerateSplashPage (struct MHD_Connection*, const char*);
 static void HandleInternalError (struct MHD_Connection*, const char*, int);
 static void GenerateErrorPage (struct MHD_Connection*, const char*, 
@@ -843,13 +842,13 @@ void HandleInfoRequest
     const char      *pPath)
 
 {
-  int result, status, cbContent;
+  int result, cbContent;
   size_t cbResponse = 0;
-  char *pPageContent, *pResponse = NULL, *pRedirectUri, *pFile;
+  char *pResponse = NULL, *pRedirectUri, *pFile;
   char *pNodeName, *pContent, *pDecodedName;
   FILE *stream;
   struct MHD_Response *pResp;
-  char keyword [128], message [128];
+  char keyword [128];
 
 
   if ((pPath [5] != '/') && (pPath [5] != '\0'))
@@ -973,11 +972,11 @@ void HandleAproposRequest
 {
   int nResults = 0, result, ExitCode;
   size_t cbResponse = 0;
-  char *pPageContent, *pResponse = NULL;
+  char *pResponse = NULL;
   APROPOSRESULT *pResultList = NULL;
   FILE *stream;
   struct MHD_Response *pResp;
-  char keyword [80], message [128];
+  char keyword [80];
 
  
   if ((pPath [8] != '/')

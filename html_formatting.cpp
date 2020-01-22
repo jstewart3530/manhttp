@@ -103,7 +103,7 @@ int GetTextAttributes
     int              cbMax)
 
 {
-  int i, j, k, iStart, length, value;
+  int i, j, iStart, length, value;
   bool fNumeric;
   TEXTATTRIBUTES attrs;
   char c;
@@ -610,7 +610,7 @@ int RecognizeURIs
     TEXTATTRIBUTES  *pAttrs)
 
 {
-  int i, index, iStart, iEnd, error, count;
+  int i, index, iStart, iEnd, count;
   regmatch_t match;
 
 
@@ -652,7 +652,7 @@ int RecognizeManPageRefs
     TEXTATTRIBUTES  *pAttrs)
 
 {
-  int i, index, iStart, iEnd, error, count;
+  int i, index, iStart, iEnd, count;
   bool fValidLink;
   regmatch_t match;
 
