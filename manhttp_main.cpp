@@ -113,7 +113,8 @@ static const char *pFontDirectory = NULL;
 /*  Function prototypes.
 */ 
 
-static void ReportError (const char*, ...);
+static void ReportError (const char*, ...)
+       __attribute__ ((format (printf, 1, 2)));
 static int HandleRequest (void*, struct MHD_Connection*, const char*, const char*,
                           const char*, const char*, size_t*, void**);
 static void HandleFontRequest (struct MHD_Connection*, const char*);
@@ -125,7 +126,8 @@ static void HandleMiscRequest (struct MHD_Connection*, const char*);
 static void GenerateSplashPage (struct MHD_Connection*, const char*);
 static void HandleInternalError (struct MHD_Connection*, const char*, int);
 static void GenerateErrorPage (struct MHD_Connection*, const char*, 
-                               int, const char*, ...);
+                               int, const char*, ...)
+       __attribute__ ((format (printf, 4, 5)));;
 
 
 

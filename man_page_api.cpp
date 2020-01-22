@@ -45,6 +45,43 @@ static regex_t ParseRegex;
 
 
 
+#define MAX_ARGUMENTS        8
+
+
+
+/*  Templates for formatting the command arguments passed to man(1).  These 
+*   are system-dependent; for example, only the Linux man(1) understands the 
+*   "--encoding" option.  "$Page" and "$Section" are replaced with the
+*   page name and section identifier, respectively.  The last element of
+*   each array must be NULL.   
+*/
+
+#if defined(TARGET_BSD)
+
+static const char *PageAndSectionArgs []
+     = { "$Section", "$Page", NULL };
+static const char *PageOnlyArgs []
+     = { "$Page", NULL };
+
+#elif defined(TARGET_SOLARIS)
+
+static const char *PageAndSectionArgs []
+     = { "-s", "$Section", "$Page", NULL };
+static const char *PageOnlyArgs []
+     = { "$Page", NULL };
+
+#else
+
+static const char *PageAndSectionArgs []
+     = { "--encoding=UTF-8", "$Section", "$Page", NULL };
+static const char *PageOnlyArgs []
+     = { "--encoding=UTF-8", "$Page", NULL };
+
+#endif
+
+
+
+
 /*-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-
                                                                       Min
 -~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-*/
@@ -102,7 +139,7 @@ int GetManPageContent
   int i, fdOutput, result, status, cbData;
   pid_t pid;
   char *pData;
-  const char *pCmd, *pArgs [8];
+  const char *pArg, **ppArgs, *pArguments [MAX_ARGUMENTS];
 
 
   *ppDataOut = NULL;
@@ -110,21 +147,36 @@ int GetManPageContent
   *pExitCodeOut = 0;
 
  
-  /*  Construct the argument list.
+  /*  Construct the argument list.  The first argument is always
+  *   the command name; the rest of the arguments are defined
+  *   by the template arrays PageOnlyArgs and PageAndSectionArgs.
   */
 
-  pCmd = strrchr (pExecutable, '/');
-  pArgs [0] = (pCmd == NULL) ? pExecutable : (pCmd + 1);
+  pArguments [0] = ((pArg = strrchr (pExecutable, '/')) == NULL) 
+                      ? pExecutable 
+                      : (pArg + 1);
 
-  i = 1;
+  ppArgs = ((pSection == NULL) || (pSection [0] == '\0'))
+              ? PageOnlyArgs
+              : PageAndSectionArgs;
 
-  if ((pSection != NULL) && (pSection [0] != '\0'))
+  for (i = 1; (pArg = *ppArgs) != NULL; ppArgs++, i++)
   {
-    pArgs [i++] = pSection;
-  } 
+    if (strcmp (pArg, "$Page") == 0)
+    {
+      pArguments [i] = pPageTitle;
+    }
+    else if (strcmp (pArg, "$Section") == 0)
+    {
+      pArguments [i] = pSection;
+    }
+    else      
+    {
+      pArguments [i] = pArg;
+    }  
+  }
 
-  pArgs [i++] = pPageTitle;
-  pArgs [i] = NULL;
+  pArguments [i] = NULL;
 
 
   /*  Set environment variables that man(1) needs.
@@ -138,7 +190,7 @@ int GetManPageContent
   /*  Run man(1) as a child process.
   */
 
-  if (!CreateChildProcess (&pid, &result, pExecutable, pArgs,
+  if (!CreateChildProcess (&pid, &result, pExecutable, pArguments,
                            STDIN_NULL | STDOUT_REDIRECT | STDERR_NULL, 
                            NULL, &fdOutput, NULL))
     return result;

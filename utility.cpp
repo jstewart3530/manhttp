@@ -372,6 +372,20 @@ bool CreateChildProcess
   extern char **environ;
 
 
+  /*  Debugging code that displays the command arguments.
+  */
+
+#if 0
+  printf ("Running command:\n");
+  for (int i = 0; ppszArguments [i] != NULL; i++)
+  {
+    printf ("%s%s", 
+            ppszArguments [i],
+            (ppszArguments [i + 1] == NULL) ? "\n\n" : " ");
+  }
+#endif
+
+
   if (flags & STDIN_REDIRECT)
   {
     pipe (fdPipe);
