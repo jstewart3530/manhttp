@@ -720,6 +720,7 @@ const char* FontTypeFromFilename
                "otf",    "font/otf",
                "woff",   "font/woff",
                "woff2",  "font/woff2",
+               "eot",    "application/vnd.ms-fontobject",
                NULL};
 
 
@@ -1015,7 +1016,12 @@ void HandleAproposRequest
   {
     GenerateErrorPage 
          (pConn, "Nothing found", 404,
-          "Apropos search for &ldquo;%s&rdquo; returned no results.",
+          "Apropos search for &ldquo;%s&rdquo; returned no results.\n"
+          "<div style=\"height: 1.5em\"></div>\n"
+          "If you keep getting this message, it is likely that the\n"
+          "system's manual page index needs to be updated.  You\n"
+          "(or the system administrator) can do this by running\n"
+          "<a href=\"man/mandb(8)\">mandb</a>.\n",
           keyword);
   } 
   else
@@ -1108,10 +1114,12 @@ void GenerateErrorPage
            "<head>\n"
            "<title>%s</title>\n"
            "<meta http-equiv=\"content-type\" content=\"text/html; charset=UTF-8\">\n"
+           "<base href=\"%s\">\n"                      
            "<style>\n%s\n</style>\n"
            "</head>\n"
            "<body Type=\"splash\" ErrorPage=\"1\">\n",
            pErrorType,
+           pUriPrefix,
            pStylesheet);
 
 
