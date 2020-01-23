@@ -642,113 +642,6 @@ int HandleRequest
 
 
 /*-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-
-                                                        HandleFontRequest
--~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-*/
-
-static
-void HandleFontRequest
-   (MHD_Connection  *pConn,
-    const char      *pPath)
-
-{
-  int fd = -1, status;
-  const char *pTypeStr;
-  const char *pFilename = pPath + 7;
-  char *pFontPath;
-  struct MHD_Response *pResp;
-  struct stat FileInfo;
-
-
-  if ((pFontDirectory != NULL)
-         && ((pTypeStr = FontTypeFromFilename (pFilename)) != NULL))
-  {
-    asprintf (&pFontPath, "%s/%s", pFontDirectory, pFilename);
-
-    if ((fd = open (pFontPath, O_RDONLY | O_CLOEXEC)) >= 0)
-    {
-      fstat (fd, &FileInfo);
-      if (((FileInfo.st_mode & S_IFMT) != S_IFREG)
-             || (FileInfo.st_size == 0))
-      {
-        close (fd);
-        fd = -1;
-      }     
-    }
-
-    free (pFontPath);
-  }
-
- 
-  if (fd >= 0)
-  {
-    pResp = MHD_create_response_from_fd_at_offset64 (FileInfo.st_size, fd, 0);
-    MHD_add_response_header (pResp, "Cache-Control", CachePolicy);
-
-    status = 200;                    
-  }
-  else
-  {
-    pResp = MHD_create_response_from_buffer
-                    (20, (void*) "Font file not found.", MHD_RESPMEM_PERSISTENT);
-
-    pTypeStr = "text/plain";
-    status = 404;
-  }  
-
-  MHD_add_response_header (pResp, "Content-Type", pTypeStr);
-  MHD_queue_response (pConn, status, pResp);
-  MHD_destroy_response (pResp);
-}
-
-
-
-/*-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-
-                                                     FontTypeFromFilename
--~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-*/
-
-static
-const char* FontTypeFromFilename
-   (const char   *pFilename)
-
-{
-  int i, t;
-  const char *pExtension, *pType;
-
-  static const char AllowedChars []
-        = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789._- ";
-
-  static const char *TypeList []
-            = {"ttf",    "font/ttf",
-               "otf",    "font/otf",
-               "woff",   "font/woff",
-               "woff2",  "font/woff2",
-               "eot",    "application/vnd.ms-fontobject",
-               NULL};
-
-
-  t = strspn (pFilename, AllowedChars);
-  if (pFilename [t] != '\0')
-    return NULL;
-
-
-  if ((pExtension = strrchr (pFilename, '.')) == NULL)
-    return NULL;
-
-  pExtension++;
-
-  i = 0;
-  while (((pType = TypeList [i]) != NULL)
-             && (strcasecmp (pExtension, pType) != 0))
-  {
-    i += 2;
-  }
-
-  return (pType == NULL) ? NULL : TypeList [i + 1];
-}
-
-
-
-/*-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-
                                                      HandleManPageRequest
 -~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-*/
 
@@ -782,9 +675,14 @@ void HandleManPageRequest
   /*  Construct the page's canonical ID.
   */
   
-  snprintf (CanonicalID, sizeof (CanonicalID),
-            ((section [0] == '\0') ? "%s" : "%s(%s)"),
-            page, section);
+  if (section [0] == '\0')
+  {
+    strncpy (CanonicalID, page, sizeof (CanonicalID));
+  }
+  else
+  {
+    snprintf (CanonicalID, sizeof (CanonicalID), "%s(%s)", page, section);
+  }
 
 
   /*  Obtain the raw manual page text.
@@ -795,9 +693,12 @@ void HandleManPageRequest
                   &cbPageContent, &error);
 
 
+  /*  Handle error conditions.
+  */
+
   if (!fSuccess)
   {
-    if ((error.context == ERRORCTXT_OTHER)
+    if ((error.context == ERRORCTXT_RUNTIME)
     	     && !WIFSIGNALED (error.ErrorCode))
     {
       GenerateErrorPage 
@@ -814,6 +715,9 @@ void HandleManPageRequest
   }
 
 
+  /*  Generate the HTML.
+  */
+
   stream = open_memstream (&pResponse, &cbResponse);
   ManualPageToHTML (stream, CanonicalID, pUriPrefix, pStylesheet, 
                     pPageContent, cbPageContent);
@@ -821,6 +725,9 @@ void HandleManPageRequest
 
   free (pPageContent);
 
+
+  /*  Send the HTML to the client.
+  */
 
   pResp = MHD_create_response_from_buffer
                 (cbResponse, pResponse, MHD_RESPMEM_MUST_FREE);
@@ -1005,7 +912,7 @@ void HandleAproposRequest
 
   if (!fSuccess)
   {
-    if ((error.context == ERRORCTXT_OTHER)
+    if ((error.context == ERRORCTXT_RUNTIME)
    	        && !WIFSIGNALED (error.ErrorCode))
     {	
       GenerateErrorPage 
@@ -1248,7 +1155,7 @@ void HandleInternalError
     if (pError->context == ERRORCTXT_EXEC_FAILED)
     {
       fprintf (stream,
-               "Unable to execute <span class=\"Filename\">%s</span>.<br>\n"
+               "Unable to execute <span class=\"Filename\">%s</span>:<br>\n"
                "%s\n",
                pCommandPath,
                pErrorHTML);
@@ -1256,7 +1163,7 @@ void HandleInternalError
     else
     {
       fprintf (stream,
-               "Unable to create a new process.<br>\n"
+               "Unable to create a new process:<br>\n"
                "%s\n",
                pErrorHTML);
     }
@@ -1291,4 +1198,111 @@ void HandleInternalError
   MHD_add_response_header (pResp, "Cache-Control", CachePolicy);
   MHD_queue_response (pConn, 500, pResp);
   MHD_destroy_response (pResp);  
+}
+
+
+
+/*-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-
+                                                        HandleFontRequest
+-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-*/
+
+static
+void HandleFontRequest
+   (MHD_Connection  *pConn,
+    const char      *pPath)
+
+{
+  int fd = -1, status;
+  const char *pTypeStr;
+  const char *pFilename = pPath + 7;
+  char *pFontPath;
+  struct MHD_Response *pResp;
+  struct stat FileInfo;
+
+
+  if ((pFontDirectory != NULL)
+         && ((pTypeStr = FontTypeFromFilename (pFilename)) != NULL))
+  {
+    asprintf (&pFontPath, "%s/%s", pFontDirectory, pFilename);
+
+    if ((fd = open (pFontPath, O_RDONLY | O_CLOEXEC)) >= 0)
+    {
+      fstat (fd, &FileInfo);
+      if (((FileInfo.st_mode & S_IFMT) != S_IFREG)
+             || (FileInfo.st_size == 0))
+      {
+        close (fd);
+        fd = -1;
+      }     
+    }
+
+    free (pFontPath);
+  }
+
+ 
+  if (fd >= 0)
+  {
+    pResp = MHD_create_response_from_fd_at_offset64 (FileInfo.st_size, fd, 0);
+    MHD_add_response_header (pResp, "Cache-Control", CachePolicy);
+
+    status = 200;                    
+  }
+  else
+  {
+    pResp = MHD_create_response_from_buffer
+                    (20, (void*) "Font file not found.", MHD_RESPMEM_PERSISTENT);
+
+    pTypeStr = "text/plain";
+    status = 404;
+  }  
+
+  MHD_add_response_header (pResp, "Content-Type", pTypeStr);
+  MHD_queue_response (pConn, status, pResp);
+  MHD_destroy_response (pResp);
+}
+
+
+
+/*-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-
+                                                     FontTypeFromFilename
+-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-*/
+
+static
+const char* FontTypeFromFilename
+   (const char   *pFilename)
+
+{
+  int i, t;
+  const char *pExtension, *pType;
+
+  static const char AllowedChars []
+        = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789._- ";
+
+  static const char *TypeList []
+            = {"ttf",    "font/ttf",
+               "otf",    "font/otf",
+               "woff",   "font/woff",
+               "woff2",  "font/woff2",
+               "eot",    "application/vnd.ms-fontobject",
+               NULL};
+
+
+  t = strspn (pFilename, AllowedChars);
+  if (pFilename [t] != '\0')
+    return NULL;
+
+
+  if ((pExtension = strrchr (pFilename, '.')) == NULL)
+    return NULL;
+
+  pExtension++;
+
+  i = 0;
+  while (((pType = TypeList [i]) != NULL)
+             && (strcasecmp (pExtension, pType) != 0))
+  {
+    i += 2;
+  }
+
+  return (pType == NULL) ? NULL : TypeList [i + 1];
 }

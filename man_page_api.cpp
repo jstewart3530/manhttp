@@ -163,7 +163,7 @@ bool GetManPageContent
   {
     free (pData);
 
-    pErrorOut->context    = ERRORCTXT_OTHER;
+    pErrorOut->context    = ERRORCTXT_RUNTIME;
     pErrorOut->ErrorCode  = status;
 
     return false;
@@ -244,7 +244,7 @@ bool GetAproposContent
   {
     free (pData);
 
-    pErrorOut->context    = ERRORCTXT_OTHER;
+    pErrorOut->context    = ERRORCTXT_RUNTIME;
     pErrorOut->ErrorCode  = status;
 
     return false;
@@ -487,13 +487,20 @@ int InfoFileFromKeyword
   CaptureInput (fdOutput, (void**) &pFilename, &length, PATH_MAX, '\0');
   close (fdOutput);
 
+
+  /*  Wait until the process completes.  Return INFO_ERROR if it appears that
+  *   the process crashed.
+  */
+
   waitpid (pid, &status, 0);
 
+  if (WIFSIGNALED (status))
+  {
+    free (pFilename);
+    return INFO_ERROR;
+  }
 
-  if (pFilename == NULL)
-    return INFO_NOT_FOUND;
 
- 
   /*  Remove trailing whitespace.
   */
 
@@ -504,14 +511,15 @@ int InfoFileFromKeyword
     length--;
   }
 
-  pFilename [length] = '\0';
 
-
-  if (length == 0)
+  if (length <= 0)
   {
     free (pFilename);
     return INFO_NOT_FOUND;
   }
+
+
+  pFilename [length] = '\0';
 
   if (strcasecmp (pFilename, "*manpages*") == 0)
   {
@@ -632,7 +640,7 @@ bool GetInfoContent
   {
     free (pData);
 
-    pErrorOut->context    = ERRORCTXT_OTHER;
+    pErrorOut->context    = ERRORCTXT_RUNTIME;
     pErrorOut->ErrorCode  = status;
 
     return false;    
