@@ -822,7 +822,7 @@ void HandleInfoRequest
   }
     
 
-  result = InfoFileFromKeyword (InfoPath, keyword, &pFile);
+  result = InfoFileFromKeyword (InfoPath, keyword, &pFile, &error);
   
   switch (result)
   {
@@ -864,6 +864,9 @@ void HandleInfoRequest
             "No Info file found for &ldquo;%s&rdquo;.",
             keyword);
       break;
+
+    case INFO_ERROR:
+      HandleInternalError (pConn, InfoPath, &error);
   }
 
   free (pFile);
@@ -937,7 +940,8 @@ void HandleAproposRequest
 
 
   stream = open_memstream (&pResponse, &cbResponse);
-  AproposResultsToHTML (stream, keyword, pUriPrefix, pStylesheet, pResultList, nResults);
+  AproposResultsToHTML (stream, keyword, pUriPrefix, pStylesheet, 
+                        pResultList, nResults);
   fclose (stream);
 
   free (pResultList);
@@ -1039,13 +1043,13 @@ void GenerateErrorPage
            "<base href=\"%s\">\n"                      
            "<style>\n%s\n</style>\n"
            "</head>\n"
-           "<body Type=\"splash\" ErrorPage=\"\">\n",
+           "<body Type=\"splash\">\n",
            pErrorType,
            pUriPrefix,
            pStylesheet);
 
 
-  fprintf (stream, "<div class=\"Splash\">\n");
+  fprintf (stream, "<div class=\"Splash\" IsError=\"\">\n");
 
   fprintf (stream, "<p Heading=\"\">%s</p>\n", pErrorType);
 
@@ -1115,13 +1119,13 @@ void HandleInternalError
            "<base href=\"%s\">\n"                      
            "<style>\n%s\n</style>\n"
            "</head>\n"
-           "<body Type=\"splash\" ErrorPage=\"\">\n",
+           "<body Type=\"splash\">\n",
            pUriPrefix,
            pStylesheet);
 
 
   fprintf (stream, 
-           "<div class=\"Splash\">\n"
+           "<div class=\"Splash\" IsError=\"\">\n"
            "<p Heading=\"\">Internal error</p>\n");
 
 
@@ -1131,7 +1135,8 @@ void HandleInternalError
   fprintf (stream,
            "MANHTTP encountered an unrecoverable error when running\n"
            "<span class=\"Filename\">%s</span>.  Detailed error information\n"
-           "follows.\n<br>\n<br>\n",
+           "follows.\n\n\n"
+           "<pre ErrorInfo=\"\" style=\"margin-top: 1.5em;\">\n",
            pCommand);
 
 
@@ -1155,7 +1160,7 @@ void HandleInternalError
     if (pError->context == ERRORCTXT_EXEC_FAILED)
     {
       fprintf (stream,
-               "Unable to execute <span class=\"Filename\">%s</span>:<br>\n"
+               "Unable to execute <span class=\"Filename\">%s</span>:\n"
                "%s\n",
                pCommandPath,
                pErrorHTML);
@@ -1163,7 +1168,7 @@ void HandleInternalError
     else
     {
       fprintf (stream,
-               "Unable to create a new process:<br>\n"
+               "Unable to create a new process:\n"
                "%s\n",
                pErrorHTML);
     }
@@ -1175,14 +1180,15 @@ void HandleInternalError
     if (WIFSIGNALED (pError->ErrorCode))
     {
       fprintf (stream,
-               "Process was terminated unexpectedly.<br>\n"
-               "Signal ID: %d\n",
+               "Process crashed, or otherwise terminated due to an\n"
+               "unexpected signal.  (Signal ID: %d)\n",
                WTERMSIG (pError->ErrorCode));
     }
   }
 
 
   fprintf (stream, 
+           "</pre>\n\n\n"
            "<p style=\"font-size: 75%%; margin-top: 40px; margin-bottom: 3px;\">\n"
            "<a href=\"/\">MANHTTP home</a>\n"
            "</p>\n"

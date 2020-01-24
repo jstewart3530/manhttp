@@ -57,7 +57,15 @@ extern "C"
 
 extern void manInitializeRegexes
    (void);
-   
+
+
+extern bool ParseManPageTitle
+   (const char   *pStr,
+    char         *pTitleOut,
+    int           cbTitleMax,
+    char         *pSectionOut,
+    int           cbSectionMax);   
+
 
 extern bool GetManPageContent
    (const char          *pExecutable,
@@ -76,18 +84,11 @@ extern bool GetAproposContent
     PROCESSERRORINFO    *pErrorOut);
 
 
-extern bool ParseManPageTitle
-   (const char   *pStr,
-    char         *pTitleOut,
-    int           cbTitleMax,
-    char         *pSectionOut,
-    int           cbSectionMax);
-
-
 extern int InfoFileFromKeyword
-   (const char   *pExecutable,
-    const char   *pKeyword,
-    char        **ppFileOut);
+   (const char         *pExecutable,
+    const char         *pKeyword,
+    char              **ppFileOut,
+    PROCESSERRORINFO   *pErrorOut);
   
 
 extern bool GetInfoContent

@@ -60,7 +60,7 @@ body[Type="man"] pre a[RefType="manpage"] { color: inherit; background: #ffe0b3;
 
 body[Type="man"] pre a[RefType="manpage"]:hover { color: #006500; text-decoration: 1px underline solid; }
 
-body[Type="man"] .HeaderBar { display: inline-block; width: 680px; font-family: "Roboto Condensed", Roboto, "Amazon Ember", "Clear Sans", Lato, "Source Sans Pro", sans-serif; font-size: 20px; font-style: italic; font-weight: normal; color: #ffffff; background: #667292; height: 30px; line-height: 30px; padding-left: 18px; text-align: left; margin-top: 0px; }
+body[Type="man"] .HeaderBar { display: inline-block; width: 680px; font-family: "Roboto Condensed", Roboto, "Amazon Ember", "Clear Sans", Lato, "Source Sans Pro", sans-serif; font-size: 20px; font-style: italic; font-weight: normal; color: #ffffff; background: #667292; height: 30px; line-height: 30px; padding-left: 8px; text-align: left; margin-top: 0px; }
 
 body[Type="man"] .HeaderBar[State="HIDDEN"] { border-bottom: 1px solid #fff2df; }
 
@@ -94,7 +94,7 @@ body[Type="apropos"] #Main { width: 75%; margin-left: 80px; margin-top: 80px; ma
 
 body[Type="apropos"] #ByNameButton, body[Type="apropos"] #BySectionButton { width: 5em; }
 
-body[Type="apropos"] .AproposSectionBar { display: inline-block; width: calc(100% - 22px); font-family: "Roboto Condensed", Roboto, "Amazon Ember", "Clear Sans", Lato, "Source Sans Pro", sans-serif; font-size: 20px; font-style: italic; font-weight: normal; color: #ffffff; background: #667292; height: 30px; line-height: 30px; padding-left: 18px; text-align: left; margin-top: 0px; margin-left: 2px; }
+body[Type="apropos"] .AproposSectionBar { display: inline-block; width: calc(100% - 22px); font-family: "Roboto Condensed", Roboto, "Amazon Ember", "Clear Sans", Lato, "Source Sans Pro", sans-serif; font-size: 20px; font-style: italic; font-weight: normal; color: #ffffff; background: #667292; height: 30px; line-height: 30px; padding-left: 8px; text-align: left; margin-top: 0px; margin-left: 2px; }
 
 body[Type="apropos"] .AproposSectionBar[State="HIDDEN"] { border-bottom: 1px solid #fff2df; }
 
@@ -129,6 +129,10 @@ body[Type="splash"] { font-family: Roboto, "Amazon Ember", "Clear Sans", Lato, "
 body[Type="splash"] > .PageTitle { font-family: "Roboto Condensed", Roboto, "Amazon Ember", "Clear Sans", Lato, "Source Sans Pro", sans-serif; font-size: 48px; font-style: italic; font-weight: bold; color: #667292; margin-bottom: 20px; }
 
 body[Type="splash"] .Splash { width: 80%; max-width: 7.5in; padding-left: 24px; padding-right: 24px; padding-top: 18px; padding-bottom: 20px; margin-bottom: 50px; color: #454545; background: #ffe0b3; border-left: 5px solid #a2836e; }
+
+body[Type="splash"] .Splash[IsError] { width: 500px; max-width: 500px; }
+
+body[Type="splash"] .Splash pre[ErrorInfo] { font-family: inherit; font-style: inherit; font-weight: inherit; font-size: 85%; margin-left: 10px; }
 
 body[Type="splash"] .Splash > p[Heading] { font-size: 24px; font-weight: bold; font-style: italic; margin-top: 0px; margin-bottom: 15px; }
 

@@ -61,6 +61,55 @@ int Min
 
 
 /*-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-
+                                                        ParseManPageTitle
+-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-*/
+
+bool ParseManPageTitle
+   (const char   *pStr,
+    char         *pTitleOut,
+    int           cbTitleMax,
+    char         *pSectionOut,
+    int           cbSectionMax)
+
+{
+  int length;
+  regmatch_t match [3];
+
+ 
+  if (tre_regexec (&ParseRegex, pStr, 3, match, 0))
+    return false;
+  
+
+  if ((pTitleOut != NULL) && (cbTitleMax > 0))
+  {
+    length = Min (match [1].rm_eo - match [1].rm_so, cbTitleMax - 1);
+    memcpy (pTitleOut, pStr + match [1].rm_so, length);
+    pTitleOut [length] = '\0';
+  }
+
+
+  if ((pSectionOut != NULL) && (cbSectionMax > 0))
+  {
+    length = 0;
+    if ((match [2].rm_so >= 0)
+          && (match [2].rm_eo >= 0)
+          && (match [2].rm_so < match [2].rm_eo)
+          && (pStr [match [2].rm_so] == '(')
+          && (pStr [match [2].rm_eo - 1] == ')'))
+    {
+      length = Min (match [2].rm_eo - match [2].rm_so - 2, cbSectionMax - 1);      
+    }
+
+    memcpy (pSectionOut, pStr + match [2].rm_so + 1, length);
+    pSectionOut [length] = '\0';
+  }
+
+  return true;
+}
+
+
+
+/*-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-
                                                      manInitializeRegexes
 -~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-*/
 
@@ -389,69 +438,20 @@ bool GetAproposContent
 
 
 /*-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-
-                                                        ParseManPageTitle
--~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-*/
-
-bool ParseManPageTitle
-   (const char   *pStr,
-    char         *pTitleOut,
-    int           cbTitleMax,
-    char         *pSectionOut,
-    int           cbSectionMax)
-
-{
-  int length;
-  regmatch_t match [3];
-
- 
-  if (tre_regexec (&ParseRegex, pStr, 3, match, 0))
-    return false;
-  
-
-  if ((pTitleOut != NULL) && (cbTitleMax > 0))
-  {
-    length = Min (match [1].rm_eo - match [1].rm_so, cbTitleMax - 1);
-    memcpy (pTitleOut, pStr + match [1].rm_so, length);
-    pTitleOut [length] = '\0';
-  }
-
-
-  if ((pSectionOut != NULL) && (cbSectionMax > 0))
-  {
-    length = 0;
-    if ((match [2].rm_so >= 0)
-          && (match [2].rm_eo >= 0)
-          && (match [2].rm_so < match [2].rm_eo)
-          && (pStr [match [2].rm_so] == '(')
-          && (pStr [match [2].rm_eo - 1] == ')'))
-    {
-      length = Min (match [2].rm_eo - match [2].rm_so - 2, cbSectionMax - 1);      
-    }
-
-    memcpy (pSectionOut, pStr + match [2].rm_so + 1, length);
-    pSectionOut [length] = '\0';
-  }
-
-  return true;
-}
-
-
-
-/*-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-
                                                       InfoFileFromKeyword
 -~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-*/
 
 int InfoFileFromKeyword
-   (const char   *pExecutable,
-    const char   *pKeyword,
-    char        **ppFileOut)
+   (const char         *pExecutable,
+    const char         *pKeyword,
+    char              **ppFileOut,
+    PROCESSERRORINFO   *pErrorOut)
 
 {
   int i, t, nArgs = 0, fdOutput, length, status = 0;
   pid_t pid;
   char c, *pFilename, *pBasename;
   const char *pCommand, *pExtension, *pArguments [4];
-  PROCESSERRORINFO ErrorInfo;
 
   static const char *extensions []
           = {".z", ".gz", ".xz", ".bz2", ".lz", ".lzma", ".Z", ".Y", NULL};
@@ -475,7 +475,7 @@ int InfoFileFromKeyword
   /*  Run info(1) as a child process.
   */
 
-  if (!CreateChildProcess (&pid, &ErrorInfo, pExecutable, pArguments,
+  if (!CreateChildProcess (&pid, pErrorOut, pExecutable, pArguments,
                            STDIN_NULL | STDOUT_REDIRECT | STDERR_NULL, 
                            NULL, &fdOutput, NULL))
     return INFO_ERROR;
@@ -497,6 +497,9 @@ int InfoFileFromKeyword
   if (WIFSIGNALED (status))
   {
     free (pFilename);
+
+    pErrorOut->context    = ERRORCTXT_RUNTIME;
+    pErrorOut->ErrorCode  = status;
     return INFO_ERROR;
   }
 
