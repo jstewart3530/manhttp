@@ -29,10 +29,6 @@
 #define __MANUALPAGETOHTML_H_
 
 
-#include "man_page_api.h"
-
-
-
 extern "C"
 {
 

@@ -37,7 +37,7 @@
 #include <tre/tre.h>                   /*  Library headers.  */
 
 #include "utility.h"                   /*  Application headers.  */
-#include "man_page_api.h"
+#include "documentation_api.h"
 
 
 

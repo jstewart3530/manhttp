@@ -29,7 +29,7 @@
 #define __APROPOSTOHTML_H_
 
 
-#include "man_page_api.h"     /*  For APROPOSRESULT type.  */
+#include "documentation_api.h"     /*  For APROPOSRESULT type.  */
 
 
 

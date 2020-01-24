@@ -65,7 +65,7 @@
 
 #include "utility.h"                   /*  Application headers.  */
 #include "html_formatting.h"
-#include "man_page_api.h"
+#include "documentation_api.h"
 #include "manualpagetohtml.h"
 #include "apropostohtml.h"
 #include "infotohtml.h"

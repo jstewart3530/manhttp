@@ -72,7 +72,7 @@ EXECUTABLE = manhttp
 MODULES = \
     manhttp_main \
     utility \
-	man_page_api \
+	documentation_api \
     manualpagetohtml \
 	apropostohtml \
 	infotohtml \
@@ -113,7 +113,7 @@ $(INTERMEDIATE_DIR) :
 
 $(INTERMEDIATE_DIR)/manhttp_main.o : \
 		manhttp_main.cpp  manualpagetohtml.h  apropostohtml.h \
-		infotohtml.h  man_page_api.h  utility.h  installation.h \
+		infotohtml.h  documentation_api.h  utility.h  installation.h \
 		dynamic/stylesheet_text.h  dynamic/splash_html.h  dynamic/favicon.h
 	$(Compile)
 
@@ -122,24 +122,24 @@ $(INTERMEDIATE_DIR)/utility.o : \
 	$(Compile)
 
 $(INTERMEDIATE_DIR)/manualpagetohtml.o : \
-		manualpagetohtml.cpp  manualpagetohtml.h  man_page_api.h \
+		manualpagetohtml.cpp  manualpagetohtml.h  documentation_api.h \
 		html_formatting.h  utility.h  common_js.h \
 		dynamic/man_page_script.h
 	$(Compile)
 
 $(INTERMEDIATE_DIR)/apropostohtml.o : \
-		apropostohtml.cpp  apropostohtml.h  man_page_api.h \
+		apropostohtml.cpp  apropostohtml.h  documentation_api.h \
 		html_formatting.h  utility.h  common_js.h \
 		installation.h  dynamic/apropos_script.h 
 	$(Compile)
 
 $(INTERMEDIATE_DIR)/infotohtml.o : \
-		infotohtml.cpp  infotohtml.h  man_page_api.h \
+		infotohtml.cpp  infotohtml.h  documentation_api.h \
 		html_formatting.h  utility.h  common_js.h
 	$(Compile)
 
-$(INTERMEDIATE_DIR)/man_page_api.o : \
-		man_page_api.cpp  man_page_api.h  utility.h
+$(INTERMEDIATE_DIR)/documentation_api.o : \
+		documentation_api.cpp  documentation_api.h  utility.h
 	$(Compile)
 
 $(INTERMEDIATE_DIR)/html_formatting.o : \
