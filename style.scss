@@ -152,7 +152,7 @@ a[RefType="uri"]:hover
   line-height:          inherit;
   background:           inherit;
   border:               none;
-  font-family:          $ControlFont;
+  font-family:          $ProportionalFont;
   font-size:            12px;
   font-style:           normal;
   color:                $TitleBarTextColor2;
@@ -458,7 +458,7 @@ body[Type="apropos"]
 
   #Main
   {
-    width:               75%;
+    width:               calc(100% - 160px);
     margin-left:         80px;
     margin-top:          80px;
     margin-bottom:       120px;
@@ -471,7 +471,7 @@ body[Type="apropos"]
 
   .AproposSectionBar  
   {
-    @include HeaderBar(calc(100% - 22px));
+    @include HeaderBar(calc(100% - 12px));
     margin-left:       2px;
   }
 

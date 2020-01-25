@@ -89,9 +89,9 @@ void AproposResultsToHTML
            "<span id=\"BySectionButton\" class=\"Button FormatSelector\">Section</span>\n"
            "</div>\n"
            "<div id=\"Nav-Apropos-ShowHide\">\n"
-           "<span id=\"ShowAllButton\" class=\"Button\">Show all</span>\n"
+           "<span id=\"ShowAllButton\" class=\"Button\">Show all sections</span>\n"
            "&nbsp;\n"
-           "<span id=\"HideAllButton\" class=\"Button\">Hide all</span>\n"
+           "<span id=\"HideAllButton\" class=\"Button\">Hide all sections</span>\n"
            "</div>\n"           
            "</div>\n");
 

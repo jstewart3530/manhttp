@@ -10,7 +10,7 @@ a[RefType="uri"], a[RefType="uri"]:visited { color: #006500; text-decoration: no
 
 a[RefType="uri"]:hover { text-decoration: 1px underline solid; }
 
-.HideButton { display: inline-block; cursor: default; height: inherit; line-height: inherit; background: inherit; border: none; font-family: "Roboto Condensed", Roboto, "Amazon Ember", "Clear Sans", Lato, "Source Sans Pro", sans-serif; font-size: 12px; font-style: normal; color: #e0e0e0; float: right; margin-left: 40px; margin-right: 10px; }
+.HideButton { display: inline-block; cursor: default; height: inherit; line-height: inherit; background: inherit; border: none; font-family: Roboto, "Amazon Ember", "Clear Sans", Lato, "Source Sans Pro", sans-serif; font-size: 12px; font-style: normal; color: #e0e0e0; float: right; margin-left: 40px; margin-right: 10px; }
 
 .HideButton:hover { text-decoration: underline solid; }
 
@@ -90,11 +90,11 @@ body[Type="info"] .InfoFootnotes > pre { font-size: 80%; }
 
 body[Type="apropos"] { font-family: Roboto, "Amazon Ember", "Clear Sans", Lato, "Source Sans Pro", sans-serif; font-size: 15px; }
 
-body[Type="apropos"] #Main { width: 75%; margin-left: 80px; margin-top: 80px; margin-bottom: 120px; }
+body[Type="apropos"] #Main { width: calc(100% - 160px); margin-left: 80px; margin-top: 80px; margin-bottom: 120px; }
 
 body[Type="apropos"] #ByNameButton, body[Type="apropos"] #BySectionButton { width: 5em; }
 
-body[Type="apropos"] .AproposSectionBar { display: inline-block; width: calc(100% - 22px); font-family: "Roboto Condensed", Roboto, "Amazon Ember", "Clear Sans", Lato, "Source Sans Pro", sans-serif; font-size: 20px; font-style: italic; font-weight: normal; color: #ffffff; background: #667292; height: 30px; line-height: 30px; padding-left: 8px; text-align: left; margin-top: 0px; margin-left: 2px; }
+body[Type="apropos"] .AproposSectionBar { display: inline-block; width: calc(100% - 12px); font-family: "Roboto Condensed", Roboto, "Amazon Ember", "Clear Sans", Lato, "Source Sans Pro", sans-serif; font-size: 20px; font-style: italic; font-weight: normal; color: #ffffff; background: #667292; height: 30px; line-height: 30px; padding-left: 8px; text-align: left; margin-top: 0px; margin-left: 2px; }
 
 body[Type="apropos"] .AproposSectionBar[State="HIDDEN"] { border-bottom: 1px solid #fff2df; }
 
