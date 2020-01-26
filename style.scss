@@ -43,7 +43,7 @@ $ControlFont        : "Roboto Condensed", $ProportionalFont;
 
 $TitleFont          : "Roboto Condensed", $ProportionalFont;
 
-$TitleNumberFont    : $TitleFont;
+$TitleNumberFont    : $ProportionalFont;
 
 $MainFontSize       : 15px;
 
@@ -52,11 +52,16 @@ $MainFontSize       : 15px;
 //  ("@font-face" definitions would go here if they are needed.)
 
 
+//  Size definitions.
 
-//  Color definitions.
+$HeaderBarHeight         : 30px;
 
 $NavbarHeight            : 40px;
 $NavbarFontSize          : 14px;
+
+
+
+//  Color definitions.
 
 $MainBackground          : #fff2df;
 $SecondaryBackground     : #ffe0b3;
@@ -65,10 +70,13 @@ $MainLinkColor           : #006500;
 $InfoLinkColor           : #031f84;
 $AccentColor1            : #a2836e;
 $AccentColor2            : #c3c3c3;
-$TitleColor              : #667292;
-$TitleBarBackground      : $TitleColor;
-$TitleBarTextColor1      : #ffffff;
-$TitleBarTextColor2      : #e0e0e0;
+
+$TitleBackground         : rgb(0, 100, 0);
+$TitleTextColor          : rgb(255, 255, 255);
+$TitleNumberColor        : $TitleTextColor;
+
+$HeaderBarBackground     : $TitleBackground;
+$HeaderBarTextColor      : $TitleTextColor;
 
 $NavbarBackground        : #404040;
 $NavbarTextColor         : #ffffff;
@@ -78,7 +86,8 @@ $NavbarBorderColor       : #000000;
 $NavbarLineColor         : #909090;
 
 
-$HeaderBarHeight         : 30px;
+
+//  Mixins.
 
 @mixin HeaderBar($Width)
 {
@@ -88,8 +97,8 @@ $HeaderBarHeight         : 30px;
   font-size:        $HeaderBarHeight - 10px;
   font-style:       italic;
   font-weight:      normal;
-  color:            $TitleBarTextColor1;
-  background:       $TitleBarBackground;
+  color:            $HeaderBarTextColor;
+  background:       $HeaderBarBackground;
   height:           $HeaderBarHeight;
   line-height:      $HeaderBarHeight;
   padding-left:     8px;
@@ -150,12 +159,12 @@ a[RefType="uri"]:hover
   cursor:               default;
   height:               inherit;
   line-height:          inherit;
-  background:           inherit;
   border:               none;
   font-family:          $ProportionalFont;
   font-size:            12px;
   font-style:           normal;
-  color:                $TitleBarTextColor2;
+  background:           inherit;
+  color:                inherit;
   float:                right;
   margin-left:          40px;
   margin-right:         10px;
@@ -314,8 +323,8 @@ body[Type="man"]
     font-style:       italic;
     font-weight:      normal;
     font-size:        25px;
-    color:            $TitleBarTextColor1;
-    background:       $TitleBarBackground;
+    color:            $TitleTextColor;
+    background:       $TitleBackground;
     padding-left:     30px;
     padding-right:    30px;
     margin-left:      0px;
@@ -388,42 +397,33 @@ body[Type="info"]
     font-family:           $TitleFont;
     font-style:            italic;
     font-weight:           normal;
-    font-size:             18px;
-    color:                 $TitleBarTextColor1;
-    background:            $TitleBarBackground;
+    color:                 $TitleTextColor;
+    background:            $TitleBackground;
     padding-left:          30px;
     padding-right:         30px;
+    margin-bottom:         40px;    
+
+    font-size:             18px;
     padding-top:           5px;
     padding-bottom:        5px;
-    margin-bottom:         40px;    
+
+    > span[Number]    
+    {
+      color:               $TitleNumberColor;
+      font-family:         $TitleNumberFont;   
+      font-weight:         bold;   
+     
+      &::after
+      {
+        content:           "\00a0\00a0\00a0";
+      }
+    }
 
     &[ULType="star"], &[ULType="equals"]
     {  
       font-size:           25px;  
       padding-top:         5px;
       padding-bottom:      5px;
-
-      > span[Number] 
-      {
-        font-size:         125%;
-
-        &::after
-        {
-          content:         "\2002";
-        }
-      }
-    }
-
-    > span[Number]    
-    {
-      color:               $TitleBarTextColor2;
-      font-family:         $TitleNumberFont;      
-     
-      &::after
-      {
-        content:           "\2002\2502\2002\2002";
-        color:             scale-color($TitleBarBackground, $lightness : 25%);
-      }
     }
   }
 
@@ -435,7 +435,7 @@ body[Type="info"]
     {
       display:             inline-block;
       width:               200px;
-      border-top:          1px dotted $MainTextColor;
+      border-top:          1px solid $AccentColor2;
       margin-bottom:       15px;
     }
 
@@ -600,7 +600,7 @@ body[Type="splash"]
     font-size:           48px;
     font-style:          italic;
     font-weight:         bold;
-    color:               $TitleColor;
+    color:               $AccentColor2;
     margin-bottom:       20px;
   }
 
