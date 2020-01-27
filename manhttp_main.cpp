@@ -699,7 +699,8 @@ void HandleManPageRequest
   if (!fSuccess)
   {
     if ((error.context == ERRORCTXT_RUNTIME)
-    	     && !WIFSIGNALED (error.ErrorCode))
+    	     && WIFEXITED (error.ErrorCode)
+           && (WEXITSTATUS (error.ErrorCode) == 16))
     {
       GenerateErrorPage 
               (pConn, "Not found", 404,
@@ -1168,8 +1169,7 @@ void HandleInternalError
     else
     {
       fprintf (stream,
-               "Unable to create a new process:\n"
-               "%s\n",
+               "Unable to create a new process:\n%s\n",
                pErrorHTML);
     }
 
@@ -1177,11 +1177,19 @@ void HandleInternalError
   }
   else
   {
-    if (WIFSIGNALED (pError->ErrorCode))
+    if (WIFEXITED (pError->ErrorCode))
     {
       fprintf (stream,
-               "Process crashed, or otherwise terminated due to an\n"
+               "<span class=\"Filename\">%s</span> reported an internal error.  (Exit status: %d)\n",
+               pCommandPath,               
+               WEXITSTATUS (pError->ErrorCode));
+    }
+    else  
+    {
+      fprintf (stream,
+               "<span class=\"Filename\">%s</span> crashed, or otherwise terminated due to an\n"
                "unexpected signal.  (Signal ID: %d)\n",
+               pCommandPath,
                WTERMSIG (pError->ErrorCode));
     }
   }
