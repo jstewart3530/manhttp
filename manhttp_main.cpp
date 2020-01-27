@@ -917,7 +917,8 @@ void HandleAproposRequest
   if (!fSuccess)
   {
     if ((error.context == ERRORCTXT_RUNTIME)
-   	        && !WIFSIGNALED (error.ErrorCode))
+           && WIFEXITED (error.ErrorCode)
+           && (WEXITSTATUS (error.ErrorCode) == 16))
     {	
       GenerateErrorPage 
            (pConn, "Nothing found", 404,
