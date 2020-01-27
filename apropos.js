@@ -77,6 +77,9 @@ function ShowAll
    ()
 
 {
+  if (SortMode !== "bysection")
+    return;
+
   for (let i = 0; i < nSections; i++)
   {
     ShowSection (i, "show");
@@ -88,6 +91,9 @@ function HideAll
    ()
 
 {
+  if (SortMode !== "bysection")
+    return;
+
   for (let i = 0; i < nSections; i++)
   {
     ShowSection (i, "hide");
