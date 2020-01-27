@@ -314,6 +314,24 @@ body[Type="man"]
     margin-top:          80px;
   }
 
+  pre
+  {
+    padding-left:        4px;
+  }
+
+  pre a[RefType="manpage"]
+  {
+    color:             inherit; 
+    background:        $SecondaryBackground;
+    text-decoration:   none; 
+  
+    &:hover
+    {
+      color:             $MainLinkColor;
+      text-decoration:   1px underline solid;
+    }
+  }
+
   .PageTitle
   {
     display:          inline-block;
@@ -344,19 +362,6 @@ body[Type="man"]
     &[State="HIDDEN"]
     {
       margin-bottom:     0px;
-    }
-  }
-
-  pre a[RefType="manpage"]
-  {
-    color:             inherit; 
-    background:        $SecondaryBackground;
-    text-decoration:   none; 
-  
-    &:hover
-    {
-      color:             $MainLinkColor;
-      text-decoration:   1px underline solid;
     }
   }
 

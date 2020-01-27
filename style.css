@@ -48,17 +48,19 @@ a[RefType="uri"]:hover { text-decoration: 1px underline solid; }
 
 body[Type="man"] #Main { margin-left: 64px; margin-top: 80px; }
 
-body[Type="man"] .PageTitle { display: inline-block; height: 50px; line-height: 50px; font-family: "Roboto Condensed", Roboto, "Amazon Ember", "Clear Sans", Lato, "Source Sans Pro", sans-serif; font-style: italic; font-weight: normal; font-size: 25px; color: white; background: darkgreen; padding-left: 30px; padding-right: 30px; margin-left: 0px; margin-bottom: 60px; }
+body[Type="man"] pre { padding-left: 4px; }
+
+body[Type="man"] pre a[RefType="manpage"] { color: inherit; background: #ffe0b3; text-decoration: none; }
+
+body[Type="man"] pre a[RefType="manpage"]:hover { color: #006500; text-decoration: 1px underline solid; }
+
+body[Type="man"] .PageTitle { display: inline-block; height: 50px; line-height: 50px; font-family: "Roboto Condensed", Roboto, "Amazon Ember", "Clear Sans", Lato, "Source Sans Pro", sans-serif; font-style: italic; font-weight: normal; font-size: 25px; color: white; background: darkgreen; padding-left: 30px; padding-right: 30px; margin-left: 0px; margin-bottom: 60px; border-bottom: 1px solid white; }
 
 body[Type="man"] #Prologue { margin-bottom: 35px; }
 
 body[Type="man"] div.Collapsible { overflow: hidden; margin-bottom: 35px; }
 
 body[Type="man"] div.Collapsible[State="HIDDEN"] { margin-bottom: 0px; }
-
-body[Type="man"] pre a[RefType="manpage"] { color: inherit; background: #ffe0b3; text-decoration: none; }
-
-body[Type="man"] pre a[RefType="manpage"]:hover { color: #006500; text-decoration: 1px underline solid; }
 
 body[Type="man"] .HeaderBar { display: inline-block; width: 680px; font-family: "Roboto Condensed", Roboto, "Amazon Ember", "Clear Sans", Lato, "Source Sans Pro", sans-serif; font-size: 20px; font-style: italic; font-weight: normal; color: white; background: darkgreen; height: 30px; line-height: 30px; padding-left: 8px; text-align: left; margin-top: 0px; }
 
