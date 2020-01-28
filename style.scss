@@ -41,6 +41,8 @@ $ProportionalFont   : Roboto, "Amazon Ember", "Clear Sans",
 
 $ControlFont        : "Roboto Condensed", $ProportionalFont;
 
+$NavbarFont         : $ControlFont;
+
 $TitleFont          : "Roboto Condensed", $ProportionalFont;
 
 $TitleNumberFont    : $ProportionalFont;
@@ -59,6 +61,7 @@ $HeaderBarHeight         : 30px;
 $NavbarHeight            : 40px;
 $NavbarFontSize          : 14px;
 
+$ExtraSpaceAtEnd         : 80px;
 
 
 //  Color definitions.
@@ -71,7 +74,7 @@ $InfoLinkColor           : #031f84;
 $AccentColor1            : #a2836e;
 $AccentColor2            : #c3c3c3;
 
-$TitleBackground         : rgb(0, 100, 0);
+$TitleBackground         : #405d27;
 $TitleTextColor          : rgb(255, 255, 255);
 $TitleNumberColor        : $TitleTextColor;
 
@@ -204,7 +207,7 @@ a[RefType="uri"]:hover
   margin-right:         0px;
   padding-left:         15px;
   padding-right:        15px; 
-  font-family:          $ControlFont;
+  font-family:          $NavbarFont;
   font-style:           normal;
   font-weight:          normal;
   font-size:            $NavbarFontSize;
@@ -312,6 +315,7 @@ body[Type="man"]
   {
     margin-left:         64px;
     margin-top:          80px;
+    padding-bottom:      $ExtraSpaceAtEnd;
   }
 
   pre
@@ -382,6 +386,7 @@ body[Type="info"]
   {
     margin-left:           64px;
     margin-top:            80px;
+    padding-bottom:        $ExtraSpaceAtEnd;
   }
 
   pre a[RefType="info"]  
@@ -466,7 +471,7 @@ body[Type="apropos"]
     width:               calc(100% - 160px);
     margin-left:         80px;
     margin-top:          80px;
-    margin-bottom:       120px;
+    padding-bottom:      $ExtraSpaceAtEnd;
   }
 
   #ByNameButton, #BySectionButton  

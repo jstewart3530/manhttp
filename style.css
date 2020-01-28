@@ -46,7 +46,7 @@ a[RefType="uri"]:hover { text-decoration: 1px underline solid; }
 
 #NavBar select:hover { background: #707070; }
 
-body[Type="man"] #Main { margin-left: 64px; margin-top: 80px; }
+body[Type="man"] #Main { margin-left: 64px; margin-top: 80px; padding-bottom: 80px; }
 
 body[Type="man"] pre { padding-left: 4px; }
 
@@ -54,7 +54,7 @@ body[Type="man"] pre a[RefType="manpage"] { color: inherit; background: #ffe0b3;
 
 body[Type="man"] pre a[RefType="manpage"]:hover { color: #006500; text-decoration: 1px underline solid; }
 
-body[Type="man"] .PageTitle { display: inline-block; height: 50px; line-height: 50px; font-family: "Roboto Condensed", Roboto, "Amazon Ember", "Clear Sans", Lato, "Source Sans Pro", sans-serif; font-style: italic; font-weight: normal; font-size: 25px; color: white; background: darkgreen; padding-left: 30px; padding-right: 30px; margin-left: 0px; margin-bottom: 60px; }
+body[Type="man"] .PageTitle { display: inline-block; height: 50px; line-height: 50px; font-family: "Roboto Condensed", Roboto, "Amazon Ember", "Clear Sans", Lato, "Source Sans Pro", sans-serif; font-style: italic; font-weight: normal; font-size: 25px; color: white; background: #405d27; padding-left: 30px; padding-right: 30px; margin-left: 0px; margin-bottom: 60px; }
 
 body[Type="man"] #Prologue { margin-bottom: 35px; }
 
@@ -62,17 +62,17 @@ body[Type="man"] div.Collapsible { overflow: hidden; margin-bottom: 35px; }
 
 body[Type="man"] div.Collapsible[State="HIDDEN"] { margin-bottom: 0px; }
 
-body[Type="man"] .HeaderBar { display: inline-block; width: 680px; font-family: "Roboto Condensed", Roboto, "Amazon Ember", "Clear Sans", Lato, "Source Sans Pro", sans-serif; font-size: 20px; font-style: italic; font-weight: normal; color: white; background: darkgreen; height: 30px; line-height: 30px; padding-left: 8px; text-align: left; margin-top: 0px; }
+body[Type="man"] .HeaderBar { display: inline-block; width: 680px; font-family: "Roboto Condensed", Roboto, "Amazon Ember", "Clear Sans", Lato, "Source Sans Pro", sans-serif; font-size: 20px; font-style: italic; font-weight: normal; color: white; background: #405d27; height: 30px; line-height: 30px; padding-left: 8px; text-align: left; margin-top: 0px; }
 
 body[Type="man"] .HeaderBar[State="HIDDEN"] { border-bottom: 1px solid #fff2df; }
 
-body[Type="info"] #Main { margin-left: 64px; margin-top: 80px; }
+body[Type="info"] #Main { margin-left: 64px; margin-top: 80px; padding-bottom: 80px; }
 
 body[Type="info"] pre a[RefType="info"] { color: #031f84; text-decoration: none; }
 
 body[Type="info"] pre a[RefType="info"]:hover { text-decoration: 1px underline solid; }
 
-body[Type="info"] .InfoTitle { display: inline-block; max-width: 500px; font-family: "Roboto Condensed", Roboto, "Amazon Ember", "Clear Sans", Lato, "Source Sans Pro", sans-serif; font-style: italic; font-weight: normal; color: white; background: darkgreen; padding-left: 30px; padding-right: 30px; margin-bottom: 40px; font-size: 18px; padding-top: 5px; padding-bottom: 5px; }
+body[Type="info"] .InfoTitle { display: inline-block; max-width: 500px; font-family: "Roboto Condensed", Roboto, "Amazon Ember", "Clear Sans", Lato, "Source Sans Pro", sans-serif; font-style: italic; font-weight: normal; color: white; background: #405d27; padding-left: 30px; padding-right: 30px; margin-bottom: 40px; font-size: 18px; padding-top: 5px; padding-bottom: 5px; }
 
 body[Type="info"] .InfoTitle > span[Number] { color: white; font-family: Roboto, "Amazon Ember", "Clear Sans", Lato, "Source Sans Pro", sans-serif; font-weight: bold; }
 
@@ -88,11 +88,11 @@ body[Type="info"] .InfoFootnotes > pre { font-size: 80%; }
 
 body[Type="apropos"] { font-family: Roboto, "Amazon Ember", "Clear Sans", Lato, "Source Sans Pro", sans-serif; font-size: 15px; }
 
-body[Type="apropos"] #Main { width: calc(100% - 160px); margin-left: 80px; margin-top: 80px; margin-bottom: 120px; }
+body[Type="apropos"] #Main { width: calc(100% - 160px); margin-left: 80px; margin-top: 80px; padding-bottom: 80px; }
 
 body[Type="apropos"] #ByNameButton, body[Type="apropos"] #BySectionButton { width: 5em; }
 
-body[Type="apropos"] .AproposSectionBar { display: inline-block; width: calc(100% - 12px); font-family: "Roboto Condensed", Roboto, "Amazon Ember", "Clear Sans", Lato, "Source Sans Pro", sans-serif; font-size: 20px; font-style: italic; font-weight: normal; color: white; background: darkgreen; height: 30px; line-height: 30px; padding-left: 8px; text-align: left; margin-top: 0px; margin-left: 2px; }
+body[Type="apropos"] .AproposSectionBar { display: inline-block; width: calc(100% - 12px); font-family: "Roboto Condensed", Roboto, "Amazon Ember", "Clear Sans", Lato, "Source Sans Pro", sans-serif; font-size: 20px; font-style: italic; font-weight: normal; color: white; background: #405d27; height: 30px; line-height: 30px; padding-left: 8px; text-align: left; margin-top: 0px; margin-left: 2px; }
 
 body[Type="apropos"] .AproposSectionBar[State="HIDDEN"] { border-bottom: 1px solid #fff2df; }
 
