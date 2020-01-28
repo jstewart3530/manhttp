@@ -54,15 +54,15 @@ body[Type="man"] pre a[RefType="manpage"] { color: inherit; background: #ffe0b3;
 
 body[Type="man"] pre a[RefType="manpage"]:hover { color: #006500; text-decoration: 1px underline solid; }
 
-body[Type="man"] .PageTitle { display: inline-block; height: 50px; line-height: 50px; font-family: "Roboto Condensed", Roboto, "Amazon Ember", "Clear Sans", Lato, "Source Sans Pro", sans-serif; font-style: italic; font-weight: normal; font-size: 25px; color: white; background: #405d27; padding-left: 30px; padding-right: 30px; margin-left: 0px; margin-bottom: 60px; }
+body[Type="man"] .PageTitle { display: inline-block; height: 50px; line-height: 50px; font-family: "Roboto Condensed", Roboto, "Amazon Ember", "Clear Sans", Lato, "Source Sans Pro", sans-serif; font-style: italic; font-weight: bold; font-size: 40px; color: #405d27; margin-left: 4px; margin-bottom: 60px; }
 
 body[Type="man"] #Prologue { margin-bottom: 35px; }
 
-body[Type="man"] div.Collapsible { overflow: hidden; margin-bottom: 35px; }
+body[Type="man"] div.Collapsible { overflow: hidden; margin-top: 5px; margin-bottom: 35px; }
 
-body[Type="man"] div.Collapsible[State="HIDDEN"] { margin-bottom: 0px; }
+body[Type="man"] div.Collapsible[State="HIDDEN"] { margin-top: 0px; margin-bottom: 0px; }
 
-body[Type="man"] .HeaderBar { display: inline-block; width: 680px; font-family: "Roboto Condensed", Roboto, "Amazon Ember", "Clear Sans", Lato, "Source Sans Pro", sans-serif; font-size: 20px; font-style: italic; font-weight: normal; color: white; background: #405d27; height: 30px; line-height: 30px; padding-left: 8px; text-align: left; margin-top: 0px; }
+body[Type="man"] .HeaderBar { display: inline-block; font-family: "Roboto Condensed", Roboto, "Amazon Ember", "Clear Sans", Lato, "Source Sans Pro", sans-serif; font-size: 20px; font-style: italic; font-weight: normal; color: white; background: #405d27; width: 680px; height: 38px; line-height: 38px; padding-left: 14px; text-align: left; margin-top: 0px; }
 
 body[Type="man"] .HeaderBar[State="HIDDEN"] { border-bottom: 1px solid #fff2df; }
 
@@ -92,7 +92,7 @@ body[Type="apropos"] #Main { width: calc(100% - 160px); margin-left: 80px; margi
 
 body[Type="apropos"] #ByNameButton, body[Type="apropos"] #BySectionButton { width: 5em; }
 
-body[Type="apropos"] .AproposSectionBar { display: inline-block; width: calc(100% - 12px); font-family: "Roboto Condensed", Roboto, "Amazon Ember", "Clear Sans", Lato, "Source Sans Pro", sans-serif; font-size: 20px; font-style: italic; font-weight: normal; color: white; background: #405d27; height: 30px; line-height: 30px; padding-left: 8px; text-align: left; margin-top: 0px; margin-left: 2px; }
+body[Type="apropos"] .AproposSectionBar { display: inline-block; font-family: "Roboto Condensed", Roboto, "Amazon Ember", "Clear Sans", Lato, "Source Sans Pro", sans-serif; font-size: 20px; font-style: italic; font-weight: normal; color: white; background: #405d27; width: calc(100% - 12px); height: 38px; line-height: 38px; padding-left: 14px; text-align: left; margin-top: 0px; margin-left: 2px; }
 
 body[Type="apropos"] .AproposSectionBar[State="HIDDEN"] { border-bottom: 1px solid #fff2df; }
 

@@ -56,7 +56,7 @@ $MainFontSize       : 15px;
 
 //  Size definitions.
 
-$HeaderBarHeight         : 30px;
+$HeaderBarHeight         : 38px;
 
 $NavbarHeight            : 40px;
 $NavbarFontSize          : 14px;
@@ -95,16 +95,16 @@ $NavbarLineColor         : #909090;
 @mixin HeaderBar($Width)
 {
   display:          inline-block;
-  width:            $Width;
   font-family:      $TitleFont;
-  font-size:        $HeaderBarHeight - 10px;
+  font-size:        20px;
   font-style:       italic;
   font-weight:      normal;
   color:            $HeaderBarTextColor;
   background:       $HeaderBarBackground;
+  width:            $Width;
   height:           $HeaderBarHeight;
   line-height:      $HeaderBarHeight;
-  padding-left:     8px;
+  padding-left:     14px;
   text-align:       left;
   margin-top:       0px;
 
@@ -343,13 +343,10 @@ body[Type="man"]
     line-height:      50px;
     font-family:      $TitleFont;
     font-style:       italic;
-    font-weight:      normal;
-    font-size:        25px;
-    color:            $TitleTextColor;
-    background:       $TitleBackground;
-    padding-left:     30px;
-    padding-right:    30px;
-    margin-left:      0px;
+    font-weight:      bold;
+    font-size:        40px;
+    color:            $TitleBackground;
+    margin-left:      4px;
     margin-bottom:    60px;    
   }
 
@@ -361,10 +358,12 @@ body[Type="man"]
   div.Collapsible
   {
     overflow:            hidden;
+    margin-top:          5px;
     margin-bottom:       35px;
   
     &[State="HIDDEN"]
     {
+      margin-top:        0px;
       margin-bottom:     0px;
     }
   }
