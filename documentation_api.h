@@ -41,6 +41,15 @@ struct APROPOSRESULT
 };
 
 
+enum APROPOSMODE
+{
+  APROPOS_REGEX      = 1,
+  APROPOS_WILDCARD,
+  APROPOS_EXACT,
+  APROPOS_WILDCARD_EXACT
+};
+
+
 
 enum
 {
@@ -79,6 +88,7 @@ extern bool GetManPageContent
 extern bool GetAproposContent
    (const char          *pExecutable,
     const char          *pSearchKeyword,
+    APROPOSMODE          SearchMode,
     APROPOSRESULT      **ppResultsOut,
     int                 *pnResultsOut,
     PROCESSERRORINFO    *pErrorOut);

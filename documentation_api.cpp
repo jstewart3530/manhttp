@@ -41,7 +41,7 @@
 
 
 
-static regex_t ParseRegex;
+static regex_t ParseRegex, AproposRegex;
 
 
 
@@ -56,6 +56,45 @@ int Min
 
 {
   return (a < b) ? a : b;
+}
+
+
+
+/*-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-
+                                                     manInitializeRegexes
+-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-*/
+
+void manInitializeRegexes
+   (void)
+
+{
+  int error;
+
+
+  error = tre_regcomp 
+             (&ParseRegex, 
+              "^[[:space:]]*([[:alnum:]._:@+-]+)[[:space:]]*(\\([0-9]{0,3}[a-z]{0,3}\\))?[[:space:]]*$", 
+              REG_EXTENDED | REG_ICASE | REG_NEWLINE);
+
+  if (error != 0)
+  {
+    fprintf (stderr, "FATAL ERROR: regcomp() failed for ParseRegex.  (Error %d)\n", 
+             error);
+    exit (100);
+  }
+
+
+  error = tre_regcomp 
+             (&AproposRegex, 
+              "^[[:space:]]*([[:alnum:]._:@+-]+)[[:space:]]*\\(([0-9a-z/]+)\\)[[:space:]]*-[[:space:]]*(.+)[[:space:]]*", 
+              REG_EXTENDED | REG_ICASE | REG_NEWLINE);
+
+  if (error != 0)
+  {
+    fprintf (stderr, "FATAL ERROR: regcomp() failed for AproposRegex.  (Error %d)\n", 
+             error);
+    exit (100);
+  }
 }
 
 
@@ -110,32 +149,6 @@ bool ParseManPageTitle
 
 
 /*-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-
-                                                     manInitializeRegexes
--~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-*/
-
-void manInitializeRegexes
-   (void)
-
-{
-  int error;
-
-
-  error = tre_regcomp 
-             (&ParseRegex, 
-              "^[[:space:]]*([a-z0-9.+_:-]+)[[:space:]]*(\\([0-9]{0,3}[a-z]{0,3}\\))?[[:space:]]*$", 
-              REG_EXTENDED | REG_ICASE | REG_NEWLINE);
-
-  if (error != 0)
-  {
-    fprintf (stderr, "FATAL ERROR: regcomp() failed for ParseRegex.  (Error %d)\n", 
-             error);
-    exit (100);
-  }
-}
-
-
-
-/*-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-
                                                         GetManPageContent
 -~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-*/
 
@@ -165,9 +178,7 @@ bool GetManPageContent
                              ? pExecutable
                              : (pCommand + 1);
 
-#if !defined(TARGET_BSD)
   pArguments [nArgs++] = "--encoding=UTF-8";
-#endif
 
   if ((pSection != NULL) && (pSection [0] != '\0'))
   {
@@ -234,40 +245,59 @@ bool GetManPageContent
 bool GetAproposContent
    (const char          *pExecutable,
     const char          *pSearchKeyword,
+    APROPOSMODE          SearchMode,
     APROPOSRESULT      **ppResultsOut,
     int                 *pnResultsOut,
     PROCESSERRORINFO    *pErrorOut)
 
 {
-  int i, status = 0, index, fdOutput, nLines, cbData;
-  int nArgs = 0;
-  pid_t pid;
-  char c, *p, *pData, *pLine, *pNextLine;
-  char *pPageTitle, *pSection, *pDescription;
+  int i, n, cb, status = 0, fdOutput;
+  int cbRemaining, nLines, cbRawData, cbTotal, length;
+  char *pRawData, *pLine, *pNextLine;
+  char *pStr, *pPageTitle, *pSection, *pDescription;
+  const char *pCommand, *pArguments [8];
   APROPOSRESULT *pResults;
-  const char *pCommand, *pArguments [5];
+  pid_t pid;
+  regmatch_t match [4];
 
 
   *ppResultsOut = NULL;
   *pnResultsOut = 0;
 
-  
-  /*  Construct the argument list.
-  */
 
-  pArguments [nArgs++] = ((pCommand = strrchr (pExecutable, '/')) == NULL)
-                             ? pExecutable
-                             : (pCommand + 1);
+  /*  Build an argument list for apropos(1).
+  */  
 
-#if !defined(TARGET_BSD)
-  pArguments [nArgs++] = "--long";
-#endif
-
-  pArguments [nArgs++] = pSearchKeyword;
-  pArguments [nArgs] = NULL;
+  pCommand = strrchr (pExecutable, '/');
+  pCommand = (pCommand == NULL) ? pExecutable : (pCommand + 1);
 
 
-  /*  Run apropos(1) as a child process.
+  n = 0;
+  pArguments [n++] = pCommand;
+  pArguments [n++] = "--long"; 
+
+  if (SearchMode == APROPOS_REGEX)
+  {
+    pArguments [n++] = "--regex";
+  }
+
+  if ((SearchMode == APROPOS_WILDCARD)
+        || (SearchMode == APROPOS_WILDCARD_EXACT))
+  {
+    pArguments [n++] = "--wildcard";
+  }
+
+  if ((SearchMode == APROPOS_EXACT)
+        || (SearchMode == APROPOS_WILDCARD_EXACT))
+  {
+    pArguments [n++] = "--exact";
+  }
+
+  pArguments [n++] = pSearchKeyword; 
+  pArguments [n] = NULL;
+
+
+  /*  Run apropos(1) as a child process.  Return false if an error occurs.
   */
 
   if (!CreateChildProcess (&pid, pErrorOut, pExecutable, pArguments,
@@ -279,7 +309,7 @@ bool GetAproposContent
   /*  Capture the output from apropos(1) into a buffer.
   */
 
-  CaptureInput (fdOutput, (void**) &pData, &cbData, 0, ' ');
+  CaptureInput (fdOutput, (void**) &pRawData, &cbRawData, 0, ' ');
   close (fdOutput);
 
 
@@ -289,9 +319,13 @@ bool GetAproposContent
   waitpid (pid, &status, 0);
 
 
+  /*  If apropos crashed or returned an exit status other than
+  *   zero, return false.
+  */
+
   if (WIFSIGNALED (status) || (WEXITSTATUS (status) != 0))
   {
-    free (pData);
+    free (pRawData);
 
     pErrorOut->context    = ERRORCTXT_RUNTIME;
     pErrorOut->ErrorCode  = status;
@@ -304,133 +338,102 @@ bool GetAproposContent
   */
 
   nLines = 1;
-  for (i = 0; i < cbData; i++)
+  for (i = 0; i < cbRawData; i++)
   {
-    if (pData [i] == '\n')
+    if (pRawData [i] == '\n')
     {
       nLines++;
     }
   }
 
 
-  /*  Allocate a buffer large enough to hold one APROPOSRESULT
-  *   structure per line plus the output text itself.
+  /*  Allocate a memory block large enough to hold the 
+  *   APROPOSRESULT array plus the text (consisting of the
+  *   page titles, sections, and descriptions).  Initialize
+  *   the block to all zeros.
   */
 
-  pResults = (APROPOSRESULT*) malloc (sizeof (APROPOSRESULT) * nLines + cbData + 1);
+  cbTotal = sizeof (APROPOSRESULT) * (nLines + 1)
+               + cbRawData + nLines * 2 + 32;
+ 
+  pResults = (APROPOSRESULT*) malloc (cbTotal);
+  memset (pResults, 0, cbTotal);
 
-  memset (pResults, 0, sizeof (APROPOSRESULT) * nLines);
-
-  pLine = (char*) (pResults + nLines);
-  memcpy (pLine, pData, cbData);
-  pLine [cbData] = '\0';
-  free (pData);
+  pStr = (char*) (pResults + nLines + 1);
 
 
-  index = 0;
-  for (; pLine != NULL; pLine = pNextLine)
+  /*  Apply a regex to extract the page titles, sections, and
+  *   descriptions from each line of the raw data.
+  */
+
+  pNextLine = pRawData;  
+  i = 0;
+
+  while ((pLine = pNextLine) != NULL)
   {
-    if ((pNextLine = strchr (pLine, '\n')) != NULL)
+    cbRemaining = cbRawData - (pLine - pRawData);
+    pNextLine = (char*) memchr (pLine, '\n', cbRemaining);
+    length = (pNextLine == NULL)
+                ? cbRemaining : (pNextLine++ - pLine);
+
+  
+    if (tre_regnexec (&AproposRegex, pLine, length, 4, match, 0) == 0)
     {
-      *pNextLine = '\0';
-      pNextLine++;
+      n = match [1].rm_eo - match [1].rm_so;
+      memcpy (pStr, pLine + match [1].rm_so, n);
+      pPageTitle = pStr;
+      pStr += n + 1;
+  
+      n = match [2].rm_eo - match [2].rm_so;
+      memcpy (pStr, pLine + match [2].rm_so, n);
+      pSection = pStr;
+      pStr += n + 1;
+  
+      n = match [3].rm_eo - match [3].rm_so;
+      memcpy (pStr, pLine + match [3].rm_so, n);
+      pDescription = pStr;
+      pStr += n + 1;
+  
+   
+      pResults [i].pPageTitle    = pPageTitle;
+      pResults [i].pSection      = pSection;
+      pResults [i].pDescription  = pDescription;
+      i++;
     }
-
-    
-    p = pLine;
-
-
-    /*  Get the page title.
-    */
-
-    while (c = *p, ((c == ' ') || (c == '\t')))
-    {
-      p++;
-    }
-
-    if (c == '\0')
-      continue;
-
-    pPageTitle = p;
-
-    while (c = *p, ((c != ' ') && (c != '\t') && (c != '\0')))
-    {
-      p++;
-    }
-    
-    if (c == '\0')
-      continue;
-    
-    *(p++) = '\0';
-
- 
-    /*  Get the section name.
-    */
-
-    while (c = *p, ((c != '(') && (c != '\0')))
-    {
-      p++;
-    }
-
-    if (c == '\0')
-      continue;
-
-    p++;
-
-    while (c = *p, ((c == ' ') || (c == '\t')))
-    {
-      p++;
-    }
-    
-    if (c == '\0')
-      continue;
-
-    pSection = p;
-
-    while (c = *p, ((c != ')') && (c != '\0')))
-    {
-      p++;
-    }
-
-    if (c == '\0')
-      continue;
-    
-    *(p++) = '\0';
-
-
-    /*  Get the description.
-    */
-
-    while (c = *p, ((c != '-') && (c != '\0')))
-    {
-      p++;
-    }
-
-    if (c == '\0')
-      continue;
-
-    p++;
-
-    while (c = *p, ((c == ' ') || (c == '\t')))
-    {
-      p++;
-    }
-    
-    if (c == '\0')
-      continue;
-
-    pDescription = p;    
-
-
-    pResults [index].pPageTitle    = pPageTitle;
-    pResults [index].pSection      = pSection;
-    pResults [index].pDescription  = pDescription;
-    index++;
   }
- 
+
+
+  /*  Free the raw data--we no longer need it.
+  */
+
+  free (pRawData);
+
+
+  /*  If no valid results were found, return false.
+  */
+
+  if (i == 0)
+  {
+    free (pResults);
+
+    pErrorOut->context    = ERRORCTXT_RUNTIME;
+    pErrorOut->ErrorCode  = 16;
+    return false;
+  } 
+
+
+  /*  Shrink the buffer to free unused space at the end.
+  */
+
+  cb = pStr - ((char*) pResults) + 1;
+  if (cbTotal - cb >= 64)
+  {
+    pResults = (APROPOSRESULT*) realloc (pResults, cb);
+  }  
+
 
   *ppResultsOut = pResults;
-  *pnResultsOut = index;
+  *pnResultsOut = i;
 
   return true;
 }
@@ -448,10 +451,10 @@ int InfoFileFromKeyword
     PROCESSERRORINFO   *pErrorOut)
 
 {
-  int i, t, nArgs = 0, fdOutput, length, status = 0;
+  int i, t, fdOutput, length, status = 0;
   pid_t pid;
   char c, *pFilename, *pBasename;
-  const char *pCommand, *pExtension, *pArguments [4];
+  const char *pCommand, *pExtension;
 
   static const char *extensions []
           = {".z", ".gz", ".xz", ".bz2", ".lz", ".lzma", ".Z", ".Y", NULL};
@@ -460,20 +463,15 @@ int InfoFileFromKeyword
   *ppFileOut = NULL;
 
 
-  /*  Construct the argument list.
+  /*  Run info(1) as a child process.  Return INFO_ERROR if an error occurs.
   */
 
-  pArguments [nArgs++] = ((pCommand = strrchr (pExecutable, '/')) == NULL)
-                             ? pExecutable
-                             : (pCommand + 1);
+  pCommand = strrchr (pExecutable, '/');
+  pCommand = (pCommand == NULL) ? pExecutable : (pCommand + 1);
 
-  pArguments [nArgs++] = "-w";
-  pArguments [nArgs++] = pKeyword;
-  pArguments [nArgs] = NULL;
+  const char *pArguments [] 
+     = { pCommand, "-w", pKeyword, NULL };
 
-
-  /*  Run info(1) as a child process.
-  */
 
   if (!CreateChildProcess (&pid, pErrorOut, pExecutable, pArguments,
                            STDIN_NULL | STDOUT_REDIRECT | STDERR_NULL, 
@@ -493,6 +491,7 @@ int InfoFileFromKeyword
   */
 
   waitpid (pid, &status, 0);
+
 
   if (WIFSIGNALED (status))
   {

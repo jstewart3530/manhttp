@@ -896,13 +896,6 @@ void HandleAproposRequest
   PROCESSERRORINFO error;
 
 
-#if defined(TARGET_BSD)
-  static const char RebuildCommand [] = "makewhatis(8)";
-#else
-  static const char RebuildCommand [] = "mandb(8)";
-#endif
-
-
   if ((pPath [8] != '/')
          || (NormalizeSpaces (pPath + 9, keyword, sizeof (keyword)) == 0))
   {
@@ -911,7 +904,8 @@ void HandleAproposRequest
   }
 
 
-  fSuccess = GetAproposContent (AproposPath, keyword, &pResultList, &nResults, &error);
+  fSuccess = GetAproposContent (AproposPath, keyword, APROPOS_REGEX, 
+                                &pResultList, &nResults, &error);
 
 
   if (!fSuccess)
@@ -927,10 +921,8 @@ void HandleAproposRequest
             "If you keep getting this message, it is likely that the\n"
             "system's manual page index needs to be updated.  You\n"
             "(or the system administrator) can do this by running\n"
-            "<a href=\"man/%s\">%s</a>.\n",
-            keyword,
-            RebuildCommand,
-            RebuildCommand);
+            "<a href=\"man/mandb(8)\">mandb(8)</a>.\n",
+            keyword);
     }
     else
     {
