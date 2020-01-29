@@ -74,7 +74,7 @@ void manInitializeRegexes
 
   error = tre_regcomp 
              (&ParseRegex, 
-              "^[[:space:]]*([[:alnum:]._:@+-]+)[[:space:]]*(\\([0-9]{0,3}[a-z]{0,3}\\))?[[:space:]]*$", 
+              "^[[:space:]]*([[:alnum:]._:@+-]+)[[:space:]]*(\\([0-9]{0,3}[a-z]{0,4}\\))?[[:space:]]*$", 
               REG_EXTENDED | REG_ICASE | REG_NEWLINE);
 
   if (error != 0)
@@ -357,9 +357,7 @@ bool GetAproposContent
   *   the block to all zeros.
   */
 
-  cbTotal = sizeof (APROPOSRESULT) * (nLines + 1)
-               + cbRawData + nLines * 2 + 32;
- 
+  cbTotal = cbRawData + (sizeof (APROPOSRESULT) + 4) * nLines + 256; 
   pResults = (APROPOSRESULT*) malloc (cbTotal);
   memset (pResults, 0, cbTotal);
 
@@ -383,10 +381,8 @@ bool GetAproposContent
 
   
     if (tre_regnexec (&AproposRegex, pLine, length, 4, match, 0))
-    {
- //   printf ("Unparsed line: \"%.*s\"\n", length, pLine);
       continue;
-    }
+
 
     n = match [1].rm_eo - match [1].rm_so;
     memcpy (pStr, pLine + match [1].rm_so, n);
@@ -425,6 +421,8 @@ bool GetAproposContent
 
     pErrorOut->context    = ERRORCTXT_RUNTIME;
     pErrorOut->ErrorCode  = 16;
+    pErrorOut->pExecPath  = pExecutable;
+
     return false;
   } 
 
