@@ -113,7 +113,7 @@ $(INTERMEDIATE_DIR) :
 
 $(INTERMEDIATE_DIR)/manhttp_main.o : \
 		manhttp_main.cpp  manualpagetohtml.h  apropostohtml.h \
-		infotohtml.h  documentation_api.h  utility.h  installation.h \
+		infotohtml.h  documentation_api.h  utility.h  \
 		dynamic/stylesheet_text.h  dynamic/splash_html.h  dynamic/favicon.h
 	$(Compile)
 
@@ -139,7 +139,7 @@ $(INTERMEDIATE_DIR)/infotohtml.o : \
 	$(Compile)
 
 $(INTERMEDIATE_DIR)/documentation_api.o : \
-		documentation_api.cpp  documentation_api.h  utility.h
+		documentation_api.cpp  documentation_api.h  utility.h  installation.h
 	$(Compile)
 
 $(INTERMEDIATE_DIR)/html_formatting.o : \

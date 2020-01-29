@@ -37,6 +37,7 @@
 #include <tre/tre.h>                   /*  Library headers.  */
 
 #include "utility.h"                   /*  Application headers.  */
+#include "installation.h"
 #include "documentation_api.h"
 
 
@@ -153,8 +154,7 @@ bool ParseManPageTitle
 -~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-*/
 
 bool GetManPageContent
-   (const char          *pExecutable,
-    const char          *pPageTitle,
+   (const char          *pPageTitle,
     const char          *pSection,
     char               **ppDataOut,
     int                 *pcbDataOut,
@@ -166,6 +166,7 @@ bool GetManPageContent
   char *pData;
   const char *pCommand, *pArguments [8];
 
+  const char *pExecutable = ManPath;
 
   *ppDataOut = NULL;
   *pcbDataOut = 0;
@@ -225,6 +226,7 @@ bool GetManPageContent
 
     pErrorOut->context    = ERRORCTXT_RUNTIME;
     pErrorOut->ErrorCode  = status;
+    pErrorOut->pExecPath  = pExecutable;
 
     return false;
   }
@@ -243,8 +245,7 @@ bool GetManPageContent
 -~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-*/
 
 bool GetAproposContent
-   (const char          *pExecutable,
-    const char          *pSearchKeyword,
+   (const char          *pSearchKeyword,
     APROPOSMODE          SearchMode,
     APROPOSRESULT      **ppResultsOut,
     int                 *pnResultsOut,
@@ -255,10 +256,12 @@ bool GetAproposContent
   int cbRemaining, nLines, cbRawData, cbTotal, length;
   char *pRawData, *pLine, *pNextLine;
   char *pStr, *pPageTitle, *pSection, *pDescription;
-  const char *pCommand, *pArguments [8];
+  const char *pCommand, *pRawDataEnd, *pArguments [8];
   APROPOSRESULT *pResults;
   pid_t pid;
   regmatch_t match [4];
+
+  const char *pExecutable = AproposPath;
 
 
   *ppResultsOut = NULL;
@@ -329,6 +332,7 @@ bool GetAproposContent
 
     pErrorOut->context    = ERRORCTXT_RUNTIME;
     pErrorOut->ErrorCode  = status;
+    pErrorOut->pExecPath  = pExecutable;
 
     return false;
   }
@@ -366,40 +370,43 @@ bool GetAproposContent
   *   descriptions from each line of the raw data.
   */
 
-  pNextLine = pRawData;  
   i = 0;
+  pRawDataEnd = pRawData + cbRawData;
+  pNextLine = pRawData;  
 
   while ((pLine = pNextLine) != NULL)
   {
-    cbRemaining = cbRawData - (pLine - pRawData);
+    cbRemaining = pRawDataEnd - pLine;
     pNextLine = (char*) memchr (pLine, '\n', cbRemaining);
     length = (pNextLine == NULL)
                 ? cbRemaining : (pNextLine++ - pLine);
 
   
-    if (tre_regnexec (&AproposRegex, pLine, length, 4, match, 0) == 0)
+    if (tre_regnexec (&AproposRegex, pLine, length, 4, match, 0))
     {
-      n = match [1].rm_eo - match [1].rm_so;
-      memcpy (pStr, pLine + match [1].rm_so, n);
-      pPageTitle = pStr;
-      pStr += n + 1;
-  
-      n = match [2].rm_eo - match [2].rm_so;
-      memcpy (pStr, pLine + match [2].rm_so, n);
-      pSection = pStr;
-      pStr += n + 1;
-  
-      n = match [3].rm_eo - match [3].rm_so;
-      memcpy (pStr, pLine + match [3].rm_so, n);
-      pDescription = pStr;
-      pStr += n + 1;
-  
-   
-      pResults [i].pPageTitle    = pPageTitle;
-      pResults [i].pSection      = pSection;
-      pResults [i].pDescription  = pDescription;
-      i++;
+ //   printf ("Unparsed line: \"%.*s\"\n", length, pLine);
+      continue;
     }
+
+    n = match [1].rm_eo - match [1].rm_so;
+    memcpy (pStr, pLine + match [1].rm_so, n);
+    pPageTitle = pStr;
+    pStr += n + 1;
+  
+    n = match [2].rm_eo - match [2].rm_so;
+    memcpy (pStr, pLine + match [2].rm_so, n);
+    pSection = pStr;
+    pStr += n + 1;
+  
+    n = match [3].rm_eo - match [3].rm_so;
+    memcpy (pStr, pLine + match [3].rm_so, n);
+    pDescription = pStr;
+    pStr += n + 1;
+
+    pResults [i].pPageTitle    = pPageTitle;
+    pResults [i].pSection      = pSection;
+    pResults [i].pDescription  = pDescription;
+    i++;
   }
 
 
@@ -445,8 +452,7 @@ bool GetAproposContent
 -~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-*/
 
 int InfoFileFromKeyword
-   (const char         *pExecutable,
-    const char         *pKeyword,
+   (const char         *pKeyword,
     char              **ppFileOut,
     PROCESSERRORINFO   *pErrorOut)
 
@@ -455,6 +461,8 @@ int InfoFileFromKeyword
   pid_t pid;
   char c, *pFilename, *pBasename;
   const char *pCommand, *pExtension;
+
+  const char *pExecutable = InfoPath;
 
   static const char *extensions []
           = {".z", ".gz", ".xz", ".bz2", ".lz", ".lzma", ".Z", ".Y", NULL};
@@ -499,6 +507,8 @@ int InfoFileFromKeyword
 
     pErrorOut->context    = ERRORCTXT_RUNTIME;
     pErrorOut->ErrorCode  = status;
+    pErrorOut->pExecPath  = pExecutable;
+
     return INFO_ERROR;
   }
 
@@ -581,8 +591,7 @@ int InfoFileFromKeyword
 -~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-*/
 
 bool GetInfoContent
-   (const char         *pExecutable,
-    const char         *pInfoFile,
+   (const char         *pInfoFile,
     const char         *pNodeName,
     char              **ppDataOut,
     int                *pcbDataOut,
@@ -593,6 +602,7 @@ bool GetInfoContent
   pid_t pid;
   char *pData;
   const char *pCommand;
+  const char *pExecutable = InfoPath;
 
 
   *ppDataOut = NULL;
@@ -644,6 +654,7 @@ bool GetInfoContent
 
     pErrorOut->context    = ERRORCTXT_RUNTIME;
     pErrorOut->ErrorCode  = status;
+    pErrorOut->pExecPath  = pExecutable;
 
     return false;    
   }

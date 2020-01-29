@@ -56,8 +56,9 @@ enum ERRORCONTEXT
 
 struct PROCESSERRORINFO
 {
-  ERRORCONTEXT  context;
-  int           ErrorCode;
+  ERRORCONTEXT   context;
+  int            ErrorCode;
+  const char    *pExecPath;
 };
 
 
@@ -102,8 +103,8 @@ extern void SetCloseOnExec
 
 extern bool CreateChildProcess
    (pid_t              *pidOut,     
-    PROCESSERRORINFO   *pResultOut,   
-    const char         *pszExecutable,
+    PROCESSERRORINFO   *pErrorOut,   
+    const char         *pExecutable,
     const char        **ppszArguments,
     int                 flags,
     int                *pfdStdInput,

@@ -353,7 +353,7 @@ void SetCloseOnExec
 bool CreateChildProcess
    (pid_t              *pidOut,     
     PROCESSERRORINFO   *pErrorOut,   
-    const char         *pszExecutable,
+    const char         *pExecutable,
     const char        **ppszArguments,
     int                 flags,
     int                *pfdStdInput,
@@ -437,6 +437,7 @@ bool CreateChildProcess
   {
     pErrorOut->context     = ERRORCTXT_FORK_FAILED;
     pErrorOut->ErrorCode   = errno;
+    pErrorOut->pExecPath   = pExecutable;
     fSuccess = false;
   }
 
@@ -465,7 +466,7 @@ bool CreateChildProcess
     }
 
 
-    execve (pszExecutable, (char* const*) ppszArguments, environ);
+    execve (pExecutable, (char* const*) ppszArguments, environ);
 
 
     /*  If we reach this point, something must have gone wrong.
@@ -518,6 +519,8 @@ bool CreateChildProcess
 
       pErrorOut->context    = ERRORCTXT_EXEC_FAILED;
       pErrorOut->ErrorCode  = result;      
+      pErrorOut->pExecPath   = pExecutable;
+
       fSuccess = false;
     }
   }

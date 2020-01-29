@@ -69,7 +69,6 @@
 #include "manualpagetohtml.h"
 #include "apropostohtml.h"
 #include "infotohtml.h"
-#include "installation.h"
 
 
 
@@ -124,7 +123,7 @@ static void HandleManPageRequest (struct MHD_Connection*, const char*);
 static void HandleInfoRequest (struct MHD_Connection*, const char*); 
 static void HandleAproposRequest (struct MHD_Connection*, const char*); 
 static void GenerateSplashPage (struct MHD_Connection*, const char*);
-static void HandleInternalError (struct MHD_Connection*, const char*, const PROCESSERRORINFO*);
+static void HandleInternalError (struct MHD_Connection*, const PROCESSERRORINFO*);
 static void GenerateErrorPage (struct MHD_Connection*, const char*, 
                                int, const char*, ...)
        __attribute__ ((format (printf, 4, 5)));;
@@ -689,7 +688,7 @@ void HandleManPageRequest
   */
 
   fSuccess = GetManPageContent 
-                 (ManPath, page, section, &pPageContent,
+                 (page, section, &pPageContent,
                   &cbPageContent, &error);
 
 
@@ -709,7 +708,7 @@ void HandleManPageRequest
     }
     else
     {
-      HandleInternalError (pConn, ManPath, &error);
+      HandleInternalError (pConn, &error);
     }
 
   	return;
@@ -782,11 +781,10 @@ void HandleInfoRequest
     pDecodedName = DecodeInfoNodeName (pNodeName, -1);
 
 
-    if (!GetInfoContent (InfoPath, keyword, pDecodedName, 
-                         &pContent, &cbContent, &error))
+    if (!GetInfoContent (keyword, pDecodedName, &pContent, &cbContent, &error))
     {
       free (pDecodedName);
-      HandleInternalError (pConn, InfoPath, &error);
+      HandleInternalError (pConn, &error);
       return;    	
     }
 
@@ -823,7 +821,7 @@ void HandleInfoRequest
   }
     
 
-  result = InfoFileFromKeyword (InfoPath, keyword, &pFile, &error);
+  result = InfoFileFromKeyword (keyword, &pFile, &error);
   
   switch (result)
   {
@@ -867,7 +865,7 @@ void HandleInfoRequest
       break;
 
     case INFO_ERROR:
-      HandleInternalError (pConn, InfoPath, &error);
+      HandleInternalError (pConn, &error);
   }
 
   free (pFile);
@@ -904,7 +902,7 @@ void HandleAproposRequest
   }
 
 
-  fSuccess = GetAproposContent (AproposPath, keyword, APROPOS_REGEX, 
+  fSuccess = GetAproposContent (keyword, APROPOS_REGEX, 
                                 &pResultList, &nResults, &error);
 
 
@@ -926,7 +924,7 @@ void HandleAproposRequest
     }
     else
     {
-      HandleInternalError (pConn, AproposPath, &error);
+      HandleInternalError (pConn, &error);
     }
 
     return;    	
@@ -1089,17 +1087,21 @@ void GenerateErrorPage
 static
 void HandleInternalError
    (MHD_Connection          *pConn,
-    const char              *pCommandPath,
     const PROCESSERRORINFO  *pError)
 
 {
   int cbMax;
   size_t cbResponse = 0;
   char *pResponse = NULL, *pErrorHTML = NULL;
-  const char *pCommand, *pMessage;
+  const char *pCommandPath, *pCommand, *pMessage;
   FILE *stream;
   struct MHD_Response *pResp;
   char buffer [256] = "";
+
+
+  pCommandPath = pError->pExecPath;
+  pCommand = strrchr (pCommandPath, '/');
+  pCommand = (pCommand == NULL) ? pCommandPath : (pCommand + 1);
 
 
   stream = open_memstream (&pResponse, &cbResponse);
@@ -1113,24 +1115,15 @@ void HandleInternalError
            "<base href=\"%s\">\n"                      
            "<style>\n%s\n</style>\n"
            "</head>\n"
-           "<body Type=\"splash\">\n",
-           pUriPrefix,
-           pStylesheet);
-
-
-  fprintf (stream, 
+           "<body Type=\"splash\">\n"
            "<div class=\"Splash\" IsError=\"\">\n"
-           "<p Heading=\"\">Internal error</p>\n");
-
-
-  pCommand = strrchr (pCommandPath, '/');
-  pCommand = (pCommand == NULL) ? pCommandPath : (pCommand + 1);
-
-  fprintf (stream,
+           "<p Heading=\"\">Internal error</p>\n"
            "MANHTTP encountered an unrecoverable error when running\n"
            "<span class=\"Filename\">%s</span>.  Detailed error information\n"
            "follows.\n\n\n"
            "<pre ErrorInfo=\"\" style=\"margin-top: 1.5em;\">\n",
+           pUriPrefix,
+           pStylesheet,
            pCommand);
 
 
@@ -1138,6 +1131,7 @@ void HandleInternalError
          || (pError->context == ERRORCTXT_EXEC_FAILED))
   {
     pMessage = strerror_r (pError->ErrorCode, buffer, sizeof (buffer));
+
     if ((pMessage == NULL) || (pMessage [0] == '\0'))
     {
       snprintf (buffer, sizeof (buffer),

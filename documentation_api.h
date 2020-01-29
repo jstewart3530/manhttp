@@ -77,8 +77,7 @@ extern bool ParseManPageTitle
 
 
 extern bool GetManPageContent
-   (const char          *pExecutable,
-    const char          *pPageTitle,
+   (const char          *pPageTitle,
     const char          *pSection,
     char               **ppDataOut,
     int                 *pcbDataOut,
@@ -86,8 +85,7 @@ extern bool GetManPageContent
 
 
 extern bool GetAproposContent
-   (const char          *pExecutable,
-    const char          *pSearchKeyword,
+   (const char          *pSearchKeyword,
     APROPOSMODE          SearchMode,
     APROPOSRESULT      **ppResultsOut,
     int                 *pnResultsOut,
@@ -95,15 +93,13 @@ extern bool GetAproposContent
 
 
 extern int InfoFileFromKeyword
-   (const char         *pExecutable,
-    const char         *pKeyword,
+   (const char         *pKeyword,
     char              **ppFileOut,
     PROCESSERRORINFO   *pErrorOut);
   
 
 extern bool GetInfoContent
-   (const char         *pExecutable,
-    const char         *pInfoFile,
+   (const char         *pInfoFile,
     const char         *pNodeName,
     char              **ppDataOut,
     int                *pcbDataOut,
