@@ -78,7 +78,7 @@ void htmlInitializeRegexes
 
   error = tre_regcomp 
               (&PageRefRegex, 
-               "[a-z0-9.+_:-]{1,32}\\([0-9]{1,3}[a-z]{0,2}\\)", 
+               "[a-z0-9.+_:-]{1,32}\\([0-9]{1,3}[a-z]{0,4}\\)", 
                REG_EXTENDED | REG_ICASE);
 
   if (error != 0)
