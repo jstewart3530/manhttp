@@ -31,7 +31,7 @@ COMPILE = gcc
 LINK = gcc
 SASS = sassc -t compact
 COMPILE_OPTS := -c -g -pipe -Wall
-LINK_OPTS = -g -pipe
+LINK_OPTS = -g -pthread -pipe
 LIBS := -lstdc++ -ltre -lmicrohttpd -lpopt
 
 

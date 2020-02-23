@@ -145,9 +145,10 @@ function SetSortMode
   results.sort (Compare);
 
 
-  for (let c of [... ResultsDiv.children].reverse ())
+  let elts = [... ResultsDiv.children];
+  for (let i = elts.length - 1; i >= 0; i--)
   {
-  	ResultsDiv.removeChild (c);
+    ResultsDiv.removeChild (elts [i]);
   }
 
 
