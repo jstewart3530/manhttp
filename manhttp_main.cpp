@@ -113,6 +113,7 @@ static const char *pFontDirectory = NULL;
 /*  Function prototypes.
 */ 
 
+static void OnSignal (int, siginfo_t*, void*);
 static void ReportError (const char*, ...)
        __attribute__ ((format (printf, 1, 2)));
 static int HandleRequest (void*, struct MHD_Connection*, const char*, const char*,
@@ -422,8 +423,7 @@ int main
   */
 
   memset (&action, 0, sizeof (struct sigaction));
-  action.sa_sigaction   = (void (*) (int, siginfo_t*, void*))
-                            [] (int, siginfo_t*, void*)  { fReadyToQuit = true; };                  
+  action.sa_sigaction   = OnSignal;
   action.sa_flags       = SA_SIGINFO;
 
   sigaction (SIGINT, &action, NULL);
@@ -487,6 +487,22 @@ int main
   MHD_stop_daemon (pDaemon);
 
   return 0;
+}
+
+
+
+/*-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-
+                                                                 OnSignal
+-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-*/
+
+static
+void OnSignal
+   (int         idSignal,
+    siginfo_t  *pSignalInfo,
+    void       *pContext)
+
+{
+  fReadyToQuit = true;
 }
 
 
@@ -1162,24 +1178,22 @@ void HandleInternalError
 
     free (pErrorHTML);
   }
-  else
+  else if (WIFEXITED (pError->ErrorCode))
   {
-    if (WIFEXITED (pError->ErrorCode))
-    {
-      fprintf (stream,
-               "<span class=\"Filename\">%s</span> reported an internal error.  (Exit status: %d)\n",
-               pCommandPath,               
-               WEXITSTATUS (pError->ErrorCode));
-    }
-    else  
-    {
-      fprintf (stream,
-               "<span class=\"Filename\">%s</span> crashed, or otherwise terminated due to an\n"
-               "unexpected signal.  (Signal ID: %d)\n",
-               pCommandPath,
-               WTERMSIG (pError->ErrorCode));
-    }
+    fprintf (stream,
+             "<span class=\"Filename\">%s</span> reported an internal error.  (Exit status: %d)\n",
+             pCommandPath,               
+             WEXITSTATUS (pError->ErrorCode));
   }
+  else  
+  {
+    fprintf (stream,
+             "<span class=\"Filename\">%s</span> crashed, or otherwise terminated due to an\n"
+             "unexpected signal.  (Signal ID: %d)\n",
+             pCommandPath,
+             WTERMSIG (pError->ErrorCode));
+  }
+  
 
 
   fprintf (stream, 
@@ -1222,6 +1236,7 @@ void HandleFontRequest
 
 
   if ((pFontDirectory != NULL)
+         && (strchr (pFilename, '/') == NULL)
          && ((pTypeStr = FontTypeFromFilename (pFilename)) != NULL))
   {
     asprintf (&pFontPath, "%s/%s", pFontDirectory, pFilename);
@@ -1273,11 +1288,8 @@ const char* FontTypeFromFilename
    (const char   *pFilename)
 
 {
-  int i, t;
+  int i;
   const char *pExtension, *pType;
-
-  static const char AllowedChars []
-        = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789._- ";
 
   static const char *TypeList []
             = {"ttf",    "font/ttf",
@@ -1286,11 +1298,6 @@ const char* FontTypeFromFilename
                "woff2",  "font/woff2",
                "eot",    "application/vnd.ms-fontobject",
                NULL};
-
-
-  t = strspn (pFilename, AllowedChars);
-  if (pFilename [t] != '\0')
-    return NULL;
 
 
   if ((pExtension = strrchr (pFilename, '.')) == NULL)
