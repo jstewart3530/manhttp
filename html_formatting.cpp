@@ -46,8 +46,8 @@ static regex_t UriRegex, PageRefRegex;
 static char* CreateManPageLinkTag (const char*, const TEXTATTRIBUTES*, const HTMLFORMATINFO*);
 static char* CreateInfoLinkTag (const char*, const TEXTATTRIBUTES*, const HTMLFORMATINFO*);
 static char* CreateUriLinkTag (const char*, const TEXTATTRIBUTES*, const HTMLFORMATINFO*);
-static int GetTextAttributesNewStyle (const char*, int, char*, TEXTATTRIBUTES*, int);
-static int GetTextAttributesOldStyle (const char*, int, char*, TEXTATTRIBUTES*, int);
+static int AnsiGetTextAttributes (const char*, int, char*, TEXTATTRIBUTES*, int);
+static int OldStyleGetTextAttributes (const char*, int, char*, TEXTATTRIBUTES*, int);
 
 
 
@@ -105,34 +105,35 @@ int GetTextAttributes
     int              cbMax)
 
 {
-  int i, n;
-  int (*pfn) (const char*, int, char*, TEXTATTRIBUTES*, int);
+  int i, n, cb;
+  bool fIsANSI;
 
+
+  cb = ((cbText < 1024) ? cbText : 1024) - 1;
   
-  for (i = n = 0; i < cbText; i++)
+  for (i = n = 0; i < cb; i++)
   {
-    if (pText [i] == '\b')
+    if ((pText [i] == 0x1b) && (pText [i + 1] == '['))
     {
       n++;
     }
   }
-
   
-  pfn = (n >= 5)
-            ? GetTextAttributesOldStyle
-            : GetTextAttributesNewStyle;
+  fIsANSI = (n >= 5);
 
-  return pfn (pText, cbText, pTextOut, pAttrsOut, cbMax);
+
+  return (fIsANSI ? AnsiGetTextAttributes : OldStyleGetTextAttributes)
+            (pText, cbText, pTextOut, pAttrsOut, cbMax);
 }
 
 
 
 /*-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-
-                                                GetTextAttributesNewStyle
+                                                    AnsiGetTextAttributes
 -~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-*/
 
 static
-int GetTextAttributesNewStyle
+int AnsiGetTextAttributes
    (const char      *pText,
     int              cbText,
     char            *pTextOut,
@@ -215,11 +216,11 @@ int GetTextAttributesNewStyle
 
 
 /*-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-
-                                                GetTextAttributesOldStyle
+                                                OldStyleGetTextAttributes
 -~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-*/
 
 static
-int GetTextAttributesOldStyle
+int OldStyleGetTextAttributes
    (const char      *pText,
     int              cbText,
     char            *pTextOut,
