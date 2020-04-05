@@ -46,6 +46,8 @@ static regex_t UriRegex, PageRefRegex;
 static char* CreateManPageLinkTag (const char*, const TEXTATTRIBUTES*, const HTMLFORMATINFO*);
 static char* CreateInfoLinkTag (const char*, const TEXTATTRIBUTES*, const HTMLFORMATINFO*);
 static char* CreateUriLinkTag (const char*, const TEXTATTRIBUTES*, const HTMLFORMATINFO*);
+static int GetTextAttributesNewStyle (const char*, int, char*, TEXTATTRIBUTES*, int);
+static int GetTextAttributesOldStyle (const char*, int, char*, TEXTATTRIBUTES*, int);
 
 
 
@@ -103,6 +105,41 @@ int GetTextAttributes
     int              cbMax)
 
 {
+  int i, n;
+  int (*pfn) (const char*, int, char*, TEXTATTRIBUTES*, int);
+
+  
+  for (i = n = 0; i < cbText; i++)
+  {
+    if (pText [i] == '\b')
+    {
+      n++;
+    }
+  }
+
+  
+  pfn = (n >= 5)
+            ? GetTextAttributesOldStyle
+            : GetTextAttributesNewStyle;
+
+  return pfn (pText, cbText, pTextOut, pAttrsOut, cbMax);
+}
+
+
+
+/*-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-
+                                                GetTextAttributesNewStyle
+-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-*/
+
+static
+int GetTextAttributesNewStyle
+   (const char      *pText,
+    int              cbText,
+    char            *pTextOut,
+    TEXTATTRIBUTES  *pAttrsOut,
+    int              cbMax)
+
+{
   int i, j, iStart, length, value;
   bool fNumeric;
   TEXTATTRIBUTES attrs;
@@ -118,7 +155,7 @@ int GetTextAttributes
   	c = pText [i++];
 
 
-    if ((c == '\033') && (pText [i] == '['))
+    if ((c == 0x1b) && (pText [i] == '['))
     {
       iStart = ++i;
       value = 0;
@@ -170,7 +207,66 @@ int GetTextAttributes
 
 
   pTextOut [j] = '\0';
+  pAttrsOut [j] = 0;
+
   return j;
+}
+
+
+
+/*-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-
+                                                GetTextAttributesOldStyle
+-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-*/
+
+static
+int GetTextAttributesOldStyle
+   (const char      *pText,
+    int              cbText,
+    char            *pTextOut,
+    TEXTATTRIBUTES  *pAttrsOut,
+    int              cbMax)
+
+{
+  int i, j;
+  char c, c2;
+  TEXTATTRIBUTES attr;
+
+
+  i = j = 0;
+   
+  while ((i < cbText) && (j < cbMax - 1))
+  {
+    attr = 0;
+    c = pText [i++];
+
+    if ((c == '_') 
+          && (i < cbText - 2) 
+          && (pText [i] == '\b') 
+          && ((c2 = pText [i + 1]) != '_'))
+    {
+      i += 2;
+      attr |= TEXT_ATTR_ITALIC;
+      c = c2;
+    }
+
+    if ((i < cbText - 2)
+           && (pText [i] == '\b')
+           && (pText [i + 1] == c))
+    {
+      i += 2;
+      attr |= TEXT_ATTR_BOLD;
+    }
+
+    pTextOut [j] = (c == '\r') ? ' ' : c;
+    pAttrsOut [j] = attr;
+    j++;
+  }
+
+
+  pTextOut [j] = '\0';
+  pAttrsOut [j] = 0;
+
+  return j;  
 }
 
 
