@@ -88,14 +88,6 @@ extern void htmlInitializeRegexes
    (void);
 
 
-extern int GetTextAttributes
-   (const char      *pText,
-    int              cbText,
-    char            *pTextOut,
-    TEXTATTRIBUTES  *pAttrsOut,
-    int              cbMax);
-
-
 extern bool HTMLizeText 
    (char                  *pDest,
     int                    cbMax,
