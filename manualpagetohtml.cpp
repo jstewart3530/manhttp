@@ -78,9 +78,9 @@ struct SECTIONENTRY
 */
 
 static LINECLASSIFICATION ClassifyLine (const char*, const TEXTATTRIBUTES*, int, LINECLASSIFICATION);
-static int GetTextAttributes (const char*, int, char*, TEXTATTRIBUTES*, int);
-static int AnsiGetTextAttributes (const char*, int, char*, TEXTATTRIBUTES*, int);
-static int OldStyleGetTextAttributes (const char*, int, char*, TEXTATTRIBUTES*, int);
+static void GetTextAttributes (const char*, int, char*, TEXTATTRIBUTES*, int, int*);
+static void AnsiGetTextAttributes (const char*, int, char*, TEXTATTRIBUTES*, int, int*);
+static void OldStyleGetTextAttributes (const char*, int, char*, TEXTATTRIBUTES*, int, int*);
 
 
 
@@ -140,7 +140,10 @@ void ManualPageToHTML
 
   pText = (char*) malloc (cbContent + 1);         
   pAttributes = (TEXTATTRIBUTES*) malloc (sizeof (TEXTATTRIBUTES) * (cbContent + 1));
-  cbText = GetTextAttributes (pContent, cbContent, pText, pAttributes, cbContent + 1);
+
+  GetTextAttributes (pContent, cbContent, 
+                     pText, pAttributes, cbContent + 1, 
+                     &cbText);
 
 
   nSections = 0;
@@ -371,12 +374,13 @@ LINECLASSIFICATION ClassifyLine
 -~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-*/
 
 static
-int GetTextAttributes
+void GetTextAttributes
    (const char      *pText,
     int              cbText,
     char            *pTextOut,
     TEXTATTRIBUTES  *pAttrsOut,
-    int              cbMax)
+    int              cbMax,
+    int             *pLengthOut)
 
 {
   int i, n, cb;
@@ -396,8 +400,8 @@ int GetTextAttributes
   fIsANSI = (n >= 5);
 
 
-  return (fIsANSI ? AnsiGetTextAttributes : OldStyleGetTextAttributes)
-            (pText, cbText, pTextOut, pAttrsOut, cbMax);
+  (fIsANSI ? AnsiGetTextAttributes : OldStyleGetTextAttributes)
+            (pText, cbText, pTextOut, pAttrsOut, cbMax, pLengthOut);
 }
 
 
@@ -407,12 +411,13 @@ int GetTextAttributes
 -~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-*/
 
 static
-int AnsiGetTextAttributes
+void AnsiGetTextAttributes
    (const char      *pText,
     int              cbText,
     char            *pTextOut,
     TEXTATTRIBUTES  *pAttrsOut,
-    int              cbMax)
+    int              cbMax,
+    int             *pLengthOut)
 
 {
   int i, j, iStart, length, value;
@@ -470,12 +475,7 @@ int AnsiGetTextAttributes
     }
 
 
-    if (c == '\r')
-    {
-      c = ' ';
-    }
-
-    pTextOut [j] = c;
+    pTextOut [j] = (c == '\r') ? ' ' : c;
     pAttrsOut [j] = attrs;
     j++;
   }
@@ -484,7 +484,11 @@ int AnsiGetTextAttributes
   pTextOut [j] = '\0';
   pAttrsOut [j] = 0;
 
-  return j;
+
+  if (pLengthOut != NULL)
+  {
+    *pLengthOut = j;
+  }
 }
 
 
@@ -494,12 +498,13 @@ int AnsiGetTextAttributes
 -~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-*/
 
 static
-int OldStyleGetTextAttributes
+void OldStyleGetTextAttributes
    (const char      *pText,
     int              cbText,
     char            *pTextOut,
     TEXTATTRIBUTES  *pAttrsOut,
-    int              cbMax)
+    int              cbMax,
+    int             *pLengthOut)
 
 {
   int i, j;
@@ -541,5 +546,8 @@ int OldStyleGetTextAttributes
   pTextOut [j] = '\0';
   pAttrsOut [j] = 0;
 
-  return j;  
+  if (pLengthOut != NULL)
+  {
+    *pLengthOut = j;
+  }
 }

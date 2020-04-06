@@ -31,7 +31,6 @@
 
 extern "C"
 {
-
 extern void ManualPageToHTML
     (FILE          *stream,
      const char    *pPageTitle,
@@ -39,8 +38,6 @@ extern void ManualPageToHTML
      const char    *pStylesheet,
      const char    *pContent,
      int            cbContent);
-
-
 }
 
 #endif
