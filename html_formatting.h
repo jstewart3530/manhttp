@@ -54,7 +54,10 @@ enum
   TEXT_ATTR_MAN_PAGE_REF         = 8,
   TEXT_ATTR_INFO_LINK            = 16,
 
-  TEXT_ATTR_LINK_MASK            = TEXT_ATTR_URI | TEXT_ATTR_MAN_PAGE_REF
+  TEXT_ATTR_LINK_SKIP            = 32,
+
+  TEXT_ATTR_LINK_MASK            = TEXT_ATTR_URI
+                                      | TEXT_ATTR_MAN_PAGE_REF
                                       | TEXT_ATTR_INFO_LINK,
 
 
@@ -62,10 +65,11 @@ enum
   *   Used only by CreateInfoLinkTag().   
   */
 
-  TEXT_ATTR_INFO_BITS_MASK       = 32 | 64,
+  TEXT_ATTR_INFO_TARGET          = 64,  
+  TEXT_ATTR_INFO_FILENAME        = 128,
 
-  TEXT_ATTR_INFO_TARGET          = 32,  
-  TEXT_ATTR_INFO_FILENAME        = 64
+  TEXT_ATTR_INFO_BITS_MASK       = TEXT_ATTR_INFO_TARGET
+                                      | TEXT_ATTR_INFO_FILENAME  
 };
 
 

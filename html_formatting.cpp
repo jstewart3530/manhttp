@@ -370,27 +370,37 @@ char* CreateManPageLinkTag
     const HTMLFORMATINFO  *pFmtInfo)
 
 {
-  int k;
+  unsigned int i, j;
   bool fNeedAbsoluteURL = false;
+  TEXTATTRIBUTES attrs;
   char c, *pTag = NULL;
+  char target [80];
 
 
-  for (k = 0
-  	     ; ((c = pText [k]) != '\0') 
-               && (pAttributes [k] & TEXT_ATTR_MAN_PAGE_REF)
-  	     ; k++)
+  for (i = j = 0
+  	     ; ((c = pText [i]) != '\0') 
+               && ((attrs = pAttributes [i]) & TEXT_ATTR_MAN_PAGE_REF)
+               && (j < sizeof (target) - 1)
+  	     ; i++)
   {
+    if (attrs & TEXT_ATTR_LINK_SKIP)
+      continue;
+
     if (c == ':')
     {
       fNeedAbsoluteURL = true;
     }
+
+    target [j++] = c;
   }
 
+  target [j] = '\0';
 
-  asprintf (&pTag, "<a %s href=\"%sman/%.*s\">", 
+
+  asprintf (&pTag, "<a %s href=\"%sman/%s\">", 
             pFmtInfo->pManPageLinkAttrs,
             fNeedAbsoluteURL ? pFmtInfo->pUriPrefix : "",
-            k, pText);
+            target);
 
   return pTag;
 }

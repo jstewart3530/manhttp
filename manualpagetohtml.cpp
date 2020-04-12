@@ -81,6 +81,7 @@ static LINECLASSIFICATION ClassifyLine (const char*, const TEXTATTRIBUTES*, int,
 static void GetTextAttributes (const char*, int, char*, TEXTATTRIBUTES*, int, int*);
 static void AnsiGetTextAttributes (const char*, int, char*, TEXTATTRIBUTES*, int, int*);
 static void OldStyleGetTextAttributes (const char*, int, char*, TEXTATTRIBUTES*, int, int*);
+static void HandleSplitLinks (const char*, int, TEXTATTRIBUTES*);
 
 
 
@@ -217,6 +218,7 @@ void ManualPageToHTML
 
       RecognizeURIs (pSectionText, cbSection, pSectionAttrs);
       RecognizeManPageRefs (pSectionText, cbSection, pSectionAttrs);
+      HandleSplitLinks (pSectionText, cbSection, pSectionAttrs);
 
       HTMLizeText (pMarkup, cbMax, pSectionText, cbSection,
                    pSectionAttrs, &FormatInfo, MinIndent);
@@ -383,25 +385,23 @@ void GetTextAttributes
     int             *pLengthOut)
 
 {
-  int i, n, cb;
+  int i, nEscapes = 0;
   bool fIsANSI;
 
 
-  cb = ((cbText < 1024) ? cbText : 1024) - 1;
-  
-  for (i = n = 0; i < cb; i++)
+  for (i = 0; i < cbText; i++)
   {
     if ((pText [i] == 0x1b) && (pText [i + 1] == '['))
     {
-      n++;
+      nEscapes++;
     }
   }
   
-  fIsANSI = (n >= 5);
+  fIsANSI = (nEscapes >= 5);
 
 
   (fIsANSI ? AnsiGetTextAttributes : OldStyleGetTextAttributes)
-            (pText, cbText, pTextOut, pAttrsOut, cbMax, pLengthOut);
+      (pText, cbText, pTextOut, pAttrsOut, cbMax, pLengthOut);
 }
 
 
@@ -551,3 +551,19 @@ void OldStyleGetTextAttributes
     *pLengthOut = j;
   }
 }
+
+
+
+/*-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-
+                                                         HandleSplitLinks
+-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-*/
+
+static
+void HandleSplitLinks 
+   (const char       *pText,
+    int               cbText,
+    TEXTATTRIBUTES   *pAttrs)
+
+{
+  /*  Just a stub for now.  */
+}   
